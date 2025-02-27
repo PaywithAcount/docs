@@ -1,0 +1,126 @@
+---
+title: 'Initialize Payment'
+description: ''
+---
+
+The `initiatePayment` method is used to start a payment transaction using the SDK. It creates a payment request, retrieves a secure payment token, and initializes the payment process via the SDK. If the transaction is successful, it triggers a callback function (`onSuccess`).
+
+This method is **only available on an instance of the`Account` class** and must be called after initializing the `Account` class with a valid `clientId`.
+
+***
+
+## **Prerequisites**
+
+Before using `initiatePayment`, ensure that:
+
+✔ You have initialized the `Account` class with a valid `clientId`.
+
+✔ You have a valid **amount** and **reference number** for the payment.
+
+✔ You provide a callback function (`onSuccess`) to handle a successful transaction.
+
+***
+
+## **Method Signature**
+
+```typescript
+async initiatePayment({
+  amount,
+  referenceNumber,
+  onSuccess,
+}: {
+  amount: number;
+  referenceNumber: string;
+  onSuccess: (status: { success: true }) => void;
+}): Promise<void>;
+```
+
+***
+
+## **Parameters**
+
+| Parameter         | Type                                  | Required | Description                                                  |
+| ----------------- | ------------------------------------- | -------- | ------------------------------------------------------------ |
+| `amount`          | `number`                              | ✅ Yes    | The amount to be paid.                                       |
+| `referenceNumber` | `string`                              | ✅ Yes    | A unique reference number for the payment transaction.       |
+| `onSuccess`       | `(status: { success: true }) => void` | ✅ Yes    | A callback function executed when the payment is successful. |
+
+* **`amount`**: The transaction amount (should be greater than `0`).
+* **`referenceNumber`**: A unique identifier to track the payment.
+* **`onSuccess`**: A function that receives `{ success: true }` when the payment completes successfully.
+
+
+
+## **Example Usage**
+
+### **Step 1: Initialize the Account Class**
+
+Before calling `initiatePayment`, you must first create an instance of the `Account` class:
+
+```typescript
+import Account from "acount-sdk";
+
+// Initialize Account with your Client ID
+const sdk = new Account({
+  clientId: "your-client-id-here",
+});
+```
+
+### **Step 2: Initiate a Payment**
+
+Once the `account` instance is created, you can call `initiatePayment`:
+
+```typescript
+sdk.initiatePayment({
+  amount: 150.00,
+  referenceNumber: "TXN-123456",
+  onSuccess: (status) => {
+    if (status.success) {
+      console.log("Payment completed successfully!");
+    }
+  },
+}).catch(error => {
+  console.error("Payment initiation failed:", error);
+});
+```
+
+***
+
+## **Handling Errors**
+
+If an error occurs during payment initialization, it is:
+
+* **Logged to the console** for debugging.
+* **Displayed as an alert message** to notify the user.
+
+### **Common Errors and Fixes**
+
+| Error Message                     | Possible Cause                                      |
+| --------------------------------- | --------------------------------------------------- |
+| `"Client ID is required"`         | The `Account` class was not initialized properly.   |
+| `"Invalid amount"`                | Ensure `amount` is a valid number greater than `0`. |
+| `"Reference number missing"`      | The `referenceNumber` parameter is required.        |
+| `"Payment initialization failed"` | Network issues or invalid API credentials.          |
+
+***
+
+## **Return Value**
+
+This method **does not return** any value (`Promise<void>`). Instead, it either:
+
+* Executes `onSuccess({ success: true })` upon successful payment completion.
+* Throws an error and alerts the user if an issue occurs.
+
+***
+
+## **Key Takeaways**
+
+✔ **Requires an`Account` instance** to be initialized before use.
+
+✔ **Handles secure payment processing** by generating a token and starting the SDK.
+
+✔ **Triggers a success callback** when the payment is completed.
+
+✔ **Provides built-in error handling** for common issues.
+
+By following these steps, you can seamlessly integrate payment processing into your application using the SDK. 🚀

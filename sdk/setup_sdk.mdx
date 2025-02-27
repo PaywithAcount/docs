@@ -1,0 +1,59 @@
+---
+title: 'SDK Setup'
+description: ''
+---
+
+Before making any method calls, you must initialize the SDK with your account credentials.
+
+The `Account` class is responsible for initializing the SDK with authentication credentials. It requires a **Client ID** to be provided during instantiation, ensuring that all subsequent API requests are authenticated.
+
+***
+
+### **Parameters**
+
+| Parameter  | Type     | Required | Description                                         |
+| ---------- | -------- | -------- | --------------------------------------------------- |
+| `clientId` | `string` | ✅ Yes    | The unique Client ID issued for API authentication. |
+
+
+
+***
+
+### **How to Initialize the SDK**
+
+To use the SDK, you must first **initialize** the `Account` class with a valid `clientId`.
+
+### **Example Usage**
+
+```typescript
+import Account from "acount-sdk";
+
+const sdk = new Account({
+  clientId: "your-client-id-here",
+});
+```
+
+### **Error Handling**
+
+If an invalid or missing `clientId` is provided, the following error will be thrown:
+
+```typescript
+try {
+  const account = new Account({ clientId: "" }); // Missing Client ID
+} catch (error) {
+  console.error(error.message); // Output: "Client ID is required"
+}
+```
+
+***
+
+## **Key Takeaways**
+
+✔ **Ensures secure authentication** using a Client ID
+
+✔ **Prevents accidental misconfiguration** by requiring a valid Client ID
+
+✔ **Easy integration** with just one line of initialization
+
+The `Account` class serves as the foundation for all SDK operations, ensuring that every API request is authenticated. 🚀
+

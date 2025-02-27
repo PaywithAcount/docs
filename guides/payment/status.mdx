@@ -1,0 +1,30 @@
+---
+title: 'Payment Initialization Status'
+description: "Tracks the status of a payment request to confirm if it is ready for processing."
+---
+
+Understanding the lifecycle and flow of payments in the Acount payment system
+
+Acount processes payments using the following three statuses:
+
+| Status       | Description                                                                                                                                                      | Final/Intermediate |
+| :----------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------- |
+| **PENDING**  | The payment has been initiated and is awaiting confirmation. This means that the user has completed the necessary steps, and the transaction is being processed. | **Intermediate**   |
+| **REJECTED** | The payment has failed or has been declined. This can happen due to insufficient funds, authorization failure, or other rejection reasons from the bank.         | **Final**          |
+| **PAID**     | The payment has been successfully completed and settled. This indicates that the funds have been transferred to the recipient.                                   | **Final**          |
+
+These statuses provide a simplified view of the payment flow while mapping to the more detailed statuses from our underlying infrastructure.
+
+**PENDING**: aligns with statuses like `PROCESSING`, `PENDING`, and `INITIATED`.
+
+**REJECTED**: aligns with statuses like `FAILURE_DECLINED`, `FAILURE_INSUFFICIENT_FUNDS`, and `FAILURE_CANCELED`.
+
+**PAID**: aligns with` SUCCESS` and `SETTLEMENT_COMPLETED`.
+
+Any additional statuses from our underlying infrastrucutre are handled internally and mapped to one of the above three statuses to keep our system user-friendly.
+
+**The following diagrams show the flow between payment initiation statuses**:
+
+The following diagram shows the flow between payment initiation statuses for one-step banks **(one-step banks allow users to authenticate and authorize payments in a single step)** :
+
+

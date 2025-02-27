@@ -14,64 +14,46 @@
         "tab": "Guides",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "Basics",
             "pages": [
-              "introduction",
-              "quickstart",
-              "development"
+              "guides/basics/overview",
+              "guides/basics/concepts"
             ]
           },
           {
-            "group": "Essentials",
+            "group": "Payment",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/settings",
-              "essentials/navigation",
-              "essentials/reusable-snippets"
+              "guides/payment/introduction",
+              "guides/payment/status",
+              "guides/payment/best_practices"
             ]
+          },
+          {
+            "group": "Collection",
+            "pages": []
+          },
+          {
+            "group": "User Experience",
+            "pages": []
           }
         ]
       },
       {
-        "tab": "API Reference",
+        "tab": "SDK Reference",
         "groups": [
           {
-            "group": "API Documentation",
+            "group": "Documentation",
             "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint Examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete"
+              "sdk/introduction",
+              "sdk/install_sdk",
+              "sdk/setup_sdk",
+              "sdk/initialize_payment"
             ]
           }
         ]
       }
     ],
     "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Community",
-          "href": "https://mintlify.com/community",
-          "icon": "slack"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
     }
   },
   "logo": {
@@ -88,7 +70,7 @@
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "href": "https://google.com"
     }
   },
   "footer": {
