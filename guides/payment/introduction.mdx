@@ -4,46 +4,49 @@ description: "All the essentials for enabling customers to make payments."
 ---
 
 The core concept of customer payments with our system revolves around the SDK.
-- For each customer payment, a new Checkout Session will be automatically created.
-- This session includes a redirectUrl parameter, which allows our SDK to direct the customer to our hosted payment page.
+
+* For each customer payment, a new Checkout Session will be automatically created.
+
+* This session includes a redirectUrl parameter, which allows our SDK to direct the customer to our hosted payment page.
 
 ### Integration Flow:
 
 <Steps>
-    <Step title="Install SDK">
-        Easily integrate our payment system into your application by installing the SDK. The SDK provides a streamlined way to interact with our API, handling authentication, session management, and payment processing efficiently.
+  <Step title="Install SDK">
+    Easily integrate our payment system into your application by installing the SDK. The SDK provides a streamlined way to interact with our API, handling authentication, session management, and payment processing efficiently.
 
-        ### Steps to Install:
+    ### Steps to Install:
 
-        1. Choose your preferred programming language.
-        2. Install the SDK using the package manager for your environment.
-        3. Configure the SDK with your API credentials.
+    1. Choose your preferred programming language.
 
-        Once installed, you can start creating checkout sessions, handling payments, and managing transactions seamlessly.
-    </Step>
-    <Step title="Initialize Account in the SDK">
-        To start using the SDK, you need to initialize your account. This involves:
+    2. Install the SDK using the package manager for your environment.
 
-        1. **Importing the SDK** into your project.
-        2. **Providing your API credentials** for authentication.
-        3. **Setting up the SDK instance** to connect with our payment system.
+    3. Configure the SDK with your API credentials.
 
-        Once initialized, you can create checkout sessions, process payments, and manage transactions seamlessly.
-    </Step>
-    <Step title="Payment Process Overview">
-        The payment process starts with the initiatePayment method, which securely creates a payment request and begins the transaction.
-        This ensures that the payment details are processed safely and efficiently. Once the payment is completed successfully, a confirmation callback is triggered to notify your system.
+    Once installed, you can start creating checkout sessions, handling payments, and managing transactions seamlessly.
+  </Step>
 
-        To use this method, your account must be properly set up with a valid client ID.
-        This ensures that transactions are securely linked to your business and processed without interruptions.
+  <Step title="Initialize Account in the SDK">
+    To start using the SDK, you need to initialize your account. This involves:
 
-        The entire payment process is seamlessly managed within our Checkout Page which the SDK will automatically redirect you to.
-    </Step>
+    1. **Importing the SDK** into your project.
+
+    2. **Providing your API credentials** for authentication.
+
+    3. **Setting up the SDK instance** to connect with our payment system.
+
+    Once initialized, you can create checkout sessions, process payments, and manage transactions seamlessly.
+  </Step>
+
+  <Step title="Payment Process Overview">
+    The payment process starts with the initiatePayment method, which securely creates a payment request and begins the transaction.
+    This ensures that the payment details are processed safely and efficiently. Once the payment is completed successfully, a confirmation callback is triggered to notify your system.
+
+    To use this method, your account must be properly set up with a valid client ID.
+    This ensures that transactions are securely linked to your business and processed without interruptions.
+
+    The entire payment process is seamlessly managed within our Checkout Page which the SDK will automatically redirect you to.
+  </Step>
 </Steps>
 
-<Tip>The entire payment journey is handled within the Checkout Page.</Tip>
-
-
-<img src="/images/payment_checkout.png" />
-
-
+<Tip>The entire payment journey is handled within the Checkout Page.</Tip>![](/Flow.png)
