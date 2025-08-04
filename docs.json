@@ -4,8 +4,8 @@
   "name": "AcountPay Documentation",
   "colors": {
     "primary": "#166534",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "light": "#6EE7B7",
+    "dark": "#0F3D24"
   },
   "favicon": "/favicon.png",
   "navigation": {
@@ -64,20 +64,19 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:support@acountpay.com"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://google.com"
+      "href": "https://merchant.acountpay.com/auth"
     }
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/x",
+      "linkedin": "https://linkedin.com/company/x"
     }
   }
 }
