@@ -1,4 +1,30 @@
 ---
-title: Concepts
+title: "Concepts"
 description: "Understand the key principles that drive our payment system."
 ---
+
+1. **Overview of AcountPay**
+
+   > AcountPay enables secure, bank-to-bank payments without needing cards or manual account entry. It’s ideal for businesses that want to offer fast, low-cost payments via open banking.
+2. **Key Concepts**
+   - **Paylink** — What it is, how it’s generated, and how it works (temporary URL, QR-compatible, etc.)
+   - **Checkout Overlay** — How the checkout experience is embedded into the page.
+   - **API Keys** — Explain sandbox vs live, and what they’re used for.
+   - **Payment Request** — Parameters required, and how it triggers the paylink generation.
+   - **WebSocket Connection** — Used for real-time payment updates.
+   - **Environments** — Sandbox vs Production, what’s different in each.
+3. **How it works**
+   1. User lands on merchant’s webpage.
+   2. Merchant site calls API with amount \+ key → gets a paylink.
+   3. Overlay opens with QR code or redirect link.
+   4. User completes payment in external bank app or on same device.
+   5. Websocket keeps merchant site in sync.
+   6. Confirmation or timeout sent back via WebSocket / Webhook.
+4. **Environments and API keys**
+
+   | **Environment** | **API Key Type** | **Use Case**                |
+   | :-------------- | :--------------- | :-------------------------- |
+   | Sandbox         | Dev/Test Key     | For testing payment flows   |
+   | Production      | Live Key         | For accepting real payments |
+
+   When you are ready contact [support@acountpay.com](mailto:support@acountpay.com) then we will review your integration and implement your production access. 
