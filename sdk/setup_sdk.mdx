@@ -5,15 +5,23 @@ description: ''
 
 Before making any method calls, you must initialize the SDK with your account credentials.
 
-The `Account` class is responsible for initializing the SDK with authentication credentials. It requires a **Client ID** to be provided during instantiation, ensuring that all subsequent API requests are authenticated.
+The `Acount` class is responsible for initializing the SDK with authentication credentials. It requires a **Client ID** to be provided during instantiation, ensuring that all subsequent API requests are authenticated.
 
 ***
 
-### **Parameters**
+### **Constructor Parameters**
 
 | Parameter  | Type     | Required | Description                                         |
 | ---------- | -------- | -------- | --------------------------------------------------- |
 | `clientId` | `string` | ✅ Yes    | The unique Client ID issued for API authentication. |
+
+
+***
+
+### **Required Environment Configuration**
+
+| Parameter  | Type     | Required | Description                                         |
+| ---------- | -------- | -------- | --------------------------------------------------- |
 | `API_BASE_URL` | `https://acount-apis-7886a9e16dc3.herokuapp.com` | ✅ Yes    | The api base url is required. |
 | `Token_Environment` | `sandbox` | ✅ Yes    | The sandbox environemnt variable is required for testing. |
 
@@ -21,14 +29,14 @@ The `Account` class is responsible for initializing the SDK with authentication 
 
 ### **How to Initialize the SDK**
 
-To use the SDK, you must first **initialize** the `Account` class with a valid `clientId`.
+To use the SDK, you must first **initialize** the `Acount` class with a valid `clientId`.
 
 ### **Example Usage**
 
 ```typescript
-import Account from "acount-sdk";
+import Acount from "@acountpay/sdk";
 
-const sdk = new Account({
+const sdk = new Acount({
   clientId: "your-client-id-here",
 });
 ```
@@ -39,7 +47,7 @@ If an invalid or missing `clientId` is provided, the following error will be thr
 
 ```typescript
 try {
-  const account = new Account({ clientId: "" }); // Missing Client ID
+  const account = new Acount({ clientId: "" }); // Missing Client ID
 } catch (error) {
   console.error(error.message); // Output: "Client ID is required"
 }
@@ -55,5 +63,5 @@ try {
 
 ✔ **Easy integration** with just one line of initialization
 
-The `Account` class serves as the foundation for all SDK operations, ensuring that every API request is authenticated. 🚀
+The `Acount` class serves as the foundation for all SDK operations, ensuring that every API request is authenticated. 🚀
 
