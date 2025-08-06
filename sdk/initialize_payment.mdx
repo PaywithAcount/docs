@@ -3,36 +3,18 @@ title: 'Initialize Payment'
 description: ''
 ---
 
-The `initiatePayment` method is used to start a payment transaction using the SDK. It creates a payment request, retrieves a secure payment token, and initializes the payment process via the SDK. If the transaction is successful, it triggers a callback function (`onSuccess`).
-
-This method is **only available on an instance of the`Account` class** and must be called after initializing the `Account` class with a valid `clientId`.
-
-***
-
-## **Prerequisites**
-
-Before using `initiatePayment`, ensure that:
-
-✔ You have initialized the `Account` class with a valid `clientId`.
-
-✔ You have a valid **amount** and **reference number** for the payment.
-
-✔ You provide a callback function (`onSuccess`) to handle a successful transaction.
+The `initiatePayment` method is used to start the payment process. It takes payment details and handles the complete payment flow through the Acount system.
 
 ***
 
 ## **Method Signature**
 
 ```typescript
-async initiatePayment({
-  amount,
-  referenceNumber,
-  onSuccess,
-}: {
-  amount: number;
-  referenceNumber: string;
-  onSuccess: (status: { success: true }) => void;
-}): Promise<void>;
+await account.initiatePayment({
+  amount: number,
+  referenceNumber: string,
+  onSuccess: (status: { success: true }) => void
+})
 ```
 
 ***
@@ -41,7 +23,7 @@ async initiatePayment({
 
 | Parameter         | Type                                  | Required | Description                                                  |
 | ----------------- | ------------------------------------- | -------- | ------------------------------------------------------------ |
-| `amount`          | `number`                              | ✅ Yes    | The amount to be paid.                                       |
+| `amount`          | `number`                              | ✅ Yes    | The payment amount in the currency's base unit (e.g., DKK)                                     |
 | `referenceNumber` | `string`                              | ✅ Yes    | A unique reference number for the payment transaction.       |
 | `onSuccess`       | `(status: { success: true }) => void` | ✅ Yes    | A callback function executed when the payment is successful. |
 
@@ -53,74 +35,85 @@ async initiatePayment({
 
 ## **Example Usage**
 
-### **Step 1: Initialize the Account Class**
+import { useEffect, useState } from 'react'
+import Acount from '@acountpay/sdk'
 
-Before calling `initiatePayment`, you must first create an instance of the `Account` class:
+const PaymentComponent = () => {
+  const [account, setAccount] = useState<Acount | null>(null)
 
-```typescript
-import Account from "acount-sdk";
+  useEffect(() => {
+    const sdk = new Acount({
+      clientId: "your-client-id-here"
+    })
+    setAccount(sdk)
+  }, [])
 
-// Initialize Account with your Client ID
-const sdk = new Account({
-  clientId: "your-client-id-here",
-});
-```
+  const handlePayment = async () => {
+    if (!account) return
 
-### **Step 2: Initiate a Payment**
-
-Once the `account` instance is created, you can call `initiatePayment`:
-
-```typescript
-sdk.initiatePayment({
-  amount: 150.00,
-  referenceNumber: "TXN-123456",
-  onSuccess: (status) => {
-    if (status.success) {
-      console.log("Payment completed successfully!");
+    try {
+      await account.initiatePayment({
+        amount: 25.99, // Amount in DKK
+        referenceNumber: "ORDER-12345",
+        onSuccess: (status: { success: true }) => {
+          console.log("Payment completed successfully!", status)
+          // Handle successful payment
+        }
+      })
+    } catch (error) {
+      console.error("Payment failed:", error)
+      // Handle payment error
     }
-  },
-}).catch(error => {
-  console.error("Payment initiation failed:", error);
-});
-```
+  }
+
+  return (
+    <button onClick={handlePayment}>
+      Pay with Acount
+    </button>
+  )
+}
+
+***
+
+## **Succes Callback**
+The 'onSuccess' callback receives a status object when payment is completed:
+
+onSuccess: (status: { success: true }) => {
+  // Payment was successful
+  console.log("Payment completed!")
+  // Update UI, redirect user, etc.
+}
+
 
 ***
 
 ## **Handling Errors**
 
-If an error occurs during payment initiation, it is:
+Always wrap initiatePayment calls in try-catch blocks:
 
-* **Logged to the console** for debugging.
-* **Displayed as an alert message** to notify the user.
-
-### **Common Errors and Fixes**
-
-| Error Message                     | Possible Cause                                      |
-| --------------------------------- | --------------------------------------------------- |
-| `"Client ID is required"`         | The `Account` class was not initialized properly.   |
-| `"Invalid amount"`                | Ensure `amount` is a valid number greater than `0`. |
-| `"Reference number missing"`      | The `referenceNumber` parameter is required.        |
-| `"Payment initialization failed"` | Network issues or invalid API credentials.          |
-
-***
-
-## **Return Value**
-
-This method **does not return** any value (`Promise<void>`). Instead, it either:
-
-* Executes `onSuccess({ success: true })` upon successful payment completion.
-* Throws an error and alerts the user if an issue occurs.
+try {
+  await account.initiatePayment({
+    amount: 10.00,
+    referenceNumber: "ORDER-123",
+    onSuccess: (status) => {
+      console.log("Success!", status)
+    }
+  })
+} catch (error) {
+  console.error("Payment initialization failed:", error)
+  // Show error message to user
+}
 
 ***
 
 ## **Key Takeaways**
 
-✔ **Requires an`Account` instance** to be initialized before use.
+✔ Object-based parameters - Pass all parameters as a single object
 
-✔ **Handles secure payment processing** by generating a token and starting the SDK.
+✔ Async/await pattern - Always use await with initiatePayment
 
-✔ **Triggers a success callback** when the payment is completed.
+✔ Error handling - Wrap calls in try-catch blocks
 
-✔ **Provides built-in error handling** for common issues.
+✔ Success callback - Handle successful payments in the onSuccess function
 
-By following these steps, you can seamlessly integrate payment processing into your application using the SDK. 🚀
+The initiatePayment method handles the complete payment flow, from initialization to completion. 🚀
