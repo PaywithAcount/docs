@@ -1,16 +1,16 @@
 ---
 title: 'Initialize Payment'
-description: ''
+description: 'Accept payments using the Acount SDK with a complete integration guide'
 ---
 
-The `initiatePayment` method is used to start the payment process. It takes payment details and handles the complete payment flow through the Acount system.
+The `initiatePayment` method creates and processes a payment through the Acount system. This method handles the complete payment flow including customer authentication, payment processing, and success callbacks.
 
 ***
 
 ## **Method Signature**
 
 ```typescript
-await account.initiatePayment({
+await acount.initiatePayment({
   amount: number,
   referenceNumber: string,
   onSuccess: (status: { success: true }) => void
@@ -23,7 +23,7 @@ await account.initiatePayment({
 
 | Parameter         | Type                                  | Required | Description                                                  |
 | ----------------- | ------------------------------------- | -------- | ------------------------------------------------------------ |
-| `amount`          | `number`                              | ✅ Yes    | The payment amount in the currency's base unit (e.g., DKK)                                     |
+| `amount`          | `number`                              | ✅ Yes    | The payment amount in cents (must be a positive integer)                                  |
 | `referenceNumber` | `string`                              | ✅ Yes    | A unique reference number for the payment transaction.       |
 | `onSuccess`       | `(status: { success: true }) => void` | ✅ Yes    | A callback function executed when the payment is successful. |
 
@@ -31,46 +31,121 @@ await account.initiatePayment({
 * **`referenceNumber`**: A unique identifier to track the payment.
 * **`onSuccess`**: A function that receives `{ success: true }` when the payment completes successfully.
 
-## **Example Usage**
+## **Complete Integration Example**
+
+This example shows a typical e-commerce checkout flow:
 
 ```jsx
+
 import { useEffect, useState } from 'react'
 import Acount from '@acountpay/sdk'
 
-const PaymentComponent = () => {
-  const [account, setAccount] = useState<Acount | null>(null)
+interface Product {
+  id: number
+  name: string
+  price_cents: number
+}
+
+interface Order {
+  id: number
+  product_id: number
+  status: 'pending' | 'paid' | 'failed'
+  total_cents: number
+}
+
+const CheckoutComponent = ({ product }: { product: Product }) => {
+  const [acount, setAcount] = useState<Acount | null>(null)
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [order, setOrder] = useState<Order | null>(null)
 
   useEffect(() => {
     const sdk = new Acount({
-      clientId: "your-client-id-here"
+      clientId: process.env.NEXT_PUBLIC_ACOUNT_CLIENT_ID!
     })
-    setAccount(sdk)
+    setAcount(sdk)
   }, [])
 
+  const createOrder = async (): Promise<Order> => {
+    // Create order in your database before payment
+    const response = await fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        product_id: product.id,
+        total_cents: product.price_cents,
+        status: 'pending'
+      })
+    })
+    return response.json()
+  }
+
+  const updateOrderStatus = async (orderId: number, status: string) => {
+    await fetch(`/api/orders/${orderId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status })
+    })
+  }
+
   const handlePayment = async () => {
-    if (!account) return
+    if (!acount || isProcessing) return
+
+    setIsProcessing(true)
 
     try {
-      await account.initiatePayment({
-        amount: 25.99, // Amount in DKK
-        referenceNumber: "ORDER-12345",
-        onSuccess: (status: { success: true }) => {
-          console.log("Payment completed successfully!", status)
-          // Handle successful payment
+      // 1. Create order before payment
+      const newOrder = await createOrder()
+      setOrder(newOrder)
+
+      // 2. Initiate payment with Acount
+      await acount.initiatePayment({
+        amount: product.price_cents,
+        referenceNumber: `ORDER-${newOrder.id}`,
+        onSuccess: async (status: { success: true }) => {
+          console.log('Payment successful:', status)
+          
+          // 3. Update order status
+          await updateOrderStatus(newOrder.id, 'paid')
+          
+          // 4. Redirect to success page
+          window.location.href = `/order-confirmation/${newOrder.id}`
+          
+          // 5. Optional: Send confirmation email, update analytics, etc.
+          // await sendConfirmationEmail(newOrder.id)
+          // analytics.track('purchase', { orderId: newOrder.id, amount: product.price_cents })
         }
       })
     } catch (error) {
-      console.error("Payment failed:", error)
-      // Handle payment error
+      console.error('Payment failed:', error)
+      
+      // Update order status to failed if order was created
+      if (order) {
+        await updateOrderStatus(order.id, 'failed')
+      }
+      
+      // Show error message to user
+      alert('Payment failed. Please try again.')
+    } finally {
+      setIsProcessing(false)
     }
   }
 
   return (
-    <button onClick={handlePayment}>
-      Pay with Acount
-    </button>
+    <div>
+      <h3>{product.name}</h3>
+      <p>Price: {(product.price_cents / 100).toFixed(2)} DKK</p>
+      
+      <button 
+        onClick={handlePayment}
+        disabled={!acount || isProcessing}
+      >
+        {isProcessing ? 'Processing...' : 'Pay with Acount'}
+      </button>
+    </div>
   )
 }
+
+export default CheckoutComponent
 ```
 
 ***
@@ -80,9 +155,16 @@ The 'onSuccess' callback receives a status object when payment is completed:
 
 ```javascript
 onSuccess: (status: { success: true }) => {
-  // Payment was successful
-  console.log("Payment completed!")
-  // Update UI, redirect user, etc.
+  // Payment confirmed - safe to fulfill order
+  
+  // Common actions:
+  updateOrderStatus('paid')           // Update database
+  sendConfirmationEmail()             // Notify customer  
+  updateInventory()                   // Reduce stock
+  redirectToSuccessPage()             // Navigate user
+  trackConversion()                   // Analytics
+  
+  console.log('Payment completed successfully!')
 }
 ```
 
@@ -93,19 +175,70 @@ onSuccess: (status: { success: true }) => {
 Always wrap initiatePayment calls in try-catch blocks:
 
 ```javascript
-try {
-  await account.initiatePayment({
-    amount: 10.00,
-    referenceNumber: "ORDER-123",
-    onSuccess: (status) => {
-      console.log("Success!", status)
+const handlePayment = async () => {
+  try {
+    await acount.initiatePayment({
+      amount: 2599, // 25.99 DKK in cents
+      referenceNumber: "ORDER-123",
+      onSuccess: (status) => {
+        // Handle success
+        console.log("Payment successful:", status)
+      }
+    })
+  } catch (error) {
+    // Handle different error types
+    if (error.message.includes('Client ID')) {
+      console.error('Configuration error:', error)
+      // Show configuration error to admin
+    } else if (error.message.includes('amount')) {
+      console.error('Invalid amount:', error)
+      // Show validation error to user
+    } else {
+      console.error('Payment error:', error)
+      // Show generic error to user
     }
-  })
-} catch (error) {
-  console.error("Payment initialization failed:", error)
-  // Show error message to user
+    
+    // Always update UI to show error state
+    setPaymentStatus('failed')
+  }
 }
 ```
+
+***
+
+## **Best Practices**
+
+💡 Order Management
+Always create orders in your database before calling initiatePayment
+Use the order ID in your referenceNumber for easy tracking
+Update order status in the onSuccess callback
+
+💡 Amount Handling
+Store prices in cents to avoid floating-point errors
+Validate amounts on both client and server side
+Example: 25.99 DKK = 2599 cents
+
+💡 Reference Numbers
+Make them unique and meaningful
+Include prefixes for easy identification: ORDER-, INV-, SUB-
+Keep them under 50 characters for compatibility
+
+💡 Error Recovery
+Implement retry logic for network failures
+Provide clear error messages to users
+Log errors for debugging and monitoring
+
+***
+
+## **Integration Checklist**
+
+✅ Setup: Acount SDK initialized with valid clientId
+✅ Order Creation: Orders created before payment initiation
+✅ Amount Format: Using cents (integers) not decimals
+✅ Reference Numbers: Unique identifiers for each transaction 
+✅ Success Handling: Business logic in onSuccess callback 
+✅ Error Handling: Try-catch blocks with user feedback 
+✅ Testing: Test with small amounts in sandbox environment
 
 ***
 
