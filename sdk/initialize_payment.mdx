@@ -31,10 +31,9 @@ await account.initiatePayment({
 * **`referenceNumber`**: A unique identifier to track the payment.
 * **`onSuccess`**: A function that receives `{ success: true }` when the payment completes successfully.
 
-
-
 ## **Example Usage**
 
+```jsx
 import { useEffect, useState } from 'react'
 import Acount from '@acountpay/sdk'
 
@@ -72,18 +71,20 @@ const PaymentComponent = () => {
     </button>
   )
 }
+```
 
 ***
 
 ## **Succes Callback**
 The 'onSuccess' callback receives a status object when payment is completed:
 
+```javascript
 onSuccess: (status: { success: true }) => {
   // Payment was successful
   console.log("Payment completed!")
   // Update UI, redirect user, etc.
 }
-
+```
 
 ***
 
@@ -91,6 +92,7 @@ onSuccess: (status: { success: true }) => {
 
 Always wrap initiatePayment calls in try-catch blocks:
 
+```javascript
 try {
   await account.initiatePayment({
     amount: 10.00,
@@ -103,6 +105,7 @@ try {
   console.error("Payment initialization failed:", error)
   // Show error message to user
 }
+```
 
 ***
 
