@@ -1,38 +1,35 @@
----
-title: 'SDK Setup'
-description: ''
----
+# SDK Setup
 
 Before making any method calls, you must initialize the SDK with your account credentials.
 
-The `Acount` class is responsible for initializing the SDK with authentication credentials. It requires a **Client ID** to be provided during instantiation, ensuring that all subsequent API requests are authenticated.
+The Acount class is responsible for initializing the SDK with authentication credentials. It requires a Client ID to be provided during instantiation, ensuring that all subsequent API requests are authenticated.
 
-***
+## Constructor Parameters
 
-### **Constructor Parameters**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `clientId` | `string` | ✅ Yes | The unique Client ID issued for API authentication |
 
-| Parameter  | Type     | Required | Description                                         |
-| ---------- | -------- | -------- | --------------------------------------------------- |
-| `clientId` | `string` | ✅ Yes    | The unique Client ID issued for API authentication. |
+## Required Environment Configuration
 
+The following environment variables are required in your `.env` file:
 
-***
+```bash
+# .env file
+API_BASE_URL=https://acount-apis-7886a9e16dc3.herokuapp.com
+TOKEN_ENVIRONMENT=sandbox
+```
 
-### **Required Environment Configuration**
-The following environment variables are required to make calls to AcountPay.
+| Parameter | Value | Required | Description |
+|-----------|-------|----------|-------------|
+| `API_BASE_URL` | `https://acount-apis-7886a9e16dc3.herokuapp.com` | ✅ Yes | The API base URL |
+| `TOKEN_ENVIRONMENT` | `sandbox` or `production` | ✅ Yes | Environment for testing/production |
 
-| Parameter  | Type     | Required | Description                                         |
-| ---------- | -------- | -------- | --------------------------------------------------- |
-| `API_BASE_URL` | `https://acount-apis-7886a9e16dc3.herokuapp.com` | ✅ Yes    | The api base url is required. |
-| `Token_Environment` | `sandbox`or `production` | ✅ Yes    | The sandbox environemnt variable is required for testing. |
+## How to Initialize the SDK
 
-***
+To use the SDK, you must first initialize the Acount class with a valid clientId.
 
-### **How to Initialize the SDK**
-
-To use the SDK, you must first **initialize** the `Acount` class with a valid `clientId`.
-
-### **Example Usage**
+### Example Usage
 
 ```typescript
 import Acount from "@acountpay/sdk";
@@ -42,9 +39,9 @@ const sdk = new Acount({
 });
 ```
 
-### **Error Handling**
+## Error Handling
 
-If an invalid or missing `clientId` is provided, the following error will be thrown:
+If an invalid or missing clientId is provided, the following error will be thrown:
 
 ```typescript
 try {
@@ -54,15 +51,11 @@ try {
 }
 ```
 
-***
+## Key Takeaways
 
-## **Key Takeaways**
+✔ Ensures secure authentication using a Client ID  
+✔ Prevents accidental misconfiguration by requiring a valid Client ID  
+✔ Easy integration with just one line of initialization
 
-✔ **Ensures secure authentication** using a Client ID
-
-✔ **Prevents accidental misconfiguration** by requiring a valid Client ID
-
-✔ **Easy integration** with just one line of initialization
-
-The `Acount` class serves as the foundation for all SDK operations, ensuring that every API request is authenticated. 🚀
+The Acount class serves as the foundation for all SDK operations, ensuring that every API request is authenticated. 🚀
 
