@@ -76,4 +76,122 @@ const handlePayment = async () => {
 };
 ```
 
+## Initialize Payment (`/sdk/initialize_payment`)
+
+```markdown
+# Initializing Payments
+
+After setting up the SDK, you can initialize a payment flow.
+
+## Basic Payment Flow
+
+```javascript
+// Create payment request
+acountPay.initiatePayment({
+  amount: '499.95',         // Payment amount as string
+  currency: 'DKK',          // Currency code
+  reference: 'ORDER-123',   // Your internal reference
+  description: 'Payment for Order #123', // Description shown to customer
+})
+.then(response => {
+  // Handle successful payment initialization
+  console.log('Payment initialized:', response);
+  // response.id contains the payment ID you can use for status checks
+})
+.catch(error => {
+  // Handle errors
+  console.error('Payment initialization failed:', error);
+});
+
+
+### React Component Setup
+If you're using React, you can use our hooks and components:
+
+
+```javascript
+import { useAcountPay, PaymentButton } from '@acountpay/sdk/react';
+
+function CheckoutComponent() {
+  const { initiatePayment } = useAcountPay();
+  
+  const handlePayment = async () => {
+    try {
+      const result = await initiatePayment({
+        amount: '499.95',
+        currency: 'DKK',
+        reference: 'ORDER-123',
+        description: 'Payment for Order #123',
+      });
+      
+      // Handle successful payment
+      console.log('Payment successful', result);
+    } catch (error) {
+      // Handle payment error
+      console.error('Payment failed', error);
+    }
+  };
+  
+  return (
+    <div>
+      {/* Option 1: Use the built-in payment button */}
+      <PaymentButton
+        amount="499.95"
+        currency="DKK"
+        reference="ORDER-123"
+        description="Payment for Order #123"
+        onSuccess={result => console.log('Payment successful', result)}
+        onError={error => console.error('Payment failed', error)}
+      >
+        Pay with AcountPay
+      </PaymentButton>
+      
+      {/* Option 2: Use your own button with the hook */}
+      <button 
+        onClick={handlePayment}
+        className="inline-flex items-center px-4 py-2 bg-green-800 rounded-md text-white hover:bg-green-900 transition-colors"
+      >
+        Pay with AcountPay
+      </button>
+    </div>
+  );
+}
+```
+
+## Payment Flow Overview
+When a payment is initiated:
+
+The SDK opens the payment flow UI (either in-page or in a new window)
+The customer selects their bank account
+The customer is redirected to their bank for authentication via MitID
+After successful authentication, the bank processes the payment
+The customer is redirected back to your redirect URI
+Your callback handler processes the payment result
+
+## Handling Payment Results
+Set up a callback handler at your redirect URI:
+
+```javascript
+// In your callback component/page
+import { AcountPay } from '@acountpay/sdk';
+
+// Parse the payment result from the URL
+const paymentResult = AcountPay.parsePaymentResult(window.location.search);
+
+if (paymentResult.success) {
+  // Payment was successful
+  console.log('Payment successful', paymentResult);
+  // paymentResult.transactionId contains the transaction ID
+  // paymentResult.reference contains your original reference
+} else {
+  // Payment failed
+  console.error('Payment failed', paymentResult.error);
+}
+```
+### Testing Payments
+Use the sandbox environment for testing:
+
+Ensure REACT_APP_ACOUNTPAY_ENV=sandbox in your environment
+Use test bank accounts provided in your developer dashboard
+Test different scenarios (success, failure, cancellation)
+
 That's it! 🚀
