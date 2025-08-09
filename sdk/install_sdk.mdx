@@ -4,7 +4,7 @@ title: "Install the SDK"
 
 Before installing the SDK, ensure you have:
 
-- **An account** – You will need an API key and merchant credentials
+- **An account** – You will need a client id found in the merchant dashboard
 - **A supported programming environment** – (e.g., Node.js, JavaScript)
 
 # Installing AcountPay SDK
@@ -21,22 +21,22 @@ AcountPay SDK can be installed via npm or yarn.
 
 Install the SDK using **npm**:
 
-```javascript javascript
-npm i @acountpay-sdk
+```javascript 
+npm i @acountpay/sdk
 ```
 
 Install the SDK using **yarn**:
 
 ```javascript
-yarn add @acountpay-sdk
+yarn add @acountpay/sdk
 ```
 
 ## Package Contents
 The SDK includes:
 
-Core payment functionality
-React components for easy integration
-TypeScript definitions for better development experience
+- Core payment functionality
+- React components for easy integration
+- TypeScript definitions for better development experience
 
 ## Verify Installation
 After installation, you can verify the SDK is properly installed:
@@ -44,8 +44,6 @@ After installation, you can verify the SDK is properly installed:
 ```javascript
 // ES6 import
 import { AcountPay } from '@acountpay/sdk';
-```
-```javascript
 // Verify SDK version
 console.log(AcountPay.version);
 ```
