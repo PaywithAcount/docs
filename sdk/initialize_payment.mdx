@@ -1,94 +1,16 @@
-Accept payments using the Acount SDK.
+---
+title: "Initialize Payment"
+description: "Accept payments using the AcountPay SDK"
+---
 
-## Example
-
-```typescript
-import React, { useState, useEffect } from "react";
-import Acount from '@acountpay/sdk';
-
-export default function App() {
-  const [acount, setAcount] = useState<Acount | null>(null);
-
-  useEffect(() => {
-    const sdk = new Acount({
-      clientId: process.env.NEXT_PUBLIC_ACOUNT_CLIENT_ID!
-    });
-    setAcount(sdk);
-  }, []);
-
-  const handlePayment = async () => {
-    if (!acount) return;
-    
-    await acount.initiatePayment({
-      amount: 100,                              // Amount in smallest currency unit
-      referenceNumber: `REF-${Date.now()}`,     // Unique reference  
-      onSuccess: (status: { success: true }) => {
-        console.log('Payment successful:', status);
-        // Redirect to success page or update UI
-      }
-    });
-  };
-
-  return (
-    <button onClick={handlePayment}>
-      Pay with Acount
-    </button>
-  );
-}
-```
-
-## Parameters
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `amount` | `number` | ✅ Yes | Payment amount in smallest currency unit (øre for DKK, cents for EUR) |
-| `referenceNumber` | `string` | ✅ Yes | Unique identifier for the payment |
-| `onSuccess` | `function` | ✅ Yes | Called when payment completes: `(status: { success: true }) => void` |
-
-## Setup
-
-```bash
-npm install @acountpay/sdk
-```
-
-## Testing
-
-For testing purposes, use small amounts like `100` (1 DKK/EUR). Payments are domestic only - Denmark uses DKK, Germany uses EUR.
-
-## Error Handling
-
-```typescript
-const handlePayment = async () => {
-  if (!acount) return;
-  
-  try {
-    await acount.initiatePayment({
-      amount: 100,
-      referenceNumber: 'REF-123',
-      onSuccess: (status: { success: true }) => {
-        console.log('Payment successful:', status);
-      }
-    });
-  } catch (error: any) {
-    console.error('Payment failed:', error);
-    // Show error message to user
-  }
-};
-```
-
-## Initialize Payment (`/sdk/initialize_payment`)
-
-```markdown
-# Initializing Payments
-
-After setting up the SDK, you can initialize a payment flow.
+After setting up the SDK, you can initialize a payment flow to accept payments directly from your customers' bank accounts.
 
 ## Basic Payment Flow
 
 ```javascript
 // Create payment request
 acountPay.initiatePayment({
-  amount: '499.95',         // Payment amount as string
+  amount: '499.95',         // Payment amount
   currency: 'DKK',          // Currency code
   reference: 'ORDER-123',   // Your internal reference
   description: 'Payment for Order #123', // Description shown to customer
@@ -102,13 +24,20 @@ acountPay.initiatePayment({
   // Handle errors
   console.error('Payment initialization failed:', error);
 });
+```
 
+## Parameters
 
-### React Component Setup
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `amount` | `number` | ✅ Yes | Payment amount in smallest currency unit (øre for DKK, cents for EUR) |
+| `referenceNumber` | `string` | ✅ Yes | Unique identifier for the payment |
+| `onSuccess` | `function` | ✅ Yes | Called when payment completes: `(status: { success: true }) => void` |
+
+## React Integration
 If you're using React, you can use our hooks and components:
-
-
 ```javascript
+import React from 'react';
 import { useAcountPay, PaymentButton } from '@acountpay/sdk/react';
 
 function CheckoutComponent() {
@@ -156,20 +85,64 @@ function CheckoutComponent() {
   );
 }
 ```
+Complete Example
+Here's a complete example using React:
+```javascript
+import React, { useState, useEffect } from "react";
+import { AcountPayClient } from '@acountpay/sdk';
+
+export default function App() {
+  const [acountPay, setAcountPay] = useState(null);
+
+  useEffect(() => {
+    const sdk = new AcountPayClient({
+      clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID,
+      environment: process.env.REACT_APP_ACOUNTPAY_ENV || 'sandbox',
+      redirectUri: process.env.REACT_APP_ACOUNTPAY_REDIRECT_URI
+    });
+    setAcountPay(sdk);
+  }, []);
+
+  const handlePayment = async () => {
+    if (!acountPay) return;
+    
+    try {
+      await acountPay.initiatePayment({
+        amount: '100',                         // 1.00 DKK
+        currency: 'DKK',                       // Danish Krone
+        reference: `REF-${Date.now()}`,        // Unique reference
+        description: 'Test payment'            // Optional description
+      });
+    } catch (error) {
+      console.error('Payment failed:', error);
+      // Show error message to user
+    }
+  };
+
+  return (
+    <button 
+      onClick={handlePayment} 
+      disabled={!acountPay}
+      className="px-4 py-2 bg-green-800 text-white rounded-md"
+    >
+      Pay with AcountPay
+    </button>
+  );
+}
+```
 
 ## Payment Flow Overview
 When a payment is initiated:
 
-The SDK opens the payment flow UI (either in-page or in a new window)
-The customer selects their bank account
-The customer is redirected to their bank for authentication via MitID
-After successful authentication, the bank processes the payment
-The customer is redirected back to your redirect URI
-Your callback handler processes the payment result
+- The SDK opens the payment flow UI (either in-page or in a new window)
+- The customer selects their bank account
+- The customer is redirected to their bank for authentication via MitID
+- After successful authentication, the bank processes the payment
+- The customer is redirected back to your redirect URI
+- Your callback handler processes the payment result
 
 ## Handling Payment Results
 Set up a callback handler at your redirect URI:
-
 ```javascript
 // In your callback component/page
 import { AcountPay } from '@acountpay/sdk';
@@ -187,11 +160,35 @@ if (paymentResult.success) {
   console.error('Payment failed', paymentResult.error);
 }
 ```
-### Testing Payments
+
+##Testing Payments
 Use the sandbox environment for testing:
 
-Ensure REACT_APP_ACOUNTPAY_ENV=sandbox in your environment
-Use test bank accounts provided in your developer dashboard
-Test different scenarios (success, failure, cancellation)
+- Ensure REACT_APP_ACOUNTPAY_ENV=sandbox in your environment
+- Use small amounts like 100 (1 DKK) for test payments
+- Test different scenarios (success, failure, cancellation)
+- Payments are domestic only - Denmark uses DKK, other countries use their local currency
 
+## Error Handling
+Always implement proper error handling:
+```javascript
+try {
+  await acountPay.initiatePayment({
+    amount: '100',
+    currency: 'DKK',
+    reference: 'ORDER-123',
+  });
+} catch (error) {
+  if (error.code === 'payment_cancelled') {
+    // User cancelled the payment
+    console.log('Payment was cancelled by the user');
+  } else if (error.code === 'insufficient_funds') {
+    // Insufficient funds in the selected account
+    console.log('Insufficient funds in the selected account');
+  } else {
+    // Other error
+    console.error('Payment failed:', error.message);
+  }
+}
+```
 That's it! 🚀
