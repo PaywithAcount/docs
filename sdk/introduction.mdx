@@ -6,17 +6,32 @@ description: 'AcountPay SDK enables seamless account-to-account payments directl
 ## Key Features
 
 - **Direct Bank Account Payments**: Connect to customers' bank accounts securely via open banking
-- **MitID Authentication**: Seamless integration with Danish MitID for secure authentication
+- **MitID Authentication**: Secure authentication via the customer’s bank (MitID)
 - **Instant Transfers**: Real-time payment processing between bank accounts
-- **Multiple Account Support**: Let customers choose which account to pay from
+- **Multiple Account Support**: Customers select which account to pay from during the bank flow
 - **Mobile-Friendly Flow**: Optimized for both desktop and mobile experiences
 
 ## How It Works
 
-1. **Customer initiates payment** on your website/app
-2. **AcountPay presents a list of the customer's bank accounts** for selection
-3. **Customer authenticates** via their bank's MitID flow
-4. **Payment is processed instantly** from customer's account to merchant account
-5. **Transaction confirmation** is provided to both customer and merchant
+1. **Your app creates a payment** by calling the AcountPay SDK, which in turn calls your backend.
+2. **Your backend** creates the payment and returns a one-time link token URL.
+3. **The SDK redirects the browser** to a hosted SCA flow (Token.io) where the customer:
+   - Selects their bank and account
+   - Authenticates with MitID
+   - Confirms the payment
+4. **After completion**, the customer is redirected back to your app (per your backend/flow configuration), and both customer and merchant receive confirmation.
 
-Our SDK handles the entire payment flow, including bank authentication, account selection, and payment confirmation, while maintaining your website's branding.
+> Note
+> - The SDK performs a browser redirect to a hosted pages flow; it does not render an embedded payment UI or React components.
+> - Your backend must implement the documented endpoints the SDK calls to create payments and fetch a link token.
+
+## Next Steps
+
+- **Install**: npm i @acountpay/sdk  
+- **Setup**: Configure your build with `process.env.API_BASE_URL` for your backend origin.  
+- **Initialize a Payment**: Call [initiatePayment({ amount, referenceNumber })](cci:1://file:///Users/gustavjacobsen/Documents/GitHub/tailwind-react-test/token-sdk/src/index.ts:13:2-34:3) to begin the flow.
+
+See:
+- [Install the SDK](/sdk/install_sdk)
+- [Setup SDK](/sdk/setup_sdk)
+- [Initialize Payment](/sdk/initialize_payment)
