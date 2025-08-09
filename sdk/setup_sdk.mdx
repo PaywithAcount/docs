@@ -29,11 +29,21 @@ To use the SDK, you must first initialize the Acount class with a valid clientId
 
 ### Example Usage
 
-```typescript
-import Acount from "@acountpay/sdk";
+```javascript
+// Import the SDK
+import { AcountPayClient } from '@acountpay/sdk';
 
-const sdk = new Acount({
-  clientId: "your-client-id-here",
+// Initialize with your credentials
+const acountPay = new AcountPayClient({
+  clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID,
+  environment: process.env.REACT_APP_ACOUNTPAY_ENV || 'sandbox',
+  redirectUri: process.env.REACT_APP_ACOUNTPAY_REDIRECT_URI,
+  // Optional configuration
+  locale: 'da', // Default language ('da' for Danish, 'en' for English)
+  theme: {
+    primaryColor: '#166534', // green-800 in Tailwind
+    // Additional theming options
+  }
 });
 ```
 
@@ -48,6 +58,45 @@ try {
   console.error(error.message); // Output: "Client ID is required"
 }
 ```
+
+### React Component Setup
+If you're using React, you can use our provider component:
+
+
+```javascript
+import { AcountPayProvider } from '@acountpay/sdk/react';
+
+function App() {
+  return (
+    <AcountPayProvider
+      clientId={process.env.REACT_APP_ACOUNTPAY_CLIENT_ID}
+      environment={process.env.REACT_APP_ACOUNTPAY_ENV}
+      redirectUri={process.env.REACT_APP_ACOUNTPAY_REDIRECT_URI}
+    >
+      {/* Your application */}
+      <YourApp />
+    </AcountPayProvider>
+  );
+}
+```
+
+### Testing Your Setup
+To verify your setup is working:
+
+```javascript
+// Check connection status
+acountPay.checkConnection()
+  .then(status => {
+    console.log('AcountPay connection status:', status);
+  })
+  .catch(error => {
+    console.error('AcountPay connection error:', error);
+  });
+```
+
+
+
+
 
 ## Key Takeaways
 
