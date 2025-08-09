@@ -32,10 +32,12 @@ REACT_APP_ACOUNTPAY_REDIRECT_URI=https://your-domain.com/callback
 To use the SDK, you must first initialize the AcountPayClient with a valid clientId.
 
 Example Usage
-
+```react
 // Import the SDK
 import { AcountPayClient } from '@acountpay/sdk';
+```
 
+```react
 // Initialize with your credentials
 const acountPay = new AcountPayClient({
   clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID,
@@ -48,17 +50,20 @@ const acountPay = new AcountPayClient({
     // Additional theming options
   }
 });
+```
 
 ## Error Handling
 If an invalid or missing clientId is provided, the following error will be thrown:
+```react
 try {
   const acountPay = new AcountPayClient({ clientId: "" }); // Missing Client ID
 } catch (error) {
   console.error(error.message); // Output: "Client ID is required"
 }
-
+```
 ## React Component Setup
 If you're using React, you can use our provider component:
+```react
 
 import { AcountPayProvider } from '@acountpay/sdk/react';
 
@@ -74,9 +79,10 @@ function App() {
     </AcountPayProvider>
   );
 }
-
+```
 ## Testing Your Setup
 To verify your setup is working:
+```react
 // Check connection status
 acountPay.checkConnection()
   .then(status => {
@@ -85,7 +91,7 @@ acountPay.checkConnection()
   .catch(error => {
     console.error('AcountPay connection error:', error);
   });
-
+```
 Key Takeaways
 ✔ Ensures secure authentication using a Client ID
 ✔ Prevents accidental misconfiguration by requiring a valid Client ID
