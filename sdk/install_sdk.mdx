@@ -4,7 +4,7 @@ title: "Install the SDK"
 
 Before installing the SDK, ensure you have:
 
-- **An AcountPay account** – You’ll need your Client ID from the merchant dashboard
+- **An AcountPay account** – You'll need your Client ID from the merchant dashboard
 - **A supported environment** – JavaScript/TypeScript (browser or Node.js), React optional
 
 # Installing AcountPay SDK
@@ -15,7 +15,7 @@ Install via npm or yarn.
 
 - Node.js 16.x or higher (recommended)
 - Modern browser with ES6 support (for web apps)
-- React 16.8+ (only if you’re integrating in a React app)
+- React 16.8+ (only if you're integrating in a React app)
 
 ## Installation
 
@@ -24,9 +24,6 @@ Install using npm:
 ```bash
 npm i @acountpay/sdk
 ```
-
-
-
 
 Install the SDK using **yarn**:
 
@@ -42,7 +39,8 @@ The SDK includes:
 - ESM/CJS/UMD builds for broad compatibility
 
 ## Verify Installation
-ESM/CommonJS usage:
+
+### ESM/CommonJS usage:
 
 ```typescript
 // ES module (Vite, Next.js, etc.)
@@ -52,22 +50,61 @@ const sdk = new AcountPay({ clientId: '<YOUR_CLIENT_ID>' });
 console.log('AcountPay SDK loaded:', typeof AcountPay === 'function'); // should be true
 ```
 
-UMD (script tag) usage:
+### UMD (script tag) usage:
 
 ```html
 <script src="/node_modules/@acountpay/sdk/dist/acount.umd.js"></script>
 <script>
-  const sdk = new AcountPay({ clientId: '<YOUR_CLIENT_ID>' });
-  console.log('AcountPay SDK loaded:', typeof AcountPay === 'function'); // should be true
+  const sdk = new Acount({ clientId: '<YOUR_CLIENT_ID>' });
+  console.log('AcountPay SDK loaded:', typeof Acount === 'function'); // should be true
 </script>
 ```
 
-Note
+### CDN usage (recommended for quick testing):
 
-The SDK is configured at runtime (no baked-in API URLs). Set window.__ACOUNTPAY_API_URL__ in HTML or pass apiBaseUrl to the constructor.
-If your backend requires authentication, provide a bearer token at runtime.
+```html
+<script src="https://unpkg.com/@acountpay/sdk@1.0.2/dist/acount.umd.js"></script>
+<script>
+  const sdk = new Acount({ clientId: '<YOUR_CLIENT_ID>' });
+  console.log('AcountPay SDK loaded:', typeof Acount === 'function'); // should be true
+</script>
+```
 
-Next:
+## Important Notes
 
-Setup SDK
+- **UMD Global Constructor**: When using the UMD build, the global constructor is `Acount`, not `AcountPay`
+- **Runtime Configuration**: The SDK is configured at runtime (no baked-in API URLs). Set `window.__ACOUNTPAY_API_URL__` in HTML or pass `apiBaseUrl` to the constructor
+- **Authentication**: If your backend requires authentication, provide a bearer token at runtime
+- **Version Pinning**: For production use, pin to a specific version (e.g., `@1.0.2`) to avoid unexpected changes
 
+## Quick Start Example
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <script>
+    // Runtime configuration
+    window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-7886a9e16dc3.herokuapp.com';
+    window.__ACOUNTPAY_ENV__ = 'sandbox';
+  </script>
+  <script src="https://unpkg.com/@acountpay/sdk@1.0.2/dist/acount.umd.js"></script>
+</head>
+<body>
+  <button onclick="pay()">Pay with AcountPay</button>
+  <script>
+    const sdk = new Acount({ clientId: 'your-client-id' });
+    
+    async function pay() {
+      await sdk.initiateUserPaymentByEmail({
+        amount: 1,
+        requestId: 'PAY' + Date.now(),
+        callbackURL: 'https://your-callback-url.com'
+      });
+    }
+  </script>
+</body>
+</html>
+```
+
+Next: [Setup SDK](/sdk/setup_sdk)
