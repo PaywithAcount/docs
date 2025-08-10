@@ -7,7 +7,7 @@ Before making any method calls, initialize the SDK with your Client ID and confi
 
 ## Constructor
 
-Create an instance with your `clientId`. You can optionally pass `apiBaseUrl`, `authToken`, `env`, and other options.
+Create an instance with your clientId. You can optionally pass apiBaseUrl, authToken, env, and other options.
 
 ### ESM/CommonJS Usage
 
@@ -47,12 +47,12 @@ const sdk = new AcountPay({
 
 | Option | Type | Required | Description |
 |--------|------|----------|-------------|
-| `clientId` | string | Yes | Your AcountPay Client ID from the merchant dashboard |
-| `env` | string | No | Environment: 'sandbox' or 'production' (default: 'production') |
-| `apiBaseUrl` | string | No | API base URL (can also be set via runtime config) |
-| `redirectUri` | string | No | Default redirect URI for payments |
-| `authToken` | string | No | Bearer token for authentication |
-| `extraHeaders` | Record<string, string> | No | Additional headers to send with requests |
+| clientId | string | Yes | Your AcountPay Client ID from the merchant dashboard |
+| env | string | No | Environment: sandbox or production (default: production) |
+| apiBaseUrl | string | No | API base URL (can also be set via runtime config) |
+| redirectUri | string | No | Default redirect URI for payments |
+| authToken | string | No | Bearer token for authentication |
+| extraHeaders | Record<string, string> | No | Additional headers to send with requests |
 
 ## Runtime Configuration (Recommended)
 
@@ -164,26 +164,26 @@ export function PayButton() {
 
 ## Best Practices
 
-- **Environment Configuration**: Always set the `env` option to match your environment ('sandbox' or 'production')
-- **Runtime Configuration**: Use runtime configuration for API URLs to avoid rebuilds when switching environments
-- **Currency Units**: Use major currency units for amounts (e.g., 1 = 1 DKK)
-- **Whitelisting**: Ensure your app origin and callbackURL are whitelisted on your backend
-- **Authentication**: Provide a bearer token at runtime if your environment requires auth (do not hardcode secrets)
-- **Version Pinning**: Pin to specific SDK versions in production to avoid unexpected changes
-- **UMD vs ESM**: Use `Acount` constructor for UMD builds, `AcountPay` for ESM/CommonJS
+- Environment Configuration: Always set the env option to match your environment (sandbox or production)
+- Runtime Configuration: Use runtime configuration for API URLs to avoid rebuilds when switching environments
+- Currency Units: Use major currency units for amounts (e.g., 1 = 1 DKK)
+- Whitelisting: Ensure your app origin and callbackURL are whitelisted on your backend
+- Authentication: Provide a bearer token at runtime if your environment requires auth (do not hardcode secrets)
+- Version Pinning: Pin to specific SDK versions in production to avoid unexpected changes
+- UMD vs ESM: Use Acount constructor for UMD builds, AcountPay for ESM/CommonJS
 
 ## Troubleshooting
 
 ### "AcountPay is not defined" Error
-- **Cause**: Using `AcountPay` instead of `Acount` with UMD build
-- **Solution**: Use `new Acount({ clientId: '...' })` for UMD builds
+- Cause: Using AcountPay instead of Acount with UMD build
+- Solution: Use new Acount({ clientId: '...' }) for UMD builds
 
 ### Environment Issues
-- **Cause**: Missing environment configuration
-- **Solution**: Set `env: 'sandbox'` or `env: 'production'` in SDK initialization
+- Cause: Missing environment configuration
+- Solution: Set env: 'sandbox' or env: 'production' in SDK initialization
 
 ### API URL Issues
-- **Cause**: Missing or incorrect API base URL
-- **Solution**: Set `window.__ACOUNTPAY_API_URL__` or pass `apiBaseUrl` to constructor
+- Cause: Missing or incorrect API base URL
+- Solution: Set window.__ACOUNTPAY_API_URL__ or pass apiBaseUrl to constructor
 
 Next: [Initialize Payment](/sdk/initialize_payment)
