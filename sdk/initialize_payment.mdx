@@ -38,8 +38,15 @@ await sdk.initiateUserPaymentByEmail({
 Endpoint called by the SDK:
 
 POST {BASE}/sdk/users/{clientId}/payment-request
-Body: { amount, requestId, callbackURL }
-Success response should include: { redirectTo: "<URL>" } (SDK redirects the browser)
+Body: 
+```json
+{ amount, requestId, callbackURL }
+```
+Success response should include: 
+```json
+{ redirectTo: "<URL>" } 
+```
+(SDK redirects the browser)
 
 React Example
 
