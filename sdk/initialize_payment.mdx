@@ -247,3 +247,18 @@ After the user returns to your `callbackURL`:
 ### Environment Issues
 - **Cause**: Missing or incorrect environment configuration
 - **Solution**: Set `env: 'sandbox'` or `env: 'production'` in SDK initialization
+
+## Error Handling
+Common HTTP status codes and their meanings:
+
+| Status | Meaning | Common Causes |
+| ------ | ------- | ------------- |
+| 400    | Bad Request | Invalid parameters, missing required fields |
+| 401    | Unauthorized | Invalid client ID or missing authentication |
+| 403    | Forbidden | Insufficient permissions or blocked origin |
+| 500    | Server Error | Internal server error, try again later |
+
+## Troubleshooting Common Issues
+- **400 Bad Request**: Check that all required parameters are provided and correctly formatted
+- **CORS Errors**: Ensure your domain is whitelisted on the backend
+- **Callback URL Issues**: Verify the URL is accessible and properly formatted
