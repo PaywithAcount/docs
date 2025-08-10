@@ -47,4 +47,38 @@ const sdk = new AcountPay({
 | authToken | string | No | Bearer token for authentication |
 | extraHeaders | object | No | Additional headers to send with requests |
 
+## Runtime Configuration (Recommended)
+
+Set the API base URL and environment at runtime to avoid rebuilds and switch environments easily.
+
+### HTML Runtime Configuration
+
+```html
+<script>
+  window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-7886a9e16dc3.herokuapp.com';
+  window.__ACOUNTPAY_ENV__ = 'sandbox';
+</script>
+```
+
+The SDK will automatically use these runtime values when present. You can still override them via the constructor options.
+
+### Environment Variables (React Example)
+
+```bash
+REACT_APP_ACOUNTPAY_CLIENT_ID=your-client-id
+REACT_APP_ACOUNTPAY_ENV=sandbox
+REACT_APP_ACOUNTPAY_REDIRECT_URI=https://www.acountpay.com//payment-callback
+```
+
+Usage in React:
+
+```javascript
+import AcountPay from '@acountpay/sdk';
+
+const sdk = new AcountPay({
+  clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID,
+  env: process.env.REACT_APP_ACOUNTPAY_ENV || 'production',
+});
+```
+
 Next: [Initialize Payment](/sdk/initialize_payment)
