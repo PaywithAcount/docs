@@ -3,5 +3,21 @@ title: "Setup SDK"
 description: "Configure the AcountPay SDK with your merchant credentials"
 ---
 
-This is a simple test to see if the MDX parser works.
+Before making any method calls, initialize the SDK with your Client ID and configure the API base URL at runtime.
 
+## Constructor
+
+Create an instance with your clientId. You can optionally pass apiBaseUrl, authToken, env, and other options.
+
+### ESM/CommonJS Usage
+
+```javascript
+import AcountPay from '@acountpay/sdk';
+
+const sdk = new AcountPay({
+  clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID,
+  env: process.env.REACT_APP_ACOUNTPAY_ENV || 'production',
+});
+```
+
+Next: [Initialize Payment](/sdk/initialize_payment)
