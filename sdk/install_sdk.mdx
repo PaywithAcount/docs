@@ -4,46 +4,70 @@ title: "Install the SDK"
 
 Before installing the SDK, ensure you have:
 
-- **An account** – You will need a client id found in the merchant dashboard
-- **A supported programming environment** – (e.g., Node.js, JavaScript)
+- **An AcountPay account** – You’ll need your Client ID from the merchant dashboard
+- **A supported environment** – JavaScript/TypeScript (browser or Node.js), React optional
 
 # Installing AcountPay SDK
 
-AcountPay SDK can be installed via npm or yarn.
+Install via npm or yarn.
 
 ## Prerequisites
 
-- Node.js 14.x or higher
-- React 16.8+ (for React implementation)
-- A modern browser supporting ES6
+- Node.js 16.x or higher (recommended)
+- Modern browser with ES6 support (for web apps)
+- React 16.8+ (only if you’re integrating in a React app)
 
 ## Installation
 
-Install the SDK using **npm**:
+Install using npm:
 
-```javascript 
+```bash
 npm i @acountpay/sdk
 ```
 
+
+
+
 Install the SDK using **yarn**:
 
-```javascript
+```bash
 yarn add @acountpay/sdk
 ```
 
 ## Package Contents
 The SDK includes:
 
-- Core payment functionality
-- React components for easy integration
-- TypeScript definitions for better development experience
+- Core user payment flow utilities (no embedded UI/components)
+- TypeScript definitions for editor IntelliSense and types
+- ESM/CJS/UMD builds for broad compatibility
 
 ## Verify Installation
-After installation, you can verify the SDK is properly installed:
+ESM/CommonJS usage:
 
-```javascript
-// ES6 import
-import { AcountPay } from '@acountpay/sdk';
-// Verify SDK version
-console.log(AcountPay.version);
+```typescript
+// ES module (Vite, Next.js, etc.)
+import AcountPay from '@acountpay/sdk';
+
+const sdk = new AcountPay({ clientId: '<YOUR_CLIENT_ID>' });
+console.log('AcountPay SDK loaded:', typeof AcountPay === 'function'); // should be true
 ```
+
+UMD (script tag) usage:
+
+```html
+<script src="/node_modules/@acountpay/sdk/dist/acount.umd.js"></script>
+<script>
+  const sdk = new AcountPay({ clientId: '<YOUR_CLIENT_ID>' });
+  console.log('AcountPay SDK loaded:', typeof AcountPay === 'function'); // should be true
+</script>
+```
+
+Note
+
+The SDK is configured at runtime (no baked-in API URLs). Set window.__ACOUNTPAY_API_URL__ in HTML or pass apiBaseUrl to the constructor.
+If your backend requires authentication, provide a bearer token at runtime.
+
+Next:
+
+Setup SDK
+
