@@ -81,4 +81,69 @@ const sdk = new AcountPay({
 });
 ```
 
+## Complete Setup Examples
+
+### Simple HTML Page
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <script>
+    window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-7886a9e16dc3.herokuapp.com';
+    window.__ACOUNTPAY_ENV__ = 'sandbox';
+  </script>
+  <script src="https://unpkg.com/@acountpay/sdk@1.0.2/dist/acount.umd.js"></script>
+</head>
+<body>
+  <button onclick="pay()">Pay with AcountPay</button>
+  <script>
+    const sdk = new Acount({ 
+      clientId: 'your-client-id',
+      env: 'sandbox'
+    });
+    
+    async function pay() {
+      await sdk.initiateUserPaymentByEmail({
+        amount: 1,
+        requestId: 'PAY' + Date.now(),
+        callbackURL: 'https://your-callback-url.com'
+      });
+    }
+  </script>
+</body>
+</html>
+```
+
+### React Component
+
+```javascript
+import { useEffect, useState } from 'react';
+import AcountPay from '@acountpay/sdk';
+
+export function PayButton() {
+  const [sdk, setSdk] = useState(null);
+
+  useEffect(() => {
+    const acountSdk = new AcountPay({
+      clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID,
+      env: process.env.REACT_APP_ACOUNTPAY_ENV || 'production',
+    });
+    setSdk(acountSdk);
+  }, []);
+
+  const handlePay = async () => {
+    if (!sdk) return;
+    
+    await sdk.initiateUserPaymentByEmail({
+      amount: 1,
+      requestId: 'PAY' + Date.now(),
+      callbackURL: process.env.REACT_APP_ACOUNTPAY_REDIRECT_URI,
+    });
+  };
+
+  return <button onClick={handlePay}>Pay with AcountPay</button>;
+}
+```
+
 Next: [Initialize Payment](/sdk/initialize_payment)
