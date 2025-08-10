@@ -1,194 +1,90 @@
 ---
 title: "Initialize Payment"
-description: "Accept payments using the AcountPay SDK"
+description: "Start the user payment flow via the AcountPay SDK (redirects to user.acountpay.com to link IBAN)"
 ---
 
-After setting up the SDK, you can initialize a payment flow to accept payments directly from your customers' bank accounts.
+After setting up the SDK, you can start the user-first flow. This redirects the customer to the AcountPay user portal to securely link IBAN and consent to payment, then returns them to your app.
 
-## Basic Payment Flow
+## Basic User Flow
 
-```javascript
-// Create payment request
-acountPay.initiatePayment({
-  amount: '499.95',         // Payment amount
-  currency: 'DKK',          // Currency code
-  reference: 'ORDER-123',   // Your internal reference
-  description: 'Payment for Order #123', // Description shown to customer
-})
-.then(response => {
-  // Handle successful payment initialization
-  console.log('Payment initialized:', response);
-  // response.id contains the payment ID you can use for status checks
-})
-.catch(error => {
-  // Handle errors
-  console.error('Payment initialization failed:', error);
+```ts
+import AcountPay from '@acountpay/sdk';
+
+const sdk = new AcountPay({
+  clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID!,
+  // Optionally pass apiBaseUrl here, or set window.__ACOUNTPAY_API_URL__ in HTML
+  // apiBaseUrl: '[https://acount-apis-7886a9e16dc3.herokuapp.com](https://acount-apis-7886a9e16dc3.herokuapp.com)',
 });
-```
+
+localStorage.setItem('paymentType', 'user'); // optional tag used by demos
+
+await sdk.initiateUserPaymentByEmail({
+  amount: 1, // major units (1 = 1 DKK)
+  requestId: 'PAY' + String(Math.random()).split('.')[1].slice(0, 6),
+  callbackURL: process.env.REACT_APP_ACOUNTPAY_REDIRECT_URI!,
+  // authToken: '<Bearer token>' // optional if your backend requires it
+});
+
 
 ## Parameters
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `amount` | `number` | ✅ Yes | Payment amount in smallest currency unit (øre for DKK, cents for EUR) |
-| `referenceNumber` | `string` | ✅ Yes | Unique identifier for the payment |
-| `onSuccess` | `function` | ✅ Yes | Called when payment completes: `(status: { success: true }) => void` |
+| `amount` | `number` | ✅ Yes | Payment amount in major currency units (e.g., 1 = 1 DKK) |
+| `requestId` | `string` | ✅ Yes | Unique request identifier (e.g., PAY123456) |
+| `callbackURL` | `string` | ✅ Yes | URL the user is returned to after the portal flow |
+| `authToken` | `string` | No | Bearer token if your backend enforces authentication for this endpoint |
 
-## React Integration
-If you're using React, you can use our hooks and components:
-```javascript
-import React from 'react';
-import { useAcountPay, PaymentButton } from '@acountpay/sdk/react';
+Endpoint called by the SDK:
 
-function CheckoutComponent() {
-  const { initiatePayment } = useAcountPay();
-  
-  const handlePayment = async () => {
-    try {
-      const result = await initiatePayment({
-        amount: '499.95',
-        currency: 'DKK',
-        reference: 'ORDER-123',
-        description: 'Payment for Order #123',
-      });
-      
-      // Handle successful payment
-      console.log('Payment successful', result);
-    } catch (error) {
-      // Handle payment error
-      console.error('Payment failed', error);
-    }
-  };
-  
-  return (
-    <div>
-      {/* Option 1: Use the built-in payment button */}
-      <PaymentButton
-        amount="499.95"
-        currency="DKK"
-        reference="ORDER-123"
-        description="Payment for Order #123"
-        onSuccess={result => console.log('Payment successful', result)}
-        onError={error => console.error('Payment failed', error)}
-      >
-        Pay with AcountPay
-      </PaymentButton>
-      
-      {/* Option 2: Use your own button with the hook */}
-      <button 
-        onClick={handlePayment}
-        className="inline-flex items-center px-4 py-2 bg-green-800 rounded-md text-white hover:bg-green-900 transition-colors"
-      >
-        Pay with AcountPay
-      </button>
-    </div>
-  );
-}
-```
-Complete Example
-Here's a complete example using React:
-```javascript
-import React, { useState, useEffect } from "react";
-import { AcountPayClient } from '@acountpay/sdk';
+POST {BASE}/sdk/users/{clientId}/payment-request
+Body: { amount, requestId, callbackURL }
+Success response should include: { redirectTo: "<URL>" } (SDK redirects the browser)
 
-export default function App() {
-  const [acountPay, setAcountPay] = useState(null);
+React Example
 
-  useEffect(() => {
-    const sdk = new AcountPayClient({
-      clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID,
-      environment: process.env.REACT_APP_ACOUNTPAY_ENV || 'sandbox',
-      redirectUri: process.env.REACT_APP_ACOUNTPAY_REDIRECT_URI
+```typescript
+import AcountPay from '@acountpay/sdk';
+
+export function PayButton() {
+  const handlePay = async () => {
+    const sdk = new AcountPay({ clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID! });
+    localStorage.setItem('paymentType', 'user');
+    await sdk.initiateUserPaymentByEmail({
+      amount: 1,
+      requestId: 'PAY' + String(Math.random()).split('.')[1].slice(0, 6),
+      callbackURL: process.env.REACT_APP_ACOUNTPAY_REDIRECT_URI!,
     });
-    setAcountPay(sdk);
-  }, []);
-
-  const handlePayment = async () => {
-    if (!acountPay) return;
-    
-    try {
-      await acountPay.initiatePayment({
-        amount: '100',                         // 1.00 DKK
-        currency: 'DKK',                       // Danish Krone
-        reference: `REF-${Date.now()}`,        // Unique reference
-        description: 'Test payment'            // Optional description
-      });
-    } catch (error) {
-      console.error('Payment failed:', error);
-      // Show error message to user
-    }
   };
 
-  return (
-    <button 
-      onClick={handlePayment} 
-      disabled={!acountPay}
-      className="px-4 py-2 bg-green-800 text-white rounded-md"
-    >
-      Pay with AcountPay
-    </button>
-  );
+  return <button onClick={handlePay}>Pay with AcountPay</button>;
 }
 ```
 
-## Payment Flow Overview
-When a payment is initiated:
+Flow Overview
 
-- The SDK opens the payment flow UI (either in-page or in a new window)
-- The customer selects their bank account
-- The customer is redirected to their bank for authentication via MitID
-- After successful authentication, the bank processes the payment
-- The customer is redirected back to your redirect URI
-- Your callback handler processes the payment result
+The SDK requests a user payment from your backend.
+Backend returns a redirectTo URL for the AcountPay user portal.
+The browser is redirected to the portal:
+User links IBAN to their account.
+User authenticates and consents.
+User is redirected back to your callbackURL.
 
-## Handling Payment Results
-Set up a callback handler at your redirect URI:
-```javascript
-// In your callback component/page
-import { AcountPay } from '@acountpay/sdk';
+Note
 
-// Parse the payment result from the URL
-const paymentResult = AcountPay.parsePaymentResult(window.location.search);
+Ensure your app origin and callbackURL are whitelisted in your backend.
+Amounts are major units (e.g., 1 = 1 DKK).
+Provide a bearer token if your environment requires authentication.
 
-if (paymentResult.success) {
-  // Payment was successful
-  console.log('Payment successful', paymentResult);
-  // paymentResult.transactionId contains the transaction ID
-  // paymentResult.reference contains your original reference
-} else {
-  // Payment failed
-  console.error('Payment failed', paymentResult.error);
-}
-```
+Handling Results
 
-##Testing Payments
-Use the sandbox environment for testing:
+After the user returns to your callbackURL:
+Verify the payment state using your backend (recommended).
+Optionally parse any query params your backend attaches to the redirect.
+Display success/failure to the user based on your backend’s confirmation.
 
-- Ensure REACT_APP_ACOUNTPAY_ENV=sandbox in your environment
-- Use small amounts like 100 (1 DKK) for test payments
-- Test different scenarios (success, failure, cancellation)
-- Payments are domestic only - Denmark uses DKK, other countries use their local currency
+Troubleshooting
 
-## Error Handling
-Always implement proper error handling:
-```javascript
-try {
-  await acountPay.initiatePayment({
-    amount: '100',
-    currency: 'DKK',
-    reference: 'ORDER-123',
-  });
-} catch (error) {
-  if (error.code === 'payment_cancelled') {
-    // User cancelled the payment
-    console.log('Payment was cancelled by the user');
-  } else if (error.code === 'insufficient_funds') {
-    // Insufficient funds in the selected account
-    console.log('Insufficient funds in the selected account');
-  } else {
-    // Other error
-    console.error('Payment failed:', error.message);
-  }
-}
-```
-That's it! 🚀
+400 Bad Request: Check clientId, callbackURL, and amount units.
+403 Forbidden: Likely missing/invalid Authorization token or disallowed client/origin.
+No redirect: Ensure your backend returns { redirectTo } for the request.
