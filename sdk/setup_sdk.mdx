@@ -3,98 +3,73 @@ title: "Setup SDK"
 description: "Configure the AcountPay SDK with your merchant credentials"
 ---
 
-Before making any method calls, you must initialize the SDK with your account credentials.
+Before making any method calls, initialize the SDK with your Client ID and configure the API base URL at runtime.
 
-The AcountPayClient class is responsible for initializing the SDK with authentication credentials. It requires a Client ID to be provided during instantiation, ensuring that all subsequent API requests are authenticated.
+## Constructor
 
-## Constructor Parameters
+Create an instance with your `clientId`. You can optionally pass `apiBaseUrl`, `authToken`, and other options.
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `clientId` | `string` | ✅ Yes | The unique Client ID found in your merchant dashboard |
-| `environment` | `string` | ✅ Yes | Either `'sandbox'` (testing) or `'production'` (live) |
-| `redirectUri` | `string` | ✅ Yes | The URI where users will be redirected after authentication |
-| `locale` | `string` | ❌ No | Language preference (`'da'` or `'en'`, defaults to `'da'`) |
-| `theme` | `object` | ❌ No | UI customization options |
+```ts
+import AcountPay from '@acountpay/sdk';
 
-## Environment Variables
+const sdk = new AcountPay({
+  clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID!,
+  // Option A: pass base URL here
+  // apiBaseUrl: '[https://acount-apis-7886a9e16dc3.herokuapp.com](https://acount-apis-7886a9e16dc3.herokuapp.com)',
+  // Optional (if backend requires auth):
+  // authToken: '<Bearer token>',
+  // extraHeaders: { 'X-Trace-Id': '...' },
+});
 
-The following environment variables are recommended for your `.env` file:
+Supported options:
+
+clientId: string (required)
+apiBaseUrl?: string (recommended; see Runtime Config)
+env?: string (optional)
+redirectUri?: string (optional)
+authToken?: string (optional; sends Authorization: Bearer )
+extraHeaders?: Record<string, string> (optional; appended to requests)
+
+## Runtime configuration (recommended)
+Set the API base URL at runtime to avoid rebuilds.
+
+```html
+<!-- public/index.html -->
+<script>
+  window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-7886a9e16dc3.herokuapp.com';
+  // Optional: provide bearer token if your backend requires auth
+  // window.__ACOUNTPAY_AUTH_TOKEN__ = '<Bearer token>';
+</script>
+```
+
+The SDK will automatically use window.__ACOUNTPAY_API_URL__ when present. You can still override it via the constructor apiBaseUrl.
+
+Environment variables (React example)
 
 ```bash
-# .env file
-REACT_APP_ACOUNTPAY_CLIENT_ID=your-client-id-here
+# .env
+REACT_APP_ACOUNTPAY_CLIENT_ID=your-client-id
+REACT_APP_ACOUNTPAY_REDIRECT_URI=https://www.acountpay.com//payment-callback
+# Optional
 REACT_APP_ACOUNTPAY_ENV=sandbox
-REACT_APP_ACOUNTPAY_REDIRECT_URI=https://your-domain.com/callback
 ```
 
-## How to Initialize the SDK
-To use the SDK, you must first initialize the AcountPayClient with a valid clientId.
+Usage in React:
+```typescript
+import AcountPay from '@acountpay/sdk';
 
-Example Usage
-```react
-// Import the SDK
-import { AcountPayClient } from '@acountpay/sdk';
-```
-
-```react
-// Initialize with your credentials
-const acountPay = new AcountPayClient({
-  clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID,
-  environment: process.env.REACT_APP_ACOUNTPAY_ENV || 'sandbox',
-  redirectUri: process.env.REACT_APP_ACOUNTPAY_REDIRECT_URI,
-  // Optional configuration
-  locale: 'da', // Default language ('da' for Danish, 'en' for English)
-  theme: {
-    primaryColor: '#166534', // green-800 in Tailwind
-    // Additional theming options
-  }
+const sdk = new AcountPay({
+  clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID!,
 });
 ```
 
-## Error Handling
-If an invalid or missing clientId is provided, the following error will be thrown:
-```react
-try {
-  const acountPay = new AcountPayClient({ clientId: "" }); // Missing Client ID
-} catch (error) {
-  console.error(error.message); // Output: "Client ID is required"
-}
-```
-## React Component Setup
-If you're using React, you can use our provider component:
-```react
+## Best practices
+Use major currency units for amount (e.g., 1 = 1 DKK).
+Ensure your app origin and callbackURL are whitelisted on your backend.
+Provide a bearer token at runtime if your environment requires auth (do not hardcode secrets).
+Prefer runtime base URL configuration to switch environments without rebuilding.
 
-import { AcountPayProvider } from '@acountpay/sdk/react';
+Next:
 
-function App() {
-  return (
-    <AcountPayProvider
-      clientId={process.env.REACT_APP_ACOUNTPAY_CLIENT_ID}
-      environment={process.env.REACT_APP_ACOUNTPAY_ENV}
-      redirectUri={process.env.REACT_APP_ACOUNTPAY_REDIRECT_URI}
-    >
-      {/* Your application */}
-      <YourApp />
-    </AcountPayProvider>
-  );
-}
-```
-## Testing Your Setup
-To verify your setup is working:
-```react
-// Check connection status
-acountPay.checkConnection()
-  .then(status => {
-    console.log('AcountPay connection status:', status);
-  })
-  .catch(error => {
-    console.error('AcountPay connection error:', error);
-  });
-```
-Key Takeaways
-✔ Ensures secure authentication using a Client ID
-✔ Prevents accidental misconfiguration by requiring a valid Client ID
-✔ Easy integration with just one line of initialization
+Initialize Payment
 
-The AcountPayClient class serves as the foundation for all SDK operations, ensuring that every API request is authenticated. 🚀
