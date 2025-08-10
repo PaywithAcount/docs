@@ -7,7 +7,7 @@ After setting up the SDK, you can start the user-first flow. This redirects the 
 
 ## Basic User Flow
 
-```ts
+```typescript
 import AcountPay from '@acountpay/sdk';
 
 const sdk = new AcountPay({
@@ -24,7 +24,7 @@ await sdk.initiateUserPaymentByEmail({
   callbackURL: process.env.REACT_APP_ACOUNTPAY_REDIRECT_URI!,
   // authToken: '<Bearer token>' // optional if your backend requires it
 });
-
+```
 
 ## Parameters
 
