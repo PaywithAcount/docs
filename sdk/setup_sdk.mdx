@@ -42,10 +42,16 @@ const sdk = new AcountPay({
 |--------|------|----------|-------------|
 | clientId | string | Yes | Your AcountPay Client ID from the merchant dashboard |
 | env | string | No | Environment: sandbox or production (default: production) |
-| apiBaseUrl | string | No | API base URL (can also be set via runtime config) |
+| apiBaseUrl | string | No | API base URL ('https://acount-apis-7886a9e16dc3.herokuapp.com') |
 | redirectUri | string | No | Default redirect URI for payments |
 | authToken | string | No | Bearer token for authentication |
 | extraHeaders | object | No | Additional headers to send with requests |
+
+## Callback URL Requirements
+- Must be a valid HTTPS URL (except for localhost during development)
+- Should be accessible from the user's browser
+- Recommended format: `https://yourdomain.com/payment-callback`
+- Avoid using localhost URLs in production
 
 ## Runtime Configuration (Recommended)
 
