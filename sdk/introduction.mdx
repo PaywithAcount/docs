@@ -3,7 +3,7 @@ title: 'Introduction'
 description: 'AcountPay SDK enables seamless account-to-account payments via a user-first flow. Customers are redirected to the AcountPay user portal (user.acountpay.com) to securely link their IBAN before payment.'
 ---
 
-## Key Features
+Key Features
 
 - **User-First Flow**: Redirects customers to the AcountPay user portal to securely link IBAN
 - **Bank-Grade Auth (e.g., MitID)**: Authentication and consent handled by the customer’s bank
@@ -11,7 +11,7 @@ description: 'AcountPay SDK enables seamless account-to-account payments via a u
 - **Runtime Configuration**: No baked-in API URLs; configure at runtime
 - **TypeScript Support**: Includes type definitions and ESM/CJS/UMD builds
 
-## How It Works
+How It Works
 
 1. **Your app calls the SDK** to initiate a user payment flow.
 2. **SDK calls your backend**: `POST {BASE}/sdk/users/{clientId}/payment-request` with `{ amount, requestId, callbackURL }`.
@@ -26,7 +26,7 @@ description: 'AcountPay SDK enables seamless account-to-account payments via a u
 > - Ensure your app’s origin and `callbackURL` are whitelisted on your backend.
 > - Amounts are in major units (e.g., `1` = 1 DKK).
 
-## Next Steps
+Next Steps
 
 - **Install**: `npm i @acountpay/sdk`  
 - **Setup**: Configure the SDK at runtime (e.g., set `window.__ACOUNTPAY_API_URL__` or pass `apiBaseUrl` to the constructor).  
