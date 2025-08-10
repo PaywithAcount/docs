@@ -47,12 +47,12 @@ const sdk = new AcountPay({
 
 | Option | Type | Required | Description |
 |--------|------|----------|-------------|
-| `clientId` | string | ✅ Yes | Your AcountPay Client ID from the merchant dashboard |
-| `env` | string | ❌ No | Environment: `'sandbox'` or `'production'` (default: `'production'`) |
-| `apiBaseUrl` | string | ❌ No | API base URL (can also be set via runtime config) |
-| `redirectUri` | string | ❌ No | Default redirect URI for payments |
-| `authToken` | string | ❌ No | Bearer token for authentication |
-| `extraHeaders` | Record<string, string> | ❌ No | Additional headers to send with requests |
+| `clientId` | string | Yes | Your AcountPay Client ID from the merchant dashboard |
+| `env` | string | No | Environment: 'sandbox' or 'production' (default: 'production') |
+| `apiBaseUrl` | string | No | API base URL (can also be set via runtime config) |
+| `redirectUri` | string | No | Default redirect URI for payments |
+| `authToken` | string | No | Bearer token for authentication |
+| `extraHeaders` | Record<string, string> | No | Additional headers to send with requests |
 
 ## Runtime Configuration (Recommended)
 
@@ -164,9 +164,9 @@ export function PayButton() {
 
 ## Best Practices
 
-- **Environment Configuration**: Always set the `env` option to match your environment (`'sandbox'` or `'production'`)
+- **Environment Configuration**: Always set the `env` option to match your environment ('sandbox' or 'production')
 - **Runtime Configuration**: Use runtime configuration for API URLs to avoid rebuilds when switching environments
-- **Currency Units**: Use major currency units for amounts (e.g., `1` = 1 DKK)
+- **Currency Units**: Use major currency units for amounts (e.g., 1 = 1 DKK)
 - **Whitelisting**: Ensure your app origin and callbackURL are whitelisted on your backend
 - **Authentication**: Provide a bearer token at runtime if your environment requires auth (do not hardcode secrets)
 - **Version Pinning**: Pin to specific SDK versions in production to avoid unexpected changes
