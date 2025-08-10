@@ -17,11 +17,6 @@ import AcountPay from '@acountpay/sdk';
 const sdk = new AcountPay({
   clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID!,
   env: process.env.REACT_APP_ACOUNTPAY_ENV || 'production',
-  // Option A: pass base URL here
-  // apiBaseUrl: 'https://acount-apis-7886a9e16dc3.herokuapp.com',
-  // Optional (if backend requires auth):
-  // authToken: '<Bearer token>',
-  // extraHeaders: { 'X-Trace-Id': '...' },
 });
 ```
 
@@ -29,13 +24,11 @@ const sdk = new AcountPay({
 
 ```html
 <script>
-  // Runtime configuration (set before loading SDK)
   window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-7886a9e16dc3.herokuapp.com';
   window.__ACOUNTPAY_ENV__ = 'sandbox';
 </script>
 <script src="https://unpkg.com/@acountpay/sdk@1.0.2/dist/acount.umd.js"></script>
 <script>
-  // IMPORTANT: Global is "Acount" in UMD, not "AcountPay"
   const sdk = new Acount({
     clientId: 'your-client-id',
     env: 'sandbox'
@@ -45,14 +38,12 @@ const sdk = new AcountPay({
 
 ### Supported Options
 
-| Option | Type | Required | Description |
-|--------|------|----------|-------------|
-| clientId | string | Yes | Your AcountPay Client ID from the merchant dashboard |
-| env | string | No | Environment: sandbox or production (default: production) |
-| apiBaseUrl | string | No | API base URL (can also be set via runtime config) |
-| redirectUri | string | No | Default redirect URI for payments |
-| authToken | string | No | Bearer token for authentication |
-| extraHeaders | Record<string, string> | No | Additional headers to send with requests |
+- clientId (string, required): Your AcountPay Client ID from the merchant dashboard
+- env (string, optional): Environment: sandbox or production (default: production)
+- apiBaseUrl (string, optional): API base URL (can also be set via runtime config)
+- redirectUri (string, optional): Default redirect URI for payments
+- authToken (string, optional): Bearer token for authentication
+- extraHeaders (Record<string, string>, optional): Additional headers to send with requests
 
 ## Runtime Configuration (Recommended)
 
@@ -61,16 +52,9 @@ Set the API base URL and environment at runtime to avoid rebuilds and switch env
 ### HTML Runtime Configuration
 
 ```html
-<!-- public/index.html -->
 <script>
-  // Required: API base URL
   window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-7886a9e16dc3.herokuapp.com';
-  
-  // Optional: Environment
   window.__ACOUNTPAY_ENV__ = 'sandbox';
-  
-  // Optional: Bearer token if your backend requires auth
-  // window.__ACOUNTPAY_AUTH_TOKEN__ = '<Bearer token>';
 </script>
 ```
 
@@ -79,7 +63,6 @@ The SDK will automatically use these runtime values when present. You can still 
 ### Environment Variables (React Example)
 
 ```bash
-# .env
 REACT_APP_ACOUNTPAY_CLIENT_ID=your-client-id
 REACT_APP_ACOUNTPAY_ENV=sandbox
 REACT_APP_ACOUNTPAY_REDIRECT_URI=https://www.acountpay.com//payment-callback
@@ -105,7 +88,6 @@ const sdk = new AcountPay({
 <html>
 <head>
   <script>
-    // Runtime configuration
     window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-7886a9e16dc3.herokuapp.com';
     window.__ACOUNTPAY_ENV__ = 'sandbox';
   </script>
