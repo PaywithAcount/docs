@@ -7,13 +7,16 @@ After setting up the SDK, you can start the user-first flow. This redirects the 
 
 ## Basic User Flow
 
+### ESM/CommonJS Usage
+
 ```typescript
 import AcountPay from '@acountpay/sdk';
 
 const sdk = new AcountPay({
   clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID!,
+  env: process.env.REACT_APP_ACOUNTPAY_ENV || 'production',
   // Optionally pass apiBaseUrl here, or set window.__ACOUNTPAY_API_URL__ in HTML
-  // apiBaseUrl: '[https://acount-apis-7886a9e16dc3.herokuapp.com](https://acount-apis-7886a9e16dc3.herokuapp.com)',
+  // apiBaseUrl: 'https://acount-apis-7886a9e16dc3.herokuapp.com',
 });
 
 localStorage.setItem('paymentType', 'user'); // optional tag used by demos
@@ -26,6 +29,33 @@ await sdk.initiateUserPaymentByEmail({
 });
 ```
 
+### UMD Usage
+
+```html
+<script>
+  // Runtime configuration
+  window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-7886a9e16dc3.herokuapp.com';
+  window.__ACOUNTPAY_ENV__ = 'sandbox';
+</script>
+<script src="https://unpkg.com/@acountpay/sdk@1.0.2/dist/acount.umd.js"></script>
+<script>
+  // IMPORTANT: Global is "Acount" in UMD, not "AcountPay"
+  const sdk = new Acount({ 
+    clientId: 'your-client-id',
+    env: 'sandbox'
+  });
+
+  async function pay() {
+    localStorage.setItem('paymentType', 'user');
+    await sdk.initiateUserPaymentByEmail({
+      amount: 1,
+      requestId: 'PAY' + Date.now(),
+      callbackURL: 'https://your-callback-url.com'
+    });
+  }
+</script>
+```
+
 ## Parameters
 
 | Parameter | Type | Required | Description |
@@ -33,65 +63,187 @@ await sdk.initiateUserPaymentByEmail({
 | `amount` | `number` | ✅ Yes | Payment amount in major currency units (e.g., 1 = 1 DKK) |
 | `requestId` | `string` | ✅ Yes | Unique request identifier (e.g., PAY123456) |
 | `callbackURL` | `string` | ✅ Yes | URL the user is returned to after the portal flow |
-| `authToken` | `string` | No | Bearer token if your backend enforces authentication for this endpoint |
+| `authToken` | `string` | ❌ No | Bearer token if your backend enforces authentication for this endpoint |
 
-Endpoint called by the SDK:
+## API Endpoint
+
+The SDK calls your backend endpoint:
 
 POST {BASE}/sdk/users/{clientId}/payment-request
-Body: 
+
+**Request Body:**
 ```json
-{ amount, requestId, callbackURL }
-```
-Success response should include: 
-```json
-{ redirectTo: "<URL>" } 
-```
-(SDK redirects the browser)
-
-React Example
-
-```typescript
-import AcountPay from '@acountpay/sdk';
-
-export function PayButton() {
-  const handlePay = async () => {
-    const sdk = new AcountPay({ clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID! });
-    localStorage.setItem('paymentType', 'user');
-    await sdk.initiateUserPaymentByEmail({
-      amount: 1,
-      requestId: 'PAY' + String(Math.random()).split('.')[1].slice(0, 6),
-      callbackURL: process.env.REACT_APP_ACOUNTPAY_REDIRECT_URI!,
-    });
-  };
-
-  return <button onClick={handlePay}>Pay with AcountPay</button>;
+{ 
+  "amount": 1, 
+  "requestId": "PAY123456", 
+  "callbackURL": "https://your-callback-url.com" 
 }
 ```
 
-Flow Overview
+**Success Response:**
+```json
+{ 
+  "redirectTo": "https://user.acountpay.com/flow/..." 
+}
+```
 
-The SDK requests a user payment from your backend.
-Backend returns a redirectTo URL for the AcountPay user portal.
-The browser is redirected to the portal:
-User links IBAN to their account.
-User authenticates and consents.
-User is redirected back to your callbackURL.
+The SDK automatically redirects the browser to the `redirectTo` URL.
 
-Note
+## Complete Examples
 
-Ensure your app origin and callbackURL are whitelisted in your backend.
-Amounts are major units (e.g., 1 = 1 DKK).
-Provide a bearer token if your environment requires authentication.
+### Simple HTML Page
 
-Handling Results
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <script>
+    // Runtime configuration
+    window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-7886a9e16dc3.herokuapp.com';
+    window.__ACOUNTPAY_ENV__ = 'sandbox';
+  </script>
+  <script src="https://unpkg.com/@acountpay/sdk@1.0.2/dist/acount.umd.js"></script>
+</head>
+<body>
+  <button onclick="pay()">Pay with AcountPay</button>
+  <script>
+    const sdk = new Acount({ 
+      clientId: 'your-client-id',
+      env: 'sandbox'
+    });
+    
+    async function pay() {
+      try {
+        localStorage.setItem('paymentType', 'user');
+        await sdk.initiateUserPaymentByEmail({
+          amount: 1,
+          requestId: 'PAY' + Date.now(),
+          callbackURL: 'https://your-callback-url.com'
+        });
+      } catch (error) {
+        console.error('Payment failed:', error);
+      }
+    }
+  </script>
+</body>
+</html>
+```
 
-After the user returns to your callbackURL:
-Verify the payment state using your backend (recommended).
-Optionally parse any query params your backend attaches to the redirect.
-Display success/failure to the user based on your backend’s confirmation.
+### React Component
 
-Troubleshooting
+```typescript
+import { useEffect, useState } from 'react';
+import AcountPay from '@acountpay/sdk';
 
-400 Bad Request: Check clientId, callbackURL, and amount units.
-403 Forbidden: Likely missing/invalid Authorization token or disallowed client/origin.
-No redirect: Ensure your backend returns { redirectTo } for the request.
+export function PayButton() {
+  const [sdk, setSdk] = useState<AcountPay | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const acountSdk = new AcountPay({
+      clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID!,
+      env: process.env.REACT_APP_ACOUNTPAY_ENV || 'production',
+    });
+    setSdk(acountSdk);
+  }, []);
+
+  const handlePay = async () => {
+    if (!sdk) return;
+    
+    setLoading(true);
+    try {
+      localStorage.setItem('paymentType', 'user');
+      await sdk.initiateUserPaymentByEmail({
+        amount: 1,
+        requestId: 'PAY' + Date.now(),
+        callbackURL: process.env.REACT_APP_ACOUNTPAY_REDIRECT_URI!,
+      });
+    } catch (error) {
+      console.error('Payment failed:', error);
+      setLoading(false);
+    }
+  };
+
+  return (
+    <button onClick={handlePay} disabled={loading || !sdk}>
+      {loading ? 'Processing...' : 'Pay with AcountPay'}
+    </button>
+  );
+}
+```
+
+## Flow Overview
+
+1. **SDK Setup**: Initialize with your Client ID and environment
+2. **Payment Request**: SDK calls your backend with payment details
+3. **Backend Response**: Backend returns a `redirectTo` URL for the AcountPay user portal
+4. **User Portal**: Browser redirects to portal where user:
+   - Links IBAN to their account
+   - Authenticates and consents to payment
+5. **Return**: User is redirected back to your `callbackURL`
+
+## Handling Results
+
+After the user returns to your `callbackURL`:
+
+1. **Verify Payment State**: Check with your backend to confirm payment status (recommended)
+2. **Parse URL Parameters**: Extract any query parameters your backend attaches to the redirect
+3. **Display Result**: Show success/failure to the user based on your backend's confirmation
+
+### Example Callback Handler
+
+```html
+<!-- callback.html -->
+<script>
+  // Parse URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const status = urlParams.get('status');
+  const requestId = urlParams.get('requestId');
+  
+  if (status === 'success') {
+    console.log('Payment completed successfully');
+    // Verify with your backend using requestId
+  } else if (status === 'cancelled') {
+    console.log('Payment was cancelled');
+  } else {
+    console.log('Payment status:', status);
+  }
+</script>
+```
+
+## Important Notes
+
+- **Environment Configuration**: Always set the `env` option to match your environment (`'sandbox'` or `'production'`)
+- **Whitelisting**: Ensure your app origin and callbackURL are whitelisted on your backend
+- **Currency Units**: Use major currency units for amounts (e.g., `1` = 1 DKK)
+- **Authentication**: Provide a bearer token if your environment requires authentication
+- **UMD vs ESM**: Use `Acount` constructor for UMD builds, `AcountPay` for ESM/CommonJS
+
+## Troubleshooting
+
+### 400 Bad Request
+- **Cause**: Missing or incorrect parameters
+- **Solution**: Check `clientId`, `callbackURL`, and `amount` units
+- **Common Issues**: 
+  - Missing environment configuration
+  - Incorrect callback URL format
+  - Amount not in major units
+
+### 403 Forbidden
+- **Cause**: Authentication or authorization issues
+- **Solution**: 
+  - Check if bearer token is required and provided
+  - Verify client ID is correct
+  - Ensure app origin is whitelisted
+
+### "AcountPay is not defined" Error
+- **Cause**: Using wrong constructor name with UMD build
+- **Solution**: Use `new Acount({ clientId: '...' })` for UMD builds
+
+### No Redirect After Payment
+- **Cause**: Backend not returning correct response
+- **Solution**: Ensure your backend returns `{ redirectTo: "<URL>" }` for successful requests
+
+### Environment Issues
+- **Cause**: Missing or incorrect environment configuration
+- **Solution**: Set `env: 'sandbox'` or `env: 'production'` in SDK initialization
