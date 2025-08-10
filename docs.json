@@ -44,7 +44,6 @@
           {
             "group": "Documentation",
             "pages": [
-              "sdk/introduction",
               "sdk/install_sdk",
               "sdk/setup_sdk",
               "sdk/initialize_payment"
