@@ -36,4 +36,15 @@ const sdk = new AcountPay({
 </script>
 ```
 
+### Supported Options
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| clientId | string | Yes | Your AcountPay Client ID from the merchant dashboard |
+| env | string | No | Environment: sandbox or production (default: production) |
+| apiBaseUrl | string | No | API base URL (can also be set via runtime config) |
+| redirectUri | string | No | Default redirect URI for payments |
+| authToken | string | No | Bearer token for authentication |
+| extraHeaders | object | No | Additional headers to send with requests |
+
 Next: [Initialize Payment](/sdk/initialize_payment)
