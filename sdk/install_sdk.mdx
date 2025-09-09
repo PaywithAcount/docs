@@ -66,7 +66,7 @@ console.log('AcountPay SDK loaded:', typeof AcountPay === 'function'); // should
 ### CDN usage (recommended for quick testing):
 
 ```html
-<script src="https://unpkg.com/@acountpay/sdk@1.0.2/dist/acount.umd.js"></script>
+<script src="https://unpkg.com/@acountpay/sdk@1.0.3/dist/acount.umd.js"></script>
 <script>
   const sdk = new Acount({ clientId: '<YOUR_CLIENT_ID>' });
   console.log('AcountPay SDK loaded:', typeof Acount === 'function'); // should be true
@@ -78,7 +78,7 @@ console.log('AcountPay SDK loaded:', typeof AcountPay === 'function'); // should
 - **UMD Global Constructor**: When using the UMD build, the global constructor is `Acount`, not `AcountPay`
 - **Runtime Configuration**: The SDK is configured at runtime (no baked-in API URLs). Set `window.__ACOUNTPAY_API_URL__` in HTML or pass `apiBaseUrl` to the constructor
 - **Authentication**: If your backend requires authentication, provide a bearer token at runtime
-- **Version Pinning**: For production use, pin to a specific version (e.g., `@1.0.2`) to avoid unexpected changes
+- **Version Pinning**: For production use, pin to a specific version (e.g., `@1.0.3`) to avoid unexpected changes
 
 ## Quick Start Example
 
@@ -91,7 +91,7 @@ console.log('AcountPay SDK loaded:', typeof AcountPay === 'function'); // should
     window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com';
     window.__ACOUNTPAY_ENV__ = 'sandbox';
   </script>
-  <script src="https://unpkg.com/@acountpay/sdk@1.0.2/dist/acount.umd.js"></script>
+  <script src="https://unpkg.com/@acountpay/sdk@1.0.3/dist/acount.umd.js"></script>
 </head>
 <body>
   <button onclick="pay()">Pay with AcountPay</button>
