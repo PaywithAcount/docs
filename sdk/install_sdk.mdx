@@ -15,9 +15,9 @@ Install via npm or yarn.
 
 - Node.js 16.x or higher (recommended)
 - Modern browser with ES6 support (for web apps)
-- React 16.8+ (only if you're integrating in a React app)
+- React 16.8\+ (only if you're integrating in a React app)
 - AcountPay Client ID - Required for SDK initialization
-- API Base URL - Required for SDK configuration (e.g., 'https://acount-apis-7886a9e16dc3.herokuapp.com')
+- API Base URL - Required for SDK configuration (e.g., 'https://acount-apis-staging-a8cdb2402163.herokuapp.com')
 
 ## Installation
 
@@ -34,6 +34,7 @@ yarn add @acountpay/sdk
 ```
 
 ## Package Contents
+
 The SDK includes:
 
 - Core user payment flow utilities (no embedded UI/components)
@@ -87,7 +88,7 @@ console.log('AcountPay SDK loaded:', typeof AcountPay === 'function'); // should
 <head>
   <script>
     // Runtime configuration
-    window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-7886a9e16dc3.herokuapp.com';
+    window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com';
     window.__ACOUNTPAY_ENV__ = 'sandbox';
   </script>
   <script src="https://unpkg.com/@acountpay/sdk@1.0.2/dist/acount.umd.js"></script>

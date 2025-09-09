@@ -24,7 +24,7 @@ const sdk = new AcountPay({
 
 ```html
 <script>
-  window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-7886a9e16dc3.herokuapp.com';
+  window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com';
   window.__ACOUNTPAY_ENV__ = 'sandbox';
 </script>
 <script src="https://unpkg.com/@acountpay/sdk@1.0.2/dist/acount.umd.js"></script>
@@ -38,16 +38,17 @@ const sdk = new AcountPay({
 
 ### Supported Options
 
-| Option | Type | Required | Description |
-|--------|------|----------|-------------|
-| clientId | string | Yes | Your AcountPay Client ID from the merchant dashboard |
-| env | string | No | Environment: sandbox or production (default: production) |
-| apiBaseUrl | string | Yes | API base URL ('https://acount-apis-7886a9e16dc3.herokuapp.com') |
-| redirectUri | string | No | Default redirect URI for payments |
-| authToken | string | No | Bearer token for authentication |
-| extraHeaders | object | No | Additional headers to send with requests |
+| Option       | Type   | Required | Description                                                             |
+| ------------ | ------ | -------- | ----------------------------------------------------------------------- |
+| clientId     | string | Yes      | Your AcountPay Client ID from the merchant dashboard                    |
+| env          | string | No       | Environment: sandbox or production (default: production)                |
+| apiBaseUrl   | string | Yes      | API base URL ('https://acount-apis-staging-a8cdb2402163.herokuapp.com') |
+| redirectUri  | string | No       | Default redirect URI for payments                                       |
+| authToken    | string | No       | Bearer token for authentication                                         |
+| extraHeaders | object | No       | Additional headers to send with requests                                |
 
 ## Callback URL Requirements
+
 - Must be a valid HTTPS URL (except for localhost during development)
 - Should be accessible from the user's browser
 - Recommended format: `https://yourdomain.com/payment-callback`
@@ -61,7 +62,7 @@ Set the API base URL and environment at runtime to avoid rebuilds and switch env
 
 ```html
 <script>
-  window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-7886a9e16dc3.herokuapp.com';
+  window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com';
   window.__ACOUNTPAY_ENV__ = 'sandbox';
 </script>
 ```
