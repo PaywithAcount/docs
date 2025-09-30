@@ -50,10 +50,10 @@ The SDK automatically redirects the browser to the `redirectTo` URL.
 <head>
   <script>
     // Runtime configuration
-    window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com';
+    window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-7886a9e16dc3.herokuapp.com';
     window.__ACOUNTPAY_ENV__ = 'sandbox';
   </script>
-  <script src="https://unpkg.com/@acountpay/sdk@1.0.3/dist/acount.umd.js"></script>
+  <script src="https://unpkg.com/@acountpay/sdk@1.0.0/dist/acount.umd.js"></script>
 </head>
 <body>
   <button onclick="pay()">Pay with AcountPay</button>
@@ -80,7 +80,10 @@ The SDK automatically redirects the browser to the `redirectTo` URL.
 </html>
 ```
 
-### React Component
+### Framework Components
+
+<Tabs>
+  <Tab title="React">
 
 ```typescript
 import { useEffect, useState } from 'react';
@@ -122,6 +125,105 @@ export function PayButton() {
   );
 }
 ```
+
+  </Tab>
+  <Tab title="Vue.js">
+
+```javascript
+<template>
+  <button @click="handlePay" :disabled="loading || !sdk">
+    {{ loading ? 'Processing...' : 'Pay with AcountPay' }}
+  </button>
+</template>
+
+<script>
+import AcountPay from '@acountpay/sdk';
+
+export default {
+  name: 'PayButton',
+  data() {
+    return {
+      sdk: null,
+      loading: false
+    };
+  },
+  mounted() {
+    this.sdk = new AcountPay({
+      clientId: process.env.VUE_APP_ACOUNTPAY_CLIENT_ID,
+      env: process.env.VUE_APP_ACOUNTPAY_ENV || 'production'
+    });
+  },
+  methods: {
+    async handlePay() {
+      if (!this.sdk) return;
+      
+      this.loading = true;
+      try {
+        localStorage.setItem('paymentType', 'user');
+        await this.sdk.initiateUserPaymentByEmail({
+          amount: 1,
+          requestId: 'PAY' + Date.now(),
+          callbackURL: process.env.VUE_APP_ACOUNTPAY_REDIRECT_URI
+        });
+      } catch (error) {
+        console.error('Payment failed:', error);
+        this.loading = false;
+      }
+    }
+  }
+};
+</script>
+```
+
+  </Tab>
+  <Tab title="Angular">
+
+```typescript
+import { Component, OnInit } from '@angular/core';
+import AcountPay from '@acountpay/sdk';
+
+@Component({
+  selector: 'app-pay-button',
+  template: `
+    <button 
+      (click)="handlePay()" 
+      [disabled]="loading || !sdk">
+      {{ loading ? 'Processing...' : 'Pay with AcountPay' }}
+    </button>
+  `
+})
+export class PayButtonComponent implements OnInit {
+  sdk: AcountPay | null = null;
+  loading = false;
+
+  ngOnInit() {
+    this.sdk = new AcountPay({
+      clientId: this.envService.get('ACOUNTPAY_CLIENT_ID'),
+      env: this.envService.get('ACOUNTPAY_ENV') || 'production'
+    });
+  }
+
+  async handlePay() {
+    if (!this.sdk) return;
+    
+    this.loading = true;
+    try {
+      localStorage.setItem('paymentType', 'user');
+      await this.sdk.initiateUserPaymentByEmail({
+        amount: 1,
+        requestId: 'PAY' + Date.now(),
+        callbackURL: this.envService.get('ACOUNTPAY_REDIRECT_URI')
+      });
+    } catch (error) {
+      console.error('Payment failed:', error);
+      this.loading = false;
+    }
+  }
+}
+```
+
+  </Tab>
+</Tabs>
 
 ## Flow Overview
 

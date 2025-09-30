@@ -1,0 +1,70 @@
+---
+title: "Install the AIS SDK"
+description: "Step-by-step guide to install the Account Information Service (AIS) SDK."
+---
+
+# Installing the AIS SDK
+
+The Account Information Service (AIS) SDK enables secure access to user bank data, including accounts, balances, and transactions, via open banking APIs.
+
+## Prerequisites
+
+- **AcountPay Account**: You'll need your Client ID from the merchant dashboard
+- **Supported Environment**: JavaScript/TypeScript (browser or Node.js), React optional
+- **Node.js**: 16.x or higher (recommended)
+- **Modern Browser**: With ES6 support for web apps
+- **API Credentials**: Client ID and API base URL
+
+## Installation
+
+Install the AIS SDK using npm:
+
+```bash
+npm install acountais
+```
+
+Or using yarn:
+
+```bash
+yarn add acountais
+```
+
+## Package Contents
+
+The SDK includes:
+
+- Core account linking utilities (no embedded UI/components)
+- TypeScript definitions for editor IntelliSense and types
+- ESM/CJS/UMD builds for broad compatibility
+
+## Verify Installation
+
+### ESM/CommonJS usage:
+
+```typescript
+// ES module (Vite, Next.js, etc.)
+import { Account } from 'acountais';
+
+const account = new Account({ clientId: 'your-client-id' });
+console.log('AIS SDK loaded:', typeof Account === 'function'); // should be true
+```
+
+### UMD (script tag) usage:
+
+```html
+<script src="/node_modules/acountais/dist/acount.umd.js"></script>
+<script>
+  const account = new Acount.Account({ clientId: 'your-client-id' });
+  console.log('AIS SDK loaded:', typeof Acount.Account === 'function'); // should be true
+</script>
+```
+
+### CDN usage (recommended for quick testing):
+
+```html
+<script src="https://unpkg.com/acountais@latest/dist/acount.umd.js"></script>
+<script>
+  const account = new Acount.Account({ clientId: 'your-client-id' });
+  console.log('AIS SDK loaded:', typeof Acount.Account === 'function'); // should be true
+</script>
+```

@@ -1,0 +1,127 @@
+---
+title: "Integration Testing"
+---
+
+Test your AcountPay SDK integration thoroughly before going live. This guide covers sandbox testing with sandbox bank credentials and production validation steps.
+
+## Quick Start
+
+1. **Sandbox Testing**: Use test credentials to simulate payments
+2. **Production Switch**: Update credentials and URLs for live environment
+3. **Test Scenarios**: Run comprehensive validation tests
+
+## Sandbox Testing
+
+Use our sandbox environment to test payment flows without real money.
+
+### Setup
+- Get your **sandbox client ID** from the Developers page in your merchant dashboard
+- Configure SDK for sandbox mode
+- Use test bank credentials below
+
+### Test Bank Credentials
+
+| Bank | Type | Currency | Credentials |
+|------|------|----------|-------------|
+| **UK NatWest**<br/>`ob-natwest` | Redirect | GBP | **Username:** 123456789012<br/>**Password:** displayed on screen |
+| **Spain BBVA**<br/>`ngp-inal` | Redirect | EUR | **IBAN:** ES2501822200160201933547<br/>**Username:** user1<br/>**Password:** 1234<br/>**Auth Code:** 123456 |
+| **German KD-Bank**<br/>`sk-fidu-genoded1dkd` | Embedded | EUR | **PSU ID:** VRK1234567890ALL<br/>**Password:** password<br/>**SCA:** Mobile TAN<br/>**PIN:** 123456<br/>**Success IBAN:** DE39499999600000005111<br/>**Decline IBAN:** DE98499999600000005116 |
+| **German Deutsche Kreditbank**<br/>`ngp-byla` | Embedded | EUR | **PSU ID:** abc<br/>**Password:** 123<br/>**SCA:** 962: SmartTAN plus HHD 1.4<br/>**PIN:** 123456 |
+| **Polish Alior Bank**<br/>(AIS) | Account Info | PLN | **PSU ID:** 22058375<br/>**Password:** 12345678 |
+
+### Testing Steps
+1. Initialize SDK with sandbox client ID
+2. Select a test bank from the table above
+3. Complete payment flow using provided credentials
+4. Verify webhook notifications
+5. Check transaction in merchant dashboard
+
+## Production Testing
+
+Switch to live environment after successful sandbox testing.
+
+### API URLs
+
+| Environment | URL |
+|-------------|-----|
+| **Sandbox** | `https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1` |
+| **Production** | `https://acount-apis-7886a9e16dc3.herokuapp.com/v1` |
+
+### Configuration Changes
+- **API URL:** Switch from sandbox to production URL (see table above)
+- **Client ID:** Replace sandbox ID with production ID from dashboard
+- **Environment:** Change environment from "sandbox" to "production"
+
+### Pre-Launch Checklist
+- [ ] Production API endpoints configured
+- [ ] Production client ID active
+- [ ] Webhook URLs accessible
+- [ ] Error handling implemented
+- [ ] Success/failure flows tested
+
+## Test Scenarios
+
+### ✅ Success Cases
+| Scenario | Test | Expected Result |
+|----------|------|-----------------|
+| **Single Payment** | Process payment with one bank | Payment succeeds, webhook received |
+| **Multi-Bank** | Test different banks/currencies | All payments process correctly |
+| **Amount Variations** | Test min/max/decimal amounts | All amounts handled properly |
+| **Webhook Delivery** | Monitor payment events | All webhooks received and processed |
+
+### ❌ Error Cases
+| Scenario | Test | Expected Result |
+|----------|------|-----------------|
+| **User Cancel** | Cancel during bank auth | Payment fails gracefully |
+| **Network Issues** | Simulate connection loss | Proper error handling |
+| **Wrong Credentials** | Use invalid bank login | Clear error messages |
+| **Session Expiry** | Wait for timeout | Session handles expiration |
+
+### ⚠️ Edge Cases
+| Scenario | Test | Expected Result |
+|----------|------|-----------------|
+| **Low Balance** | Payment exceeds account funds | Declined with clear message |
+| **Bank Offline** | Test during maintenance | Appropriate downtime handling |
+| **Duplicate Payment** | Multiple attempts same order | Prevents duplicate charges |
+
+### 🔧 Integration Checks
+| Scenario | Test | Expected Result |
+|----------|------|-----------------|
+| **SDK Setup** | Verify initialization | No errors, proper config |
+| **Redirect URLs** | Test success/failure callbacks | Correct page redirects |
+| **Data Storage** | Check payment persistence | All data saved accurately |
+
+## Best Practices
+
+### Environment Setup
+- Use separate test accounts for sandbox/production
+- Test with realistic payment amounts
+- Verify across multiple browsers/devices
+- Load test concurrent payment capacity
+
+### Monitoring
+- Monitor SDK logs for errors
+- Test webhooks with tools like ngrok
+- Regularly check dashboard for issues
+- Document refund/dispute processes
+
+## Troubleshooting
+
+### Common Sandbox Issues
+- **Wrong Credentials**: Double-check table above
+- **Environment Config**: Ensure sandbox mode enabled
+- **Webhook Problems**: Verify endpoint accessibility
+
+### Common Production Issues
+- **API Connection**: Confirm production URLs
+- **Client ID**: Verify production credentials
+- **SSL Setup**: Check HTTPS configuration
+
+## Support
+
+**Need Help?**
+- 📧 Email: support@acountpay.com
+- 🏠 Dashboard: Check Developers section
+- 📚 Docs: SDK reference for API details
+
+**Ready to Go Live?** Complete all test scenarios and contact support for final approval.

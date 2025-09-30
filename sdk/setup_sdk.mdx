@@ -1,156 +1,82 @@
 ---
-title: "Setup SDK"
-description: "Configure the AcountPay SDK with your merchant credentials"
+title: "Setup the SDK"
 ---
 
-Before making any method calls, initialize the SDK with your Client ID and configure the API base URL at runtime.
+After installing the AcountPay SDK, follow these steps to set it up in your project.
 
-## Constructor
+## Prerequisites
 
-Create an instance with your clientId. You can optionally pass apiBaseUrl, authToken, env, and other options.
+- Installed AcountPay SDK (see [Install the SDK](/sdk/install_sdk))
+- Your AcountPay Client ID from the merchant dashboard
+- API Base URL (e.g., 'https://acount-apis-7886a9e16dc3.herokuapp.com' for production)
 
-### ESM/CommonJS Usage
+## Initialization
 
-```javascript
+Initialize the SDK with your client ID and environment settings.
+
+### Basic Setup
+
+```typescript
 import AcountPay from '@acountpay/sdk';
 
+// Initialize the SDK
 const sdk = new AcountPay({
-  clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID,
-  env: process.env.REACT_APP_ACOUNTPAY_ENV || 'production',
+  clientId: 'your-client-id-here', // Required: From merchant dashboard
+  env: 'sandbox', // Optional: 'sandbox' or 'production' (default: 'production')
+  apiBaseUrl: 'https://acount-apis-7886a9e16dc3.herokuapp.com' // Optional: Override default API URL
 });
 ```
 
-### UMD Usage
+### UMD Build Setup (Script Tag)
+
+If using the UMD build, initialize without importing:
 
 ```html
+<script src="https://unpkg.com/@acountpay/sdk@1.0.0/dist/acount.umd.js"></script>
 <script>
-  window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com';
+  // Runtime configuration (optional)
+  window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-7886a9e16dc3.herokuapp.com';
   window.__ACOUNTPAY_ENV__ = 'sandbox';
-</script>
-<script src="https://unpkg.com/@acountpay/sdk@1.0.3/dist/acount.umd.js"></script>
-<script>
+
+  // Initialize the SDK
   const sdk = new Acount({
-    clientId: 'your-client-id',
-    env: 'sandbox'
+    clientId: 'your-client-id-here'
   });
 </script>
 ```
 
-### Supported Options
+## Configuration Options
 
-| Option       | Type   | Required | Description                                                             |
-| ------------ | ------ | -------- | ----------------------------------------------------------------------- |
-| clientId     | string | Yes      | Your AcountPay Client ID from the merchant dashboard                    |
-| env          | string | No       | Environment: sandbox or production (default: production)                |
-| apiBaseUrl   | string | Yes      | API base URL ('https://acount-apis-staging-a8cdb2402163.herokuapp.com') |
-| redirectUri  | string | No       | Default redirect URI for payments                                       |
-| authToken    | string | No       | Bearer token for authentication                                         |
-| extraHeaders | object | No       | Additional headers to send with requests                                |
+| Option       | Type     | Required | Description |
+|--------------|----------|----------|-------------|
+| `clientId`   | `string` | ✅ Yes   | Your AcountPay client ID |
+| `env`        | `string` | ❌ No    | Environment: 'sandbox' or 'production' (default: 'production') |
+| `apiBaseUrl` | `string` | ❌ No    | Custom API base URL (overrides default) |
 
-## Callback URL Requirements
+## Runtime Configuration (UMD Only)
 
-- Must be a valid HTTPS URL (except for localhost during development)
-- Should be accessible from the user's browser
-- Recommended format: `https://yourdomain.com/payment-callback`
-- Avoid using localhost URLs in production
+For UMD builds, you can set global variables before loading the script:
 
-## Runtime Configuration (Recommended)
+- `window.__ACOUNTPAY_API_URL__`: API base URL
+- `window.__ACOUNTPAY_ENV__`: Environment ('sandbox' or 'production')
 
-Set the API base URL and environment at runtime to avoid rebuilds and switch environments easily.
+## Testing Setup
 
-### HTML Runtime Configuration
+To test in sandbox mode:
 
-```html
-<script>
-  window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com';
-  window.__ACOUNTPAY_ENV__ = 'sandbox';
-</script>
-```
-
-The SDK will automatically use these runtime values when present. You can still override them via the constructor options.
-
-### Environment Variables (React Example)
-
-```bash
-REACT_APP_ACOUNTPAY_CLIENT_ID=your-client-id
-REACT_APP_ACOUNTPAY_ENV=sandbox
-REACT_APP_ACOUNTPAY_REDIRECT_URI=https://www.acountpay.com//payment-callback
-```
-
-Usage in React:
-
-```javascript
-import AcountPay from '@acountpay/sdk';
-
+```typescript
 const sdk = new AcountPay({
-  clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID,
-  env: process.env.REACT_APP_ACOUNTPAY_ENV || 'production',
+  clientId: 'your-sandbox-client-id',
+  env: 'sandbox'
 });
 ```
 
-## Complete Setup Examples
+## Next Steps
 
-### Simple HTML Page
+Once set up, you can initiate payments. See [Initialize Payment](/sdk/initialize_payment) for examples.
 
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <script>
-    window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com';
-    window.__ACOUNTPAY_ENV__ = 'sandbox';
-  </script>
-  <script src="https://unpkg.com/@acountpay/sdk@1.0.3/dist/acount.umd.js"></script>
-</head>
-<body>
-  <button onclick="pay()">Pay with AcountPay</button>
-  <script>
-    const sdk = new Acount({ 
-      clientId: 'your-client-id',
-      env: 'sandbox'
-    });
-    
-    async function pay() {
-      await sdk.initiateUserPaymentByEmail({
-        amount: 1,
-        requestId: 'PAY' + Date.now(),
-        callbackURL: 'https://your-callback-url.com'
-      });
-    }
-  </script>
-</body>
-</html>
-```
+## Troubleshooting
 
-### React Component
-
-```javascript
-import { useEffect, useState } from 'react';
-import AcountPay from '@acountpay/sdk';
-
-export function PayButton() {
-  const [sdk, setSdk] = useState(null);
-
-  useEffect(() => {
-    const acountSdk = new AcountPay({
-      clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID,
-      env: process.env.REACT_APP_ACOUNTPAY_ENV || 'production',
-    });
-    setSdk(acountSdk);
-  }, []);
-
-  const handlePay = async () => {
-    if (!sdk) return;
-    
-    await sdk.initiateUserPaymentByEmail({
-      amount: 1,
-      requestId: 'PAY' + Date.now(),
-      callbackURL: process.env.REACT_APP_ACOUNTPAY_REDIRECT_URI,
-    });
-  };
-
-  return <button onClick={handlePay}>Pay with AcountPay</button>;
-}
-```
-
-Next: [Initialize Payment](/sdk/initialize_payment)
+- **"AcountPay is not defined"**: Ensure the UMD script is loaded before initialization.
+- **Invalid client ID**: Verify your client ID from the merchant dashboard.
+- **API errors**: Check your API base URL and environment settings.

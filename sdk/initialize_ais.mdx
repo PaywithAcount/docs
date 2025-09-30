@@ -1,0 +1,284 @@
+---
+title: "Initialize the AIS SDK"
+description: "Learn how to initialize and integrate the Account Information Service (AIS) SDK in your application."
+---
+
+This guide provides step-by-step instructions for initializing the AIS SDK and implementing account linking functionality in your application.
+
+## Initialization
+
+### Basic Initialization
+
+```typescript
+import { Account } from 'acountais';
+
+const account = new Account({
+  clientId: 'fdae2b5e-0c10-4fc5-8860-4f3e7a00b4bb'
+});
+```
+
+### Advanced Initialization
+
+```typescript
+const account = new Account({
+  clientId: 'your-client-id',
+  apiBaseUrl: 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1',
+  environment: 'sandbox'
+});
+```
+
+## Step-by-Step Integration Guide
+
+### Step 1: Initialize the SDK
+
+Ensure the SDK is properly initialized before using any methods:
+
+```typescript
+import { Account } from 'acountais';
+
+const account = new Account({
+  clientId: 'fdae2b5e-0c10-4fc5-8860-4f3e7a00b4bb'
+});
+```
+
+### Step 2: Implement Account Linking
+
+```typescript
+import { ACCOUNT_PERMISSIONS } from 'acountais';
+
+// Link a customer's bank account
+const result = await account.linkAccount({
+  merchantId: 'merchant_abc123',
+  userId: 'user_2def456ghi789',
+  permissions: [
+    ACCOUNT_PERMISSIONS.READ_ACCOUNTS_DETAIL,
+    ACCOUNT_PERMISSIONS.READ_BALANCES,
+    ACCOUNT_PERMISSIONS.READ_TRANSACTIONS_DETAIL
+  ],
+  authorizationToken: 'your-api-authorization-token'
+});
+
+if (result.success) {
+  console.log('Account linking successful:', result.message);
+  if (result.linkUrl) {
+    // Redirect user to account linking URL
+    window.location.href = result.linkUrl;
+  }
+}
+```
+
+### Step 3: Handle Authorization Callback
+
+After the user authorizes access, they are redirected back to your callback URL. Handle the response to confirm consent:
+
+```javascript
+// On your callback page
+const urlParams = new URLSearchParams(window.location.search);
+const consentId = urlParams.get('consentId');
+
+if (consentId) {
+  // Consent granted, store consentId for future API calls
+  console.log('Consent granted:', consentId);
+  // Proceed to access account data
+}
+```
+
+### Step 4: Access Account Data
+
+Once consent is granted, you can retrieve account information:
+
+```javascript
+// Get linked accounts
+const accounts = await account.getLinkedAccounts({
+  merchantId: 'merchant_abc123',
+  userId: 'user_2def456ghi789',
+  consentId: 'consent-id-from-callback'
+});
+
+// Get account balance
+const balance = await account.getAccountBalance({
+  merchantId: 'merchant_abc123',
+  userId: 'user_2def456ghi789',
+  accountId: 'account-id',
+  consentId: 'consent-id'
+});
+
+// Get transactions
+const transactions = await account.getAccountTransactions({
+  merchantId: 'merchant_abc123',
+  userId: 'user_2def456ghi789',
+  accountId: 'account-id',
+  consentId: 'consent-id',
+  pageLimit: 50
+});
+```
+
+## Complete Example
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AIS SDK Integration</title>
+  <script src="https://unpkg.com/acountais@latest/dist/acount.umd.js"></script>
+</head>
+<body>
+  <h1>Link Your Bank Account</h1>
+  <button id="link-account-btn">Link Account</button>
+  <div id="status"></div>
+
+  <script>
+    const account = new Acount.Account({
+      clientId: 'your-client-id',
+      apiBaseUrl: 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1'
+    });
+
+    document.getElementById('link-account-btn').addEventListener('click', async () => {
+      const statusDiv = document.getElementById('status');
+      statusDiv.textContent = 'Processing...';
+
+      try {
+        const result = await account.linkAccount({
+          merchantId: 'merchant-123',
+          userId: 'user-456',
+          permissions: ['ReadAccountsDetail', 'ReadBalances', 'ReadTransactionsDetail'],
+          authorizationToken: 'your-token'
+        });
+
+        if (result.success) {
+          if (result.linkUrl) {
+            window.location.href = result.linkUrl;
+          } else {
+            statusDiv.textContent = 'Account linked successfully!';
+          }
+        } else {
+          statusDiv.textContent = 'Error: ' + result.message;
+        }
+      } catch (error) {
+        statusDiv.textContent = 'Error: ' + error.message;
+      }
+    });
+  </script>
+</body>
+</html>
+```
+
+## Error Handling
+
+Implement proper error handling for all SDK operations:
+
+```typescript
+try {
+  const result = await account.linkAccount(options);
+  if (!result.success) {
+    console.error('Account linking failed:', result.message);
+    // Handle failure (show error message to user)
+  }
+} catch (error) {
+  console.error('SDK Error:', error);
+  // Handle unexpected errors
+}
+```
+
+## Best Practices
+
+### User Experience
+- Provide clear instructions for account linking
+- Show loading states during API calls
+- Handle errors gracefully with user-friendly messages
+
+### Security
+- Never expose sensitive credentials in client-side code
+- Validate all user inputs
+- Use HTTPS for all communications
+
+### Performance
+- Cache account data when appropriate
+- Implement pagination for large datasets
+- Minimize API calls by batching requests
+
+## API Reference
+
+### Account Class
+
+#### Constructor
+```typescript
+new Account({ clientId: string, apiBaseUrl?: string })
+```
+
+#### Methods
+
+##### `linkAccount(options)`
+Initiates account linking flow and redirects user to Token.io hosted page.
+
+**Parameters:**
+- `merchantId: string` - Your merchant ID
+- `userId: string` - Customer's user ID
+- `permissions: string[]` - Array of permission strings
+- `authorizationToken: string` - Your API authorization token
+
+**Returns:** `Promise<AccountLinkingResponse>`
+
+##### `getLinkedAccounts(options)`
+Retrieves user's linked accounts.
+
+**Parameters:**
+- `merchantId: string`
+- `userId: string`
+- `consentId: string`
+
+**Returns:** `Promise<Account[]>`
+
+##### `getAccountBalance(options)`
+Gets balance for a specific account.
+
+**Parameters:**
+- `merchantId: string`
+- `userId: string`
+- `accountId: string`
+- `consentId: string`
+
+**Returns:** `Promise<Balance>`
+
+##### `getAccountTransactions(options)`
+Retrieves transaction history for an account.
+
+**Parameters:**
+- `merchantId: string`
+- `userId: string`
+- `accountId: string`
+- `consentId: string`
+- `pageLimit?: number`
+
+**Returns:** `Promise<Transaction[]>`
+
+### Types
+
+#### `AccountLinkingResponse`
+```typescript
+interface AccountLinkingResponse {
+  success: boolean;
+  linkUrl?: string;
+  message?: string;
+}
+```
+
+#### `AccountLinkingOptions`
+```typescript
+interface AccountLinkingOptions {
+  merchantId: string;
+  userId: string;
+  permissions: string[];
+  authorizationToken: string;
+}
+```
+
+### Constants
+
+#### `ACCOUNT_PERMISSIONS`
+Predefined permission constants:
+
+- `ACCOUNT_PERMISSIONS.READ_ACCOUNTS_DETAIL` - "ReadAccountsDetail"
+- `ACCOUNT_PERMISSIONS.READ_BALANCES` - "ReadBalances"
+- `ACCOUNT_PERMISSIONS.READ_TRANSACTIONS_DETAIL` - "ReadTransactionsDetail"

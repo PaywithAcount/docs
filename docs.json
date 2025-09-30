@@ -25,7 +25,15 @@
             "pages": [
               "guides/payment/introduction",
               "guides/payment/status",
-              "guides/payment/best_practices"
+              "guides/payment/best_practices",
+              "guides/payment/integration_testing"
+            ]
+          },
+          {
+            "group": "Data",
+            "pages": [
+              "guides/data/overview",
+              "guides/data/sdk"
             ]
           },
           {
@@ -42,11 +50,36 @@
         "tab": "SDK Reference",
         "groups": [
           {
-            "group": "Documentation",
+            "group": "Payments SDK",
             "pages": [
               "sdk/install_sdk",
               "sdk/setup_sdk",
               "sdk/initialize_payment"
+            ]
+          },
+          {
+            "group": "Account Information SDK",
+            "pages": [
+              "sdk/install_ais_sdk",
+              "sdk/setup_ais_sdk",
+              "sdk/initialize_ais"
+            ]
+          }
+        ]
+      },
+
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Data API",
+            "pages": [
+              "api-reference/index",
+              "api-reference/authentication",
+              "api-reference/consents",
+              "api-reference/accounts",
+              "api-reference/transactions",
+              "api-reference/errors"
             ]
           }
         ]

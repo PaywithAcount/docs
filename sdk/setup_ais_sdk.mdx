@@ -1,0 +1,114 @@
+---
+title: "Setup the AIS SDK"
+description: "Configure your environment and backend for the Account Information Service (AIS) SDK."
+---
+
+# Setting up the AIS SDK
+
+This guide covers the configuration and setup required to use the AIS SDK in your application.
+
+## Environment Configuration
+
+The SDK uses environment variables for configuration. Create a `.env` file in your project root:
+
+```env
+API_BASE_URL=https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1
+TOKEN_ENVIRONMENT=sandbox
+```
+
+For production, update the environment variables:
+
+```env
+API_BASE_URL=https://your-production-api-url.com/v1
+TOKEN_ENVIRONMENT=production
+```
+
+## Backend Integration
+
+Your backend needs to provide endpoints for account linking and data retrieval. The SDK communicates with your backend API to:
+
+1. **Initiate Account Linking**: Create consent requests and generate authorization URLs
+2. **Handle Callbacks**: Process authorization responses from Token.io
+3. **Retrieve Account Data**: Fetch accounts, balances, and transactions
+
+### Required Backend Endpoints
+
+- `POST /sdk/link-token/{clientId}` - Generate link token for account linking
+- `GET /accounts/{consentId}` - Retrieve linked accounts
+- `GET /accounts/{accountId}/balance` - Get account balance
+- `GET /accounts/{accountId}/transactions` - Get transaction history
+
+Refer to the [Data API Reference](/api-reference) for detailed endpoint documentation.
+
+## Security Configuration
+
+### API Authentication
+
+Ensure your backend implements proper authentication:
+
+- Use Bearer tokens for API requests
+- Validate client IDs and merchant permissions
+- Implement rate limiting and request validation
+
+### Consent Management
+
+- Store consent IDs securely with encryption
+- Implement consent expiration handling
+- Provide mechanisms for users to revoke consent
+
+### Data Protection
+
+- Use HTTPS for all communications
+- Implement proper data sanitization
+- Follow GDPR and PSD2 compliance requirements
+
+## Runtime Configuration
+
+The SDK can be configured at runtime by passing options to the constructor:
+
+```typescript
+const account = new Account({
+  clientId: 'your-client-id',
+  apiBaseUrl: 'https://your-api-url.com/v1',
+  environment: 'sandbox' // or 'production'
+});
+```
+
+## Testing Setup
+
+For testing in sandbox environment:
+
+1. Use test credentials provided by AcountPay
+2. Configure sandbox API endpoints
+3. Test with mock bank data
+4. Verify consent flow without real financial data
+
+## Production Deployment
+
+Before going live:
+
+1. Update environment variables to production values
+2. Test with real bank connections (if available)
+3. Implement proper error handling and logging
+4. Set up monitoring and alerts
+5. Ensure compliance with regulatory requirements
+
+## Troubleshooting
+
+### Common Setup Issues
+
+- **Invalid Client ID**: Verify your client ID from the merchant dashboard
+- **API Connection Failed**: Check API base URL and network connectivity
+- **Environment Mismatch**: Ensure sandbox/production settings match your API endpoints
+- **CORS Issues**: Configure your backend to allow requests from your domain
+
+### Debug Mode
+
+Enable debug logging for troubleshooting:
+
+```typescript
+const account = new Account({
+  clientId: 'your-client-id',
+  debug: true
+});
+```

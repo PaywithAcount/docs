@@ -1,50 +1,131 @@
 ---
-title: "Best Practices"
+title: "UI/UX Best Practices"
 ---
 
-### Best Practices for Using our Payment SDK
+# Payment Buttons & Badges
 
- 1. **Secure API Credentials** – Keep your API keys and credentials private; never expose them in client-side code or public repositories.
- 2. **Always Initialize Properly** – Ensure the SDK is correctly initialized with valid credentials before making any payment requests.
- 3. **Handle Errors Gracefully** – Implement proper error handling and retries for failed transactions, timeouts, or network issues.
- 4. **Use Webhooks for Real-Time Updates** – Set up webhooks to track payment status, handle asynchronous updates, and ensure accurate transaction processing.
- 5. **Validate User Inputs** – Check and sanitize customer data before processing payments to prevent errors and security risks.
- 6. **Test in Sandbox Mode** – Use a test environment to simulate different payment scenarios before going live.
- 7. **Monitor Transaction Logs** – Regularly review logs to detect anomalies, troubleshoot failures, and improve system reliability.
- 8. **Ensure Compliance** – Follow regulatory and security guidelines such as PCI-DSS for secure payment processing.
- 9. **Optimize for Performance** – Minimize API calls, cache necessary data, and use efficient error-handling techniques to enhance performance.
-10. **Provide Clear Payment Status Messages** – Display informative messages to users about payment status to improve transparency and trust.
-11. **Support Multiple Payment Methods** – Ensure flexibility by integrating various payment options for a better customer experience.
-12. **Implement Robust Security Measures** – Use encryption, tokenization, and fraud detection mechanisms to secure transactions.
-13. **Ensure Smooth Refund Handling** – Provide a seamless refund and dispute resolution process to maintain customer satisfaction.
-14. **Stay Updated with SDK Versions** – Always use the latest SDK version to benefit from security patches, bug fixes, and new features.
-15. **Optimize User Experience** – Design a seamless and intuitive checkout flow to reduce friction and improve conversion rates.
+Enhance your website's user experience and build trust with customers by integrating AcountPay payment buttons and badges. These visual elements help customers identify that your site accepts AcountPay payments and guide them through the checkout process.
 
-### Brand Guidelines for UI
+## Why Use Payment Buttons and Badges?
 
-For applications supporting Javascript, you can visit the following link [Button generator](https://button-gen-seven.vercel.app/)  to use our Javascript Button and Banner library to dynamically generate them. 
+- **Build Trust**: Display AcountPay acceptance to reassure customers
+- **Improve Conversion**: Clear payment options reduce checkout abandonment
+- **Professional Appearance**: Consistent branding across your payment flow
+- **Easy Integration**: Simple HTML/CSS implementation
 
-1. **Buttons**
+## Generate Custom Buttons and Badges
 
-   <img
-     src="/images/Button.png"
-     alt="Button.png"
-     title="Button.png"
-     style={{ width:"20%" }}
-   />
-2. **Checkout Page**
+Visit our [Button Generator](https://button-gen-seven.vercel.app/) to create and download custom AcountPay payment buttons and badges for your website. The generator provides:
 
-   <img
-     src="/images/CheckoutPage.png"
-     alt="Checkout Page.png"
-     title="Checkout Page.png"
-     style={{ width:"20%" }}
-   />
-3. **Banner**
+- **Customizable Designs**: Choose colors, sizes, and styles
+- **Multiple Formats**: Download as HTML, CSS, or image files
+- **Responsive Options**: Mobile-friendly button designs
+- **Brand Consistency**: Match your website's design language
 
-   <img
-     src="/images/Banners.png"
-     alt="Banners.png"
-     title="Banners.png"
-     style={{ width:"31%" }}
-   />
+### How to Use the Button Generator
+
+1. **Visit the Generator**: Go to [https://button-gen-seven.vercel.app/](https://button-gen-seven.vercel.app/)
+2. **Select Button Type**: Choose from payment buttons, checkout buttons, or badges
+3. **Customize Appearance**: Adjust colors, text, and sizing
+4. **Generate Code**: Get the HTML/CSS code or download images
+5. **Integrate**: Add the code to your website
+
+## Button Types
+
+### Payment Buttons
+
+Payment buttons initiate the AcountPay checkout process. Place them prominently on product pages, cart pages, or checkout flows.
+
+<img
+  src="/images/Button.png"
+  alt="Payment Button"
+  title="Payment Button"
+  style={{ width:"20%" }}
+/>
+
+### Checkout Page Integration
+
+For full checkout pages, use our checkout button to provide a seamless payment experience.
+
+<img
+  src="/images/CheckoutPage.png"
+  alt="Checkout Page Button"
+  title="Checkout Page Button"
+  style={{ width:"20%" }}
+/>
+
+### On-Site Badges
+
+Display AcountPay badges throughout your site to show payment acceptance and build credibility.
+
+<img
+  src="/images/Banners.png"
+  alt="AcountPay Badges"
+  title="AcountPay Badges"
+  style={{ width:"31%" }}
+/>
+
+## Implementation Examples
+
+### HTML Button Integration
+
+```html
+<!-- Add this code where you want the button to appear -->
+<div id="acountpay-button-container">
+  <!-- Button code generated from https://button-gen-seven.vercel.app/ -->
+</div>
+
+<script src="https://button-gen-seven.vercel.app/acountpay-buttons.js"></script>
+<script>
+  AcountPayButtons.render('acountpay-button-container', {
+    amount: 99.99,
+    currency: 'USD',
+    merchantId: 'your-merchant-id'
+  });
+</script>
+```
+
+### Badge Placement
+
+```html
+<!-- Footer badge -->
+<footer>
+  <div class="payment-methods">
+    <img src="/images/acountpay-badge.png" alt="We accept AcountPay" />
+    <span>We accept payments through AcountPay</span>
+  </div>
+</footer>
+```
+
+## Best Practices for Button Placement
+
+### Strategic Positioning
+- **Product Pages**: Place payment buttons near "Buy Now" or "Add to Cart" buttons
+- **Cart Page**: Include payment options in the cart summary
+- **Checkout Flow**: Use checkout-specific buttons on payment selection pages
+- **Footer**: Display acceptance badges in website footers
+
+### Design Considerations
+- **Consistent Styling**: Match button designs with your site's theme
+- **Mobile Responsive**: Ensure buttons work well on all device sizes
+- **Clear Labeling**: Use descriptive text like "Pay with AcountPay"
+- **Trust Signals**: Include security badges alongside payment options
+
+### User Experience Tips
+- **Loading States**: Show loading indicators during payment processing
+- **Error Handling**: Provide clear error messages for failed integrations
+- **Accessibility**: Ensure buttons are keyboard navigable and screen reader friendly
+- **Testing**: Test button functionality across different browsers and devices
+
+## On-Site Messaging
+
+Let your customers know that a payment is accepted by displaying AcountPay on-site messages or badges. These elements:
+
+- **Increase Confidence**: Customers feel more secure knowing payment options are available
+- **Reduce Friction**: Clear payment indicators streamline the checkout process
+- **Build Credibility**: Professional badges enhance your site's trustworthiness
+- **Improve Conversion**: Familiar payment logos can increase purchase completion rates
+
+## Support
+
+Need help with button integration or have questions about the Button Generator? Contact our support team at [support@acountpay.com](mailto:support@acountpay.com).
