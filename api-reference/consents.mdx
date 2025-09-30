@@ -1,0 +1,970 @@
+---
+title: "Consents"
+---
+
+## Consents
+
+Consents manage user permissions for bank data access.
+
+### Create AIS Consent
+
+**POST** `/v1/ais/consents`
+
+Creates a new consent for bank account access.
+
+#### Headers
+
+| Header         | Type   | Required | Description             |
+|----------------|--------|----------|-------------------------|
+| `x-request-id` | string | No       | Request ID for tracking.|
+
+#### Request Body
+
+- **Content-Type**: `application/json`
+
+| Field                    | Type    | Required | Description                              |
+|--------------------------|---------|----------|------------------------------------------|
+| `merchantId`             | integer | Yes      | Merchant identifier.                     |
+| `userId`                 | string  | Yes      | User ID.                                 |
+| `permissions`            | array   | Yes      | Permissions (e.g., `["ReadAccountsDetail", "ReadBalances", "ReadTransactionsDetail"]`). |
+| `expirationDateTime`     | string  | No       | Consent expiration (ISO 8601, e.g., "2025-09-30T00:00:00Z"). |
+| `transactionFromDateTime`| string  | No       | Start date for transactions (ISO 8601).  |
+| `callbackUrl`            | string  | No       | URL for consent callbacks.               |
+
+#### Example Request
+
+<Tabs>
+  <Tab title="cURL">
+    ```bash
+    curl --request POST \
+      --url https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents \
+      --header 'x-request-id: optional-tracking-id' \
+      --header 'Content-Type: application/json' \
+      --data '{
+        "merchantId": 1,
+        "userId": "user_2abc123def456",
+        "permissions": ["ReadAccountsDetail", "ReadBalances", "ReadTransactionsDetail"],
+        "expirationDateTime": "2025-09-30T00:00:00Z",
+        "transactionFromDateTime": "2025-01-01T00:00:00Z",
+        "callbackUrl": "https://example.com/callback"
+      }'
+    ```
+  </Tab>
+  <Tab title="Node.js">
+    ```javascript
+    const axios = require('axios');
+
+    const data = {
+      merchantId: 1,
+      userId: 'user_2abc123def456',
+      permissions: ['ReadAccountsDetail', 'ReadBalances', 'ReadTransactionsDetail'],
+      expirationDateTime: '2025-09-30T00:00:00Z',
+      transactionFromDateTime: '2025-01-01T00:00:00Z',
+      callbackUrl: 'https://example.com/callback'
+    };
+
+    const config = {
+      method: 'post',
+      url: 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents',
+      headers: {
+        'x-request-id': 'optional-tracking-id',
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    axios(config)
+      .then(response => console.log(response.data))
+      .catch(error => console.error(error));
+    ```
+  </Tab>
+  <Tab title="Ruby">
+    ```ruby
+    require 'net/http'
+    require 'json'
+
+    uri = URI('https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents')
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+
+    request = Net::HTTP::Post.new(uri)
+    request['x-request-id'] = 'optional-tracking-id'
+    request['Content-Type'] = 'application/json'
+    request.body = {
+      merchantId: 1,
+      userId: 'user_2abc123def456',
+      permissions: ['ReadAccountsDetail', 'ReadBalances', 'ReadTransactionsDetail'],
+      expirationDateTime: '2025-09-30T00:00:00Z',
+      transactionFromDateTime: '2025-01-01T00:00:00Z',
+      callbackUrl: 'https://example.com/callback'
+    }.to_json
+
+    response = http.request(request)
+    puts response.body
+    ```
+  </Tab>
+  <Tab title="C#">
+    ```csharp
+    using System.Net.Http;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    var client = new HttpClient();
+    var request = new HttpRequestMessage(HttpMethod.Post, "https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents");
+    request.Headers.Add("x-request-id", "optional-tracking-id");
+    request.Content = new StringContent("{\"merchantId\":1,\"userId\":\"user_2abc123def456\",\"permissions\":[\"ReadAccountsDetail\",\"ReadBalances\",\"ReadTransactionsDetail\"],\"expirationDateTime\":\"2025-09-30T00:00:00Z\",\"transactionFromDateTime\":\"2025-01-01T00:00:00Z\",\"callbackUrl\":\"https://example.com/callback\"}", Encoding.UTF8, "application/json");
+
+    var response = await client.SendAsync(request);
+    var responseString = await response.Content.ReadAsStringAsync();
+    Console.WriteLine(responseString);
+    ```
+  </Tab>
+  <Tab title="JavaScript (Browser)">
+    ```javascript
+    fetch('https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents', {
+      method: 'POST',
+      headers: {
+        'x-request-id': 'optional-tracking-id',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        merchantId: 1,
+        userId: 'user_2abc123def456',
+        permissions: ['ReadAccountsDetail', 'ReadBalances', 'ReadTransactionsDetail'],
+        expirationDateTime: '2025-09-30T00:00:00Z',
+        transactionFromDateTime: '2025-01-01T00:00:00Z',
+        callbackUrl: 'https://example.com/callback'
+      })
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    import requests
+
+    url = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents'
+    headers = {
+        'x-request-id': 'optional-tracking-id',
+        'Content-Type': 'application/json'
+    }
+    data = {
+        'merchantId': 1,
+        'userId': 'user_2abc123def456',
+        'permissions': ['ReadAccountsDetail', 'ReadBalances', 'ReadTransactionsDetail'],
+        'expirationDateTime': '2025-09-30T00:00:00Z',
+        'transactionFromDateTime': '2025-01-01T00:00:00Z',
+        'callbackUrl': 'https://example.com/callback'
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+    print(response.json())
+    ```
+  </Tab>
+  <Tab title="PHP">
+    ```php
+    <?php
+    $url = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents';
+    $data = json_encode([
+        'merchantId' => 1,
+        'userId' => 'user_2abc123def456',
+        'permissions' => ['ReadAccountsDetail', 'ReadBalances', 'ReadTransactionsDetail'],
+        'expirationDateTime' => '2025-09-30T00:00:00Z',
+        'transactionFromDateTime' => '2025-01-01T00:00:00Z',
+        'callbackUrl' => 'https://example.com/callback'
+    ]);
+
+    $options = [
+        'http' => [
+            'header' => "x-request-id: optional-tracking-id\r\nContent-Type: application/json\r\n",
+            'method' => 'POST',
+            'content' => $data
+        ]
+    ];
+
+    $context = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    echo $result;
+    ?>
+    ```
+  </Tab>
+  <Tab title="Java">
+    ```java
+    import java.io.IOException;
+    import java.net.URI;
+    import java.net.http.HttpClient;
+    import java.net.http.HttpRequest;
+    import java.net.http.HttpResponse;
+
+    HttpClient client = HttpClient.newHttpClient();
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create("https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents"))
+        .header("x-request-id", "optional-tracking-id")
+        .header("Content-Type", "application/json")
+        .POST(HttpRequest.BodyPublishers.ofString("{\"merchantId\":1,\"userId\":\"user_2abc123def456\",\"permissions\":[\"ReadAccountsDetail\",\"ReadBalances\",\"ReadTransactionsDetail\"],\"expirationDateTime\":\"2025-09-30T00:00:00Z\",\"transactionFromDateTime\":\"2025-01-01T00:00:00Z\",\"callbackUrl\":\"https://example.com/callback\"}"))
+        .build();
+
+    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    System.out.println(response.body());
+    ```
+  </Tab>
+  <Tab title="Go">
+    ```go
+    package main
+
+    import (
+        "bytes"
+        "fmt"
+        "io/ioutil"
+        "net/http"
+    )
+
+    func main() {
+        url := "https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents"
+        jsonStr := []byte(`{"merchantId":1,"userId":"user_2abc123def456","permissions":["ReadAccountsDetail","ReadBalances","ReadTransactionsDetail"],"expirationDateTime":"2025-09-30T00:00:00Z","transactionFromDateTime":"2025-01-01T00:00:00Z","callbackUrl":"https://example.com/callback"}`)
+
+        req, _ := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+        req.Header.Set("x-request-id", "optional-tracking-id")
+        req.Header.Set("Content-Type", "application/json")
+
+        client := &http.Client{}
+        resp, _ := client.Do(req)
+        defer resp.Body.Close()
+
+        body, _ := ioutil.ReadAll(resp.Body)
+        fmt.Println(string(body))
+    }
+    ```
+  </Tab>
+</Tabs>
+
+#### Responses
+
+- **201 Created**: Consent created.
+  ```json
+  {
+    "consentId": "ta:9RSqLjkENRTfTC8AKm3cLeeQPCzpPKgtkPk9hLziJHxx:5zKtXEAq",
+    "requestId": "rq:3dWkVGNFae3FaS3h8UQJ4tBs5SrY:5zKtXEAq",
+    "merchantId": 1,
+    "userId": "user_2abc123def456",
+    "permissions": ["ReadAccountsDetail", "ReadBalances", "ReadTransactionsDetail"],
+    "expirationDateTime": "2025-09-30T00:00:00Z",
+    "transactionFromDateTime": "2025-01-01T00:00:00Z",
+    "status": "pending",
+    "authorizationUrl": "https://web-app.token.io/app/consent/consent_2abc123def456",
+    "errorMessage": "User denied consent",
+    "createdAt": "2024-01-15T10:30:00Z",
+    "updatedAt": "2024-01-15T10:30:00Z"
+  }
+  ```
+- **400 Bad Request**: Invalid input.
+- **500 Internal Server Error**: Server issue.
+
+---
+
+### Authorize AIS Consent
+
+**POST** `/v1/ais/consents/{consentId}/authorize`
+
+Initiates the bank authorization flow.
+
+#### Path Parameters
+
+| Parameter   | Type   | Required | Description             |
+|-------------|--------|----------|-------------------------|
+| `consentId` | string | Yes      | Token.io consent ID.    |
+
+#### Headers
+
+| Header         | Type   | Required | Description             |
+|----------------|--------|----------|-------------------------|
+| `x-request-id` | string | No       | Request ID for tracking.|
+
+#### Example Request
+
+<Tabs>
+  <Tab title="cURL">
+    ```bash
+    curl --request POST \
+      --url https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/authorize \
+      --header 'x-request-id: optional-tracking-id'
+    ```
+  </Tab>
+  <Tab title="Node.js">
+    ```javascript
+    const axios = require('axios');
+
+    const config = {
+      method: 'post',
+      url: 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/authorize',
+      headers: {
+        'x-request-id': 'optional-tracking-id'
+      }
+    };
+
+    axios(config)
+      .then(response => console.log(response.data))
+      .catch(error => console.error(error));
+    ```
+  </Tab>
+  <Tab title="Ruby">
+    ```ruby
+    require 'net/http'
+
+    uri = URI('https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/authorize')
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+
+    request = Net::HTTP::Post.new(uri)
+    request['x-request-id'] = 'optional-tracking-id'
+
+    response = http.request(request)
+    puts response.body
+    ```
+  </Tab>
+  <Tab title="C#">
+    ```csharp
+    using System.Net.Http;
+    using System.Threading.Tasks;
+
+    var client = new HttpClient();
+    var request = new HttpRequestMessage(HttpMethod.Post, "https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/authorize");
+    request.Headers.Add("x-request-id", "optional-tracking-id");
+
+    var response = await client.SendAsync(request);
+    var responseString = await response.Content.ReadAsStringAsync();
+    Console.WriteLine(responseString);
+    ```
+  </Tab>
+  <Tab title="JavaScript (Browser)">
+    ```javascript
+    fetch('https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/authorize', {
+      method: 'POST',
+      headers: {
+        'x-request-id': 'optional-tracking-id'
+      }
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    import requests
+
+    url = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/authorize'
+    headers = {
+        'x-request-id': 'optional-tracking-id'
+    }
+
+    response = requests.post(url, headers=headers)
+    print(response.json())
+    ```
+  </Tab>
+  <Tab title="PHP">
+    ```php
+    <?php
+    $url = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/authorize';
+
+    $options = [
+        'http' => [
+            'header' => "x-request-id: optional-tracking-id\r\n",
+            'method' => 'POST'
+        ]
+    ];
+
+    $context = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    echo $result;
+    ?>
+    ```
+  </Tab>
+  <Tab title="Java">
+    ```java
+    import java.io.IOException;
+    import java.net.URI;
+    import java.net.http.HttpClient;
+    import java.net.http.HttpRequest;
+    import java.net.http.HttpResponse;
+
+    HttpClient client = HttpClient.newHttpClient();
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create("https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/authorize"))
+        .header("x-request-id", "optional-tracking-id")
+        .POST(HttpRequest.BodyPublishers.noBody())
+        .build();
+
+    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    System.out.println(response.body());
+    ```
+  </Tab>
+  <Tab title="Go">
+    ```go
+    package main
+
+    import (
+        "fmt"
+        "io/ioutil"
+        "net/http"
+    )
+
+    func main() {
+        url := "https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/authorize"
+
+        req, _ := http.NewRequest("POST", url, nil)
+        req.Header.Set("x-request-id", "optional-tracking-id")
+
+        client := &http.Client{}
+        resp, _ := client.Do(req)
+        defer resp.Body.Close()
+
+        body, _ := ioutil.ReadAll(resp.Body)
+        fmt.Println(string(body))
+    }
+    ```
+  </Tab>
+</Tabs>
+
+#### Responses
+
+- **200 OK**: Authorization URL generated.
+  ```json
+  {
+    "authorizationUrl": "https://web-app.token.io/app/consent/consent_2abc123def456"
+  }
+  ```
+- **400 Bad Request**: Consent not pending.
+- **404 Not Found**: Consent not found.
+- **500 Internal Server Error**: Server issue.
+
+---
+
+### Get Consent Details
+
+**GET** `/v1/ais/consents/{consentId}`
+
+Retrieves details of a specific consent.
+
+#### Path Parameters
+
+| Parameter   | Type   | Required | Description             |
+|-------------|--------|----------|-------------------------|
+| `consentId` | string | Yes      | Token.io consent ID.    |
+
+#### Headers
+
+| Header         | Type   | Required | Description             |
+|----------------|--------|----------|-------------------------|
+| `x-request-id` | string | No       | Request ID for tracking.|
+
+#### Example Request
+
+<Tabs>
+  <Tab title="cURL">
+    ```bash
+    curl --request GET \
+      --url https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId} \
+      --header 'x-request-id: optional-tracking-id'
+    ```
+  </Tab>
+  <Tab title="Node.js">
+    ```javascript
+    const axios = require('axios');
+
+    const config = {
+      method: 'get',
+      url: 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}',
+      headers: {
+        'x-request-id': 'optional-tracking-id'
+      }
+    };
+
+    axios(config)
+      .then(response => console.log(response.data))
+      .catch(error => console.error(error));
+    ```
+  </Tab>
+  <Tab title="Ruby">
+    ```ruby
+    require 'net/http'
+
+    uri = URI('https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}')
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+
+    request = Net::HTTP::Get.new(uri)
+    request['x-request-id'] = 'optional-tracking-id'
+
+    response = http.request(request)
+    puts response.body
+    ```
+  </Tab>
+  <Tab title="C#">
+    ```csharp
+    using System.Net.Http;
+    using System.Threading.Tasks;
+
+    var client = new HttpClient();
+    var request = new HttpRequestMessage(HttpMethod.Get, "https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}");
+    request.Headers.Add("x-request-id", "optional-tracking-id");
+
+    var response = await client.SendAsync(request);
+    var responseString = await response.Content.ReadAsStringAsync();
+    Console.WriteLine(responseString);
+    ```
+  </Tab>
+  <Tab title="JavaScript (Browser)">
+    ```javascript
+    fetch('https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}', {
+      method: 'GET',
+      headers: {
+        'x-request-id': 'optional-tracking-id'
+      }
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    import requests
+
+    url = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}'
+    headers = {
+        'x-request-id': 'optional-tracking-id'
+    }
+
+    response = requests.get(url, headers=headers)
+    print(response.json())
+    ```
+  </Tab>
+  <Tab title="PHP">
+    ```php
+    <?php
+    $url = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}';
+
+    $options = [
+        'http' => [
+            'header' => "x-request-id: optional-tracking-id\r\n",
+            'method' => 'GET'
+        ]
+    ];
+
+    $context = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    echo $result;
+    ?>
+    ```
+  </Tab>
+  <Tab title="Java">
+    ```java
+    import java.io.IOException;
+    import java.net.URI;
+    import java.net.http.HttpClient;
+    import java.net.http.HttpRequest;
+    import java.net.http.HttpResponse;
+
+    HttpClient client = HttpClient.newHttpClient();
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create("https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}"))
+        .header("x-request-id", "optional-tracking-id")
+        .GET()
+        .build();
+
+    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    System.out.println(response.body());
+    ```
+  </Tab>
+  <Tab title="Go">
+    ```go
+    package main
+
+    import (
+        "fmt"
+        "io/ioutil"
+        "net/http"
+    )
+
+    func main() {
+        url := "https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}"
+
+        req, _ := http.NewRequest("GET", url, nil)
+        req.Header.Set("x-request-id", "optional-tracking-id")
+
+        client := &http.Client{}
+        resp, _ := client.Do(req)
+        defer resp.Body.Close()
+
+        body, _ := ioutil.ReadAll(resp.Body)
+        fmt.Println(string(body))
+    }
+    ```
+  </Tab>
+</Tabs>
+
+#### Responses
+
+- **200 OK**: Consent details (same schema as create consent).
+- **404 Not Found**: Consent not found.
+
+---
+
+### Revoke Consent
+
+**POST** `/v1/ais/consents/{consentId}/revoke`
+
+Revokes the consent and deactivates accounts.
+
+#### Path Parameters
+
+| Parameter   | Type   | Required | Description             |
+|-------------|--------|----------|-------------------------|
+| `consentId` | string | Yes      | Token.io consent ID.    |
+
+#### Headers
+
+| Header         | Type   | Required | Description             |
+|----------------|--------|----------|-------------------------|
+| `x-request-id` | string | No       | Request ID for tracking.|
+
+#### Example Request
+
+<Tabs>
+  <Tab title="cURL">
+    ```bash
+    curl --request POST \
+      --url https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/revoke \
+      --header 'x-request-id: optional-tracking-id'
+    ```
+  </Tab>
+  <Tab title="Node.js">
+    ```javascript
+    const axios = require('axios');
+
+    const config = {
+      method: 'post',
+      url: 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/revoke',
+      headers: {
+        'x-request-id': 'optional-tracking-id'
+      }
+    };
+
+    axios(config)
+      .then(response => console.log(response.data))
+      .catch(error => console.error(error));
+    ```
+  </Tab>
+  <Tab title="Ruby">
+    ```ruby
+    require 'net/http'
+
+    uri = URI('https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/revoke')
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+
+    request = Net::HTTP::Post.new(uri)
+    request['x-request-id'] = 'optional-tracking-id'
+
+    response = http.request(request)
+    puts response.body
+    ```
+  </Tab>
+  <Tab title="C#">
+    ```csharp
+    using System.Net.Http;
+    using System.Threading.Tasks;
+
+    var client = new HttpClient();
+    var request = new HttpRequestMessage(HttpMethod.Post, "https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/revoke");
+    request.Headers.Add("x-request-id", "optional-tracking-id");
+
+    var response = await client.SendAsync(request);
+    var responseString = await response.Content.ReadAsStringAsync();
+    Console.WriteLine(responseString);
+    ```
+  </Tab>
+  <Tab title="JavaScript (Browser)">
+    ```javascript
+    fetch('https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/revoke', {
+      method: 'POST',
+      headers: {
+        'x-request-id': 'optional-tracking-id'
+      }
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    import requests
+
+    url = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/revoke'
+    headers = {
+        'x-request-id': 'optional-tracking-id'
+    }
+
+    response = requests.post(url, headers=headers)
+    print(response.json())
+    ```
+  </Tab>
+  <Tab title="PHP">
+    ```php
+    <?php
+    $url = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/revoke';
+
+    $options = [
+        'http' => [
+            'header' => "x-request-id: optional-tracking-id\r\n",
+            'method' => 'POST'
+        ]
+    ];
+
+    $context = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    echo $result;
+    ?>
+    ```
+  </Tab>
+  <Tab title="Java">
+    ```java
+    import java.io.IOException;
+    import java.net.URI;
+    import java.net.http.HttpClient;
+    import java.net.http.HttpRequest;
+    import java.net.http.HttpResponse;
+
+    HttpClient client = HttpClient.newHttpClient();
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create("https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/revoke"))
+        .header("x-request-id", "optional-tracking-id")
+        .POST(HttpRequest.BodyPublishers.noBody())
+        .build();
+
+    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    System.out.println(response.body());
+    ```
+  </Tab>
+  <Tab title="Go">
+    ```go
+    package main
+
+    import (
+        "fmt"
+        "io/ioutil"
+        "net/http"
+    )
+
+    func main() {
+        url := "https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/revoke"
+
+        req, _ := http.NewRequest("POST", url, nil)
+        req.Header.Set("x-request-id", "optional-tracking-id")
+
+        client := &http.Client{}
+        resp, _ := client.Do(req)
+        defer resp.Body.Close()
+
+        body, _ := ioutil.ReadAll(resp.Body)
+        fmt.Println(string(body))
+    }
+    ```
+  </Tab>
+</Tabs>
+
+#### Responses
+
+- **200 OK**: Revoked successfully.
+  ```json
+  {
+    "success": true
+  }
+  ```
+- **404 Not Found**: Consent not found.
+
+---
+
+### Get User Consents
+
+**GET** `/v1/ais/users/{userId}/consents`
+
+Retrieves all consents for a user and merchant.
+
+#### Path Parameters
+
+| Parameter | Type   | Required | Description   |
+|-----------|--------|----------|---------------|
+| `userId`  | string | Yes      | User ID.      |
+
+#### Query Parameters
+
+| Parameter    | Type    | Required | Description     |
+|--------------|---------|----------|-----------------|
+| `merchantId` | integer | Yes      | Merchant ID.    |
+
+#### Headers
+
+| Header         | Type   | Required | Description             |
+|----------------|--------|----------|-------------------------|
+| `x-request-id` | string | No       | Request ID for tracking.|
+
+#### Example Request
+
+<Tabs>
+  <Tab title="cURL">
+    ```bash
+    curl --request GET \
+      --url 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/users/{userId}/consents?merchantId=1' \
+      --header 'x-request-id: optional-tracking-id'
+    ```
+  </Tab>
+  <Tab title="Node.js">
+    ```javascript
+    const axios = require('axios');
+
+    const config = {
+      method: 'get',
+      url: 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/users/{userId}/consents',
+      headers: {
+        'x-request-id': 'optional-tracking-id'
+      },
+      params: {
+        merchantId: 1
+      }
+    };
+
+    axios(config)
+      .then(response => console.log(response.data))
+      .catch(error => console.error(error));
+    ```
+  </Tab>
+  <Tab title="Ruby">
+    ```ruby
+    require 'net/http'
+
+    uri = URI('https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/users/{userId}/consents?merchantId=1')
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+
+    request = Net::HTTP::Get.new(uri)
+    request['x-request-id'] = 'optional-tracking-id'
+
+    response = http.request(request)
+    puts response.body
+    ```
+  </Tab>
+  <Tab title="C#">
+    ```csharp
+    using System.Net.Http;
+    using System.Threading.Tasks;
+
+    var client = new HttpClient();
+    var request = new HttpRequestMessage(HttpMethod.Get, "https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/users/{userId}/consents?merchantId=1");
+    request.Headers.Add("x-request-id", "optional-tracking-id");
+
+    var response = await client.SendAsync(request);
+    var responseString = await response.Content.ReadAsStringAsync();
+    Console.WriteLine(responseString);
+    ```
+  </Tab>
+  <Tab title="JavaScript (Browser)">
+    ```javascript
+    fetch('https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/users/{userId}/consents?merchantId=1', {
+      method: 'GET',
+      headers: {
+        'x-request-id': 'optional-tracking-id'
+      }
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    import requests
+
+    url = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/users/{userId}/consents'
+    headers = {
+        'x-request-id': 'optional-tracking-id'
+    }
+    params = {
+        'merchantId': 1
+    }
+
+    response = requests.get(url, headers=headers, params=params)
+    print(response.json())
+    ```
+  </Tab>
+  <Tab title="PHP">
+    ```php
+    <?php
+    $url = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/users/{userId}/consents?merchantId=1';
+
+    $options = [
+        'http' => [
+            'header' => "x-request-id: optional-tracking-id\r\n",
+            'method' => 'GET'
+        ]
+    ];
+
+    $context = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    echo $result;
+    ?>
+    ```
+  </Tab>
+  <Tab title="Java">
+    ```java
+    import java.io.IOException;
+    import java.net.URI;
+    import java.net.http.HttpClient;
+    import java.net.http.HttpRequest;
+    import java.net.http.HttpResponse;
+
+    HttpClient client = HttpClient.newHttpClient();
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create("https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/users/{userId}/consents?merchantId=1"))
+        .header("x-request-id", "optional-tracking-id")
+        .GET()
+        .build();
+
+    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    System.out.println(response.body());
+    ```
+  </Tab>
+  <Tab title="Go">
+    ```go
+    package main
+
+    import (
+        "fmt"
+        "io/ioutil"
+        "net/http"
+    )
+
+    func main() {
+        url := "https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/users/{userId}/consents?merchantId=1"
+
+        req, _ := http.NewRequest("GET", url, nil)
+        req.Header.Set("x-request-id", "optional-tracking-id")
+
+        client := &http.Client{}
+        resp, _ := client.Do(req)
+        defer resp.Body.Close()
+
+        body, _ := ioutil.ReadAll(resp.Body)
+        fmt.Println(string(body))
+    }
+    ```
+  </Tab>
+</Tabs>
+
+#### Responses
+
+- **200 OK**: List of consents (array, same schema as create consent).

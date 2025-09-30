@@ -1,0 +1,39 @@
+# Data API Overview
+
+This API enables merchants to securely access and manage user banking data.
+
+## What You Can Do
+
+- **Create and manage user consents** for accessing bank data
+- **Retrieve linked bank accounts**
+- **Fetch account balances and transaction history**
+- **Authenticate securely** using JWT-based authentication
+
+> **Note:** All endpoints require authentication via a Bearer token, except for token generation.
+
+## Key Concepts
+
+- **Consent:**  
+  A user's authorization to access their bank data. Consents have statuses (e.g., `pending`, `authorized`) and expiration dates.
+
+- **Account ID:**  
+  A Token.io-generated identifier for each linked bank account.
+
+- **Permissions:**  
+  Scopes such as `ReadAccountsDetail`, `ReadBalances`, and `ReadTransactionsDetail` (mapped to your API permissions like `ais:accounts:read`).
+
+- **On-Behalf-Of:**  
+  Your API handles Token.io calls on behalf of the user or merchant.
+
+## Authentication & Permissions
+
+- All endpoints (except token generation) require a Bearer token.
+- Permissions are scoped to actions like reading accounts, balances, and transactions.
+
+## Usage Notes
+
+- For production, update the base URL accordingly.
+- Always include an `x-request-id` header for tracking requests.
+
+> **Staging Base URL:**  
+> `https://acount-apis-staging-a8cdb2402163.herokuapp.com`

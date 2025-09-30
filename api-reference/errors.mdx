@@ -1,0 +1,31 @@
+---
+title: "Error Handling & Best Practices"
+---
+
+## Error Handling
+
+Common errors:
+
+- **400**: Validation issues (e.g., missing fields, invalid dates).
+- **401**: Unauthorized (invalid/missing token).
+- **404**: Resource not found (e.g., consent/account).
+- **500**: Internal errors – contact support.
+
+Error responses typically include:
+
+```json
+{
+  "statusCode": 500,
+  "message": "Internal server error"
+}
+```
+
+## Best Practices
+
+- Always check consent status before fetching data.
+- Handle token expiration by regenerating as needed.
+- Use pagination for large transaction sets.
+- Securely store user IDs and merchant IDs.
+- Monitor `x-request-id` for debugging.
+
+> For integration with Token.io, refer to their [Accounts API documentation](https://reference.token.io/tag/Accounts).

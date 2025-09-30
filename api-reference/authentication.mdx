@@ -1,0 +1,219 @@
+---
+title: "Authentication"
+---
+
+## Authentication
+
+Authentication uses JWT Bearer tokens generated via the `/v1/auth/generate-token` endpoint. Tokens are scoped to specific permissions and expire after a set time (e.g., 1 hour).
+
+### Generate Token
+
+**POST** `/v1/auth/generate-token`
+
+Generates a JWT token for authenticating subsequent API calls.
+
+#### Request Body
+
+- **Content-Type**: `application/json`
+
+| Field        | Type    | Required | Description                  |
+|--------------|---------|----------|------------------------------|
+| `userId`     | string  | Yes      | Unique user ID (e.g., Clerk user ID). |
+| `merchantId` | integer | Yes      | Merchant identifier.         |
+| `permissions`| array   | Yes      | List of permissions (e.g., `["ais:accounts:read", "ais:balance:read", "ais:transactions:read"]`). |
+
+#### Example Request
+
+<Tabs>
+  <Tab title="cURL">
+    ```bash
+    curl --request POST \
+      --url https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/auth/generate-token \
+      --header 'Content-Type: application/json' \
+      --data '{
+        "userId": "user_35100188",
+        "merchantId": 1,
+        "permissions": ["ais:accounts:read", "ais:balance:read", "ais:transactions:read"]
+      }'
+    ```
+  </Tab>
+  <Tab title="Node.js">
+    ```javascript
+    const axios = require('axios');
+
+    const data = {
+      userId: 'user_35100188',
+      merchantId: 1,
+      permissions: ['ais:accounts:read', 'ais:balance:read', 'ais:transactions:read']
+    };
+
+    const config = {
+      method: 'post',
+      url: 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/auth/generate-token',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    axios(config)
+      .then(response => console.log(response.data))
+      .catch(error => console.error(error));
+    ```
+  </Tab>
+  <Tab title="Ruby">
+    ```ruby
+    require 'net/http'
+    require 'json'
+
+    uri = URI('https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/auth/generate-token')
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+
+    request = Net::HTTP::Post.new(uri)
+    request['Content-Type'] = 'application/json'
+    request.body = {
+      userId: 'user_35100188',
+      merchantId: 1,
+      permissions: ['ais:accounts:read', 'ais:balance:read', 'ais:transactions:read']
+    }.to_json
+
+    response = http.request(request)
+    puts response.body
+    ```
+  </Tab>
+  <Tab title="C#">
+    ```csharp
+    using System.Net.Http;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    var client = new HttpClient();
+    var request = new HttpRequestMessage(HttpMethod.Post, "https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/auth/generate-token");
+    request.Content = new StringContent("{\"userId\":\"user_35100188\",\"merchantId\":1,\"permissions\":[\"ais:accounts:read\",\"ais:balance:read\",\"ais:transactions:read\"]}", Encoding.UTF8, "application/json");
+
+    var response = await client.SendAsync(request);
+    var responseString = await response.Content.ReadAsStringAsync();
+    Console.WriteLine(responseString);
+    ```
+  </Tab>
+  <Tab title="JavaScript (Browser)">
+    ```javascript
+    fetch('https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/auth/generate-token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userId: 'user_35100188',
+        merchantId: 1,
+        permissions: ['ais:accounts:read', 'ais:balance:read', 'ais:transactions:read']
+      })
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    import requests
+
+    url = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/auth/generate-token'
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    data = {
+        'userId': 'user_35100188',
+        'merchantId': 1,
+        'permissions': ['ais:accounts:read', 'ais:balance:read', 'ais:transactions:read']
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+    print(response.json())
+    ```
+  </Tab>
+  <Tab title="PHP">
+    ```php
+    <?php
+    $url = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/auth/generate-token';
+    $data = json_encode([
+        'userId' => 'user_35100188',
+        'merchantId' => 1,
+        'permissions' => ['ais:accounts:read', 'ais:balance:read', 'ais:transactions:read']
+    ]);
+
+    $options = [
+        'http' => [
+            'header' => "Content-Type: application/json\r\n",
+            'method' => 'POST',
+            'content' => $data
+        ]
+    ];
+
+    $context = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    echo $result;
+    ?>
+    ```
+  </Tab>
+  <Tab title="Java">
+    ```java
+    import java.io.IOException;
+    import java.net.URI;
+    import java.net.http.HttpClient;
+    import java.net.http.HttpRequest;
+    import java.net.http.HttpResponse;
+
+    HttpClient client = HttpClient.newHttpClient();
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create("https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/auth/generate-token"))
+        .header("Content-Type", "application/json")
+        .POST(HttpRequest.BodyPublishers.ofString("{\"userId\":\"user_35100188\",\"merchantId\":1,\"permissions\":[\"ais:accounts:read\",\"ais:balance:read\",\"ais:transactions:read\"]}"))
+        .build();
+
+    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    System.out.println(response.body());
+    ```
+  </Tab>
+  <Tab title="Go">
+    ```go
+    package main
+
+    import (
+        "bytes"
+        "fmt"
+        "io/ioutil"
+        "net/http"
+    )
+
+    func main() {
+        url := "https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/auth/generate-token"
+        jsonStr := []byte(`{"userId":"user_35100188","merchantId":1,"permissions":["ais:accounts:read","ais:balance:read","ais:transactions:read"]}`)
+
+        req, _ := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+        req.Header.Set("Content-Type", "application/json")
+
+        client := &http.Client{}
+        resp, _ := client.Do(req)
+        defer resp.Body.Close()
+
+        body, _ := ioutil.ReadAll(resp.Body)
+        fmt.Println(string(body))
+    }
+    ```
+  </Tab>
+</Tabs>
+
+#### Responses
+
+- **200 OK**: Token generated successfully.
+  ```json
+  {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
+  ```
+- **400 Bad Request**: Invalid input (e.g., missing fields).
+- **500 Internal Server Error**: Server issue.
+
+> Use the generated token in the `Authorization: Bearer <token>` header for other endpoints.

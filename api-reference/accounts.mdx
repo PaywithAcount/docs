@@ -1,0 +1,675 @@
+---
+title: "Accounts"
+---
+
+## Accounts
+
+Endpoints for retrieving account information.
+
+### Get User Bank Accounts
+
+**POST** `/v1/ais/accounts`
+
+Retrieves bank accounts using Token.io's `/accounts` endpoint.
+
+#### Headers
+
+| Header          | Type   | Required | Description                  |
+|-----------------|--------|----------|------------------------------|
+| `Authorization` | string | Yes      | Bearer token.                |
+| `x-request-id`  | string | No       | Request ID for tracking.     |
+
+#### Request Body
+
+- **Content-Type**: `application/json`
+
+| Field        | Type    | Required | Description          |
+|--------------|---------|----------|----------------------|
+| `userId`     | string  | Yes      | User ID.             |
+| `merchantId` | integer | Yes      | Merchant ID.         |
+
+#### Example Request
+
+<Tabs>
+  <Tab title="cURL">
+    ```bash
+    curl --request POST \
+      --url https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/accounts \
+      --header 'Authorization: Bearer <token>' \
+      --header 'Content-Type: application/json' \
+      --data '{
+        "userId": "user_35100188",
+        "merchantId": 1
+      }'
+    ```
+  </Tab>
+  <Tab title="Node.js">
+    ```javascript
+    const axios = require('axios');
+
+    const data = {
+      userId: 'user_35100188',
+      merchantId: 1
+    };
+
+    const config = {
+      method: 'post',
+      url: 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/accounts',
+      headers: {
+        'Authorization': 'Bearer <token>',
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    axios(config)
+      .then(response => console.log(response.data))
+      .catch(error => console.error(error));
+    ```
+  </Tab>
+  <Tab title="Ruby">
+    ```ruby
+    require 'net/http'
+    require 'json'
+
+    uri = URI('https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/accounts')
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+
+    request = Net::HTTP::Post.new(uri)
+    request['Authorization'] = 'Bearer <token>'
+    request['Content-Type'] = 'application/json'
+    request.body = {
+      userId: 'user_35100188',
+      merchantId: 1
+    }.to_json
+
+    response = http.request(request)
+    puts response.body
+    ```
+  </Tab>
+  <Tab title="C#">
+    ```csharp
+    using System.Net.Http;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    var client = new HttpClient();
+    var request = new HttpRequestMessage(HttpMethod.Post, "https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/accounts");
+    request.Headers.Add("Authorization", "Bearer <token>");
+    request.Content = new StringContent("{\"userId\":\"user_35100188\",\"merchantId\":1}", Encoding.UTF8, "application/json");
+
+    var response = await client.SendAsync(request);
+    var responseString = await response.Content.ReadAsStringAsync();
+    Console.WriteLine(responseString);
+    ```
+  </Tab>
+  <Tab title="JavaScript (Browser)">
+    ```javascript
+    fetch('https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/accounts', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer <token>',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userId: 'user_35100188',
+        merchantId: 1
+      })
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    import requests
+
+    url = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/accounts'
+    headers = {
+        'Authorization': 'Bearer <token>',
+        'Content-Type': 'application/json'
+    }
+    data = {
+        'userId': 'user_35100188',
+        'merchantId': 1
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+    print(response.json())
+    ```
+  </Tab>
+  <Tab title="PHP">
+    ```php
+    <?php
+    $url = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/accounts';
+    $data = json_encode([
+        'userId' => 'user_35100188',
+        'merchantId' => 1
+    ]);
+
+    $options = [
+        'http' => [
+            'header' => "Authorization: Bearer <token>\r\nContent-Type: application/json\r\n",
+            'method' => 'POST',
+            'content' => $data
+        ]
+    ];
+
+    $context = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    echo $result;
+    ?>
+    ```
+  </Tab>
+  <Tab title="Java">
+    ```java
+    import java.io.IOException;
+    import java.net.URI;
+    import java.net.http.HttpClient;
+    import java.net.http.HttpRequest;
+    import java.net.http.HttpResponse;
+
+    HttpClient client = HttpClient.newHttpClient();
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create("https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/accounts"))
+        .header("Authorization", "Bearer <token>")
+        .header("Content-Type", "application/json")
+        .POST(HttpRequest.BodyPublishers.ofString("{\"userId\":\"user_35100188\",\"merchantId\":1}"))
+        .build();
+
+    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    System.out.println(response.body());
+    ```
+  </Tab>
+  <Tab title="Go">
+    ```go
+    package main
+
+    import (
+        "bytes"
+        "fmt"
+        "io/ioutil"
+        "net/http"
+    )
+
+    func main() {
+        url := "https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/accounts"
+        jsonStr := []byte(`{"userId":"user_35100188","merchantId":1}`)
+
+        req, _ := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+        req.Header.Set("Authorization", "Bearer <token>")
+        req.Header.Set("Content-Type", "application/json")
+
+        client := &http.Client{}
+        resp, _ := client.Do(req)
+        defer resp.Body.Close()
+
+        body, _ := ioutil.ReadAll(resp.Body)
+        fmt.Println(string(body))
+    }
+    ```
+  </Tab>
+</Tabs>
+
+#### Responses
+
+- **200 OK**: Accounts retrieved.
+  ```json
+  {
+    "userId": "user_2abc123def456",
+    "merchantId": 1,
+    "clientId": "fdae2b5e-0c10-4fc5-8860-4f3e7a00b4bb",
+    "consentId": "ta:EjpMqkVifCjyRJ224tB18CVvenReoiKK1YWgb8J7cK85:5zKtXEAq",
+    "accounts": [
+      {
+        "accountId": "acc_2abc123def456",
+        "bankId": "obDanske",
+        "accountHolderName": "John Doe",
+        "iban": "DK5000400440116243",
+        "currency": "DKK",
+        "balance": "1500.50",
+        "accountType": "CURRENT",
+        "accountDetails": {}
+      }
+    ],
+    "totalAccounts": 2
+  }
+  ```
+- **400 Bad Request**: Invalid parameters.
+- **404 Not Found**: No authorized consent.
+- **500 Internal Server Error**: Server issue.
+
+---
+
+### Get Accounts for Consent
+
+**GET** `/v1/ais/consents/{consentId}/accounts`
+
+Retrieves linked accounts for a consent.
+
+#### Path Parameters
+
+| Parameter   | Type   | Required | Description             |
+|-------------|--------|----------|-------------------------|
+| `consentId` | string | Yes      | Token.io consent ID.    |
+
+#### Headers
+
+| Header         | Type   | Required | Description             |
+|----------------|--------|----------|-------------------------|
+| `x-request-id` | string | No       | Request ID for tracking.|
+
+#### Example Request
+
+<Tabs>
+  <Tab title="cURL">
+    ```bash
+    curl --request GET \
+      --url https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/accounts \
+      --header 'x-request-id: optional-tracking-id'
+    ```
+  </Tab>
+  <Tab title="Node.js">
+    ```javascript
+    const axios = require('axios');
+
+    const config = {
+      method: 'get',
+      url: 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/accounts',
+      headers: {
+        'x-request-id': 'optional-tracking-id'
+      }
+    };
+
+    axios(config)
+      .then(response => console.log(response.data))
+      .catch(error => console.error(error));
+    ```
+  </Tab>
+  <Tab title="Ruby">
+    ```ruby
+    require 'net/http'
+
+    uri = URI('https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/accounts')
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+
+    request = Net::HTTP::Get.new(uri)
+    request['x-request-id'] = 'optional-tracking-id'
+
+    response = http.request(request)
+    puts response.body
+    ```
+  </Tab>
+  <Tab title="C#">
+    ```csharp
+    using System.Net.Http;
+    using System.Threading.Tasks;
+
+    var client = new HttpClient();
+    var request = new HttpRequestMessage(HttpMethod.Get, "https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/accounts");
+    request.Headers.Add("x-request-id", "optional-tracking-id");
+
+    var response = await client.SendAsync(request);
+    var responseString = await response.Content.ReadAsStringAsync();
+    Console.WriteLine(responseString);
+    ```
+  </Tab>
+  <Tab title="JavaScript (Browser)">
+    ```javascript
+    fetch('https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/accounts', {
+      method: 'GET',
+      headers: {
+        'x-request-id': 'optional-tracking-id'
+      }
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    import requests
+
+    url = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/accounts'
+    headers = {
+        'x-request-id': 'optional-tracking-id'
+    }
+
+    response = requests.get(url, headers=headers)
+    print(response.json())
+    ```
+  </Tab>
+  <Tab title="PHP">
+    ```php
+    <?php
+    $url = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/accounts';
+
+    $options = [
+        'http' => [
+            'header' => "x-request-id: optional-tracking-id\r\n",
+            'method' => 'GET'
+        ]
+    ];
+
+    $context = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    echo $result;
+    ?>
+    ```
+  </Tab>
+  <Tab title="Java">
+    ```java
+    import java.io.IOException;
+    import java.net.URI;
+    import java.net.http.HttpClient;
+    import java.net.http.HttpRequest;
+    import java.net.http.HttpResponse;
+
+    HttpClient client = HttpClient.newHttpClient();
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create("https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/accounts"))
+        .header("x-request-id", "optional-tracking-id")
+        .GET()
+        .build();
+
+    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    System.out.println(response.body());
+    ```
+  </Tab>
+  <Tab title="Go">
+    ```go
+    package main
+
+    import (
+        "fmt"
+        "io/ioutil"
+        "net/http"
+    )
+
+    func main() {
+        url := "https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/consents/{consentId}/accounts"
+
+        req, _ := http.NewRequest("GET", url, nil)
+        req.Header.Set("x-request-id", "optional-tracking-id")
+
+        client := &http.Client{}
+        resp, _ := client.Do(req)
+        defer resp.Body.Close()
+
+        body, _ := ioutil.ReadAll(resp.Body)
+        fmt.Println(string(body))
+    }
+    ```
+  </Tab>
+</Tabs>
+
+#### Responses
+
+- **200 OK**: Accounts list.
+  ```json
+  [
+    {
+      "accountId": "account_2abc123def456",
+      "iban": "DK1234567890123456",
+      "accountHolderName": "John Doe",
+      "bankId": "ngp-inal",
+      "currency": "DKK",
+      "isActive": true,
+      "accountDetails": {
+        "accountType": "CURRENT_ACCOUNT",
+        "accountFeatures": {
+          "supportsReceivePayment": true,
+          "supportsSendPayment": true
+        }
+      },
+      "createdAt": "2024-01-15T10:30:00Z",
+      "updatedAt": "2024-01-15T10:30:00Z"
+    }
+  ]
+  ```
+- **400 Bad Request**: Consent not authorized.
+- **404 Not Found**: Consent not found.
+
+---
+
+### Get Account Balance
+
+**POST** `/v1/ais/accounts/balance`
+
+Retrieves balance using Token.io's `/accounts/{accountId}/balance`.
+
+#### Headers
+
+| Header          | Type   | Required | Description                  |
+|-----------------|--------|----------|------------------------------|
+| `Authorization` | string | Yes      | Bearer token.                |
+| `x-request-id`  | string | No       | Request ID for tracking.     |
+
+#### Request Body
+
+- **Content-Type**: `application/json`
+
+| Field        | Type    | Required | Description          |
+|--------------|---------|----------|----------------------|
+| `userId`     | string  | Yes      | User ID.             |
+| `merchantId` | integer | Yes      | Merchant ID.         |
+| `accountId`  | string  | Yes      | Token.io account ID. |
+
+#### Example Request
+
+<Tabs>
+  <Tab title="cURL">
+    ```bash
+    curl --request POST \
+      --url https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/accounts/balance \
+      --header 'Authorization: Bearer <token>' \
+      --header 'Content-Type: application/json' \
+      --data '{
+        "userId": "user_35100188",
+        "merchantId": 1,
+        "accountId": "a:C1hTinv2QaUbNMeTmTqjoXakVgiodpzmwtRKWqsGTbaR:ZhBVAJSGzmfoR"
+      }'
+    ```
+  </Tab>
+  <Tab title="Node.js">
+    ```javascript
+    const axios = require('axios');
+
+    const data = {
+      userId: 'user_35100188',
+      merchantId: 1,
+      accountId: 'a:C1hTinv2QaUbNMeTmTqjoXakVgiodpzmwtRKWqsGTbaR:ZhBVAJSGzmfoR'
+    };
+
+    const config = {
+      method: 'post',
+      url: 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/accounts/balance',
+      headers: {
+        'Authorization': 'Bearer <token>',
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    axios(config)
+      .then(response => console.log(response.data))
+      .catch(error => console.error(error));
+    ```
+  </Tab>
+  <Tab title="Ruby">
+    ```ruby
+    require 'net/http'
+    require 'json'
+
+    uri = URI('https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/accounts/balance')
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+
+    request = Net::HTTP::Post.new(uri)
+    request['Authorization'] = 'Bearer <token>'
+    request['Content-Type'] = 'application/json'
+    request.body = {
+      userId: 'user_35100188',
+      merchantId: 1,
+      accountId: 'a:C1hTinv2QaUbNMeTmTqjoXakVgiodpzmwtRKWqsGTbaR:ZhBVAJSGzmfoR'
+    }.to_json
+
+    response = http.request(request)
+    puts response.body
+    ```
+  </Tab>
+  <Tab title="C#">
+    ```csharp
+    using System.Net.Http;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    var client = new HttpClient();
+    var request = new HttpRequestMessage(HttpMethod.Post, "https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/accounts/balance");
+    request.Headers.Add("Authorization", "Bearer <token>");
+    request.Content = new StringContent("{\"userId\":\"user_35100188\",\"merchantId\":1,\"accountId\":\"a:C1hTinv2QaUbNMeTmTqjoXakVgiodpzmwtRKWqsGTbaR:ZhBVAJSGzmfoR\"}", Encoding.UTF8, "application/json");
+
+    var response = await client.SendAsync(request);
+    var responseString = await response.Content.ReadAsStringAsync();
+    Console.WriteLine(responseString);
+    ```
+  </Tab>
+  <Tab title="JavaScript (Browser)">
+    ```javascript
+    fetch('https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/accounts/balance', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer <token>',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userId: 'user_35100188',
+        merchantId: 1,
+        accountId: 'a:C1hTinv2QaUbNMeTmTqjoXakVgiodpzmwtRKWqsGTbaR:ZhBVAJSGzmfoR'
+      })
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    import requests
+
+    url = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/accounts/balance'
+    headers = {
+        'Authorization': 'Bearer <token>',
+        'Content-Type': 'application/json'
+    }
+    data = {
+        'userId': 'user_35100188',
+        'merchantId': 1,
+        'accountId': 'a:C1hTinv2QaUbNMeTmTqjoXakVgiodpzmwtRKWqsGTbaR:ZhBVAJSGzmfoR'
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+    print(response.json())
+    ```
+  </Tab>
+  <Tab title="PHP">
+    ```php
+    <?php
+    $url = 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/accounts/balance';
+    $data = json_encode([
+        'userId' => 'user_35100188',
+        'merchantId' => 1,
+        'accountId' => 'a:C1hTinv2QaUbNMeTmTqjoXakVgiodpzmwtRKWqsGTbaR:ZhBVAJSGzmfoR'
+    ]);
+
+    $options = [
+        'http' => [
+            'header' => "Authorization: Bearer <token>\r\nContent-Type: application/json\r\n",
+            'method' => 'POST',
+            'content' => $data
+        ]
+    ];
+
+    $context = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    echo $result;
+    ?>
+    ```
+  </Tab>
+  <Tab title="Java">
+    ```java
+    import java.io.IOException;
+    import java.net.URI;
+    import java.net.http.HttpClient;
+    import java.net.http.HttpRequest;
+    import java.net.http.HttpResponse;
+
+    HttpClient client = HttpClient.newHttpClient();
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create("https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/accounts/balance"))
+        .header("Authorization", "Bearer <token>")
+        .header("Content-Type", "application/json")
+        .POST(HttpRequest.BodyPublishers.ofString("{\"userId\":\"user_35100188\",\"merchantId\":1,\"accountId\":\"a:C1hTinv2QaUbNMeTmTqjoXakVgiodpzmwtRKWqsGTbaR:ZhBVAJSGzmfoR\"}"))
+        .build();
+
+    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    System.out.println(response.body());
+    ```
+  </Tab>
+  <Tab title="Go">
+    ```go
+    package main
+
+    import (
+        "bytes"
+        "fmt"
+        "io/ioutil"
+        "net/http"
+    )
+
+    func main() {
+        url := "https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/ais/accounts/balance"
+        jsonStr := []byte(`{"userId":"user_35100188","merchantId":1,"accountId":"a:C1hTinv2QaUbNMeTmTqjoXakVgiodpzmwtRKWqsGTbaR:ZhBVAJSGzmfoR"}`)
+
+        req, _ := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+        req.Header.Set("Authorization", "Bearer <token>")
+        req.Header.Set("Content-Type", "application/json")
+
+        client := &http.Client{}
+        resp, _ := client.Do(req)
+        defer resp.Body.Close()
+
+        body, _ := ioutil.ReadAll(resp.Body)
+        fmt.Println(string(body))
+    }
+    ```
+  </Tab>
+</Tabs>
+
+#### Responses
+
+- **200 OK**: Balance retrieved.
+  ```json
+  {
+    "userId": "user_2abc123def456",
+    "merchantId": 1,
+    "accountId": "a:6CpoqfjmyhfT9QAbcTZ2gcnb8egGfKLKMpxzuZPoaMLB:BzQQ5nvcb7TM4Qts",
+    "balance": {
+      "value": "1000.50",
+      "currency": "DKK",
+      "lastUpdated": "2024-01-01T12:00:00Z"
+    },
+    "accountDetails": {
+      "iban": "DK5000400440116243",
+      "accountHolderName": "John Doe",
+      "bankId": "bank_123"
+    }
+  }
+  ```
+- **400 Bad Request**: Invalid parameters.
+- **404 Not Found**: No authorized consent.
+- **500 Internal Server Error**: Server issue.
