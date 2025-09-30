@@ -13,16 +13,13 @@ This API enables merchants to securely access and manage user banking data.
 
 ## Key Concepts
 
-- **Consent:**  
+- **Consent:**\
   A user's authorization to access their bank data. Consents have statuses (e.g., `pending`, `authorized`) and expiration dates.
-
-- **Account ID:**  
+- **Account ID:**\
   A Token.io-generated identifier for each linked bank account.
-
-- **Permissions:**  
+- **Permissions:**\
   Scopes such as `ReadAccountsDetail`, `ReadBalances`, and `ReadTransactionsDetail` (mapped to your API permissions like `ais:accounts:read`).
-
-- **On-Behalf-Of:**  
+- **On-Behalf-Of:**\
   Your API handles Token.io calls on behalf of the user or merchant.
 
 ## Authentication & Permissions
@@ -35,5 +32,5 @@ This API enables merchants to securely access and manage user banking data.
 - For production, update the base URL accordingly.
 - Always include an `x-request-id` header for tracking requests.
 
-> **Staging Base URL:**  
+> **Staging Base URL:**\
 > `https://acount-apis-staging-a8cdb2402163.herokuapp.com`
