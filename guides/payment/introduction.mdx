@@ -6,8 +6,8 @@ description: "All the essentials for enabling customers to make payments."
 The core concept of customer payments with our system revolves around the SDK.
 
 - For each customer payment, a new Checkout Session will be automatically created.
-  - **First Time User- **During the payment session, the user will automatically be redirected to AcountPay's user dashboard to create an account and link their bank account to save their IBAN for future use. Once account linking is complete they will be redirected to their bank's page to authorize payment. 
-  - **Returning User- **The user will be redirected to AcountPay's user dahsboard for login and then directly to their bank's page to authorize payment
+  - **First Time User- **During the payment session, the user will automatically be redirected to AcountPay's user dashboard to create an account and link their bank account to save their IBAN for future use. Once account linking is complete they will be redirected to their bank's page to authorize payment.
+  - **Returning User**- The user will be redirected to AcountPay's user dahsboard for login and then directly to their bank's page to authorize payment
 - This session includes a redirectUrl parameter, which allows our SDK to direct the customer to our hosted payment page.
 
 ### Integration Flow:
@@ -36,8 +36,7 @@ The core concept of customer payments with our system revolves around the SDK.
   <Step title="Payment Process Overview">
     The payment process starts with the initiatePayment method, which securely creates a payment request and begins the transaction. This ensures that the payment details are processed safely and efficiently. Once the payment is completed successfully, a confirmation callback is triggered to send the user to the success callback URL.
 
-    To use this method, your account must be properly set up with a valid client ID.
-    This ensures that transactions are securely linked to your business and processed without interruptions.
+    To use this method, your account must be properly set up with a valid client ID. This ensures that transactions are securely linked to your business and processed without interruptions.
 
     The entire payment process is seamlessly managed within our Checkout Page which the SDK will automatically redirect you to.
   </Step>
