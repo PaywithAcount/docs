@@ -9,105 +9,362 @@ Before installing the SDK, ensure you have:
 
 # Installing AcountPay SDK
 
-Install via npm or yarn.
+Choose from multiple installation methods based on your setup.
 
-## Prerequisites
+## Quick Start (Recommended)
 
-- Node.js 16.x or higher (recommended)
-- Modern browser with ES6 support (for web apps)
-- React 16.8\+ (only if you're integrating in a React app)
-- AcountPay Client ID - Required for SDK initialization
-- API Base URL - Required for SDK configuration (e.g., 'https://acount-apis-7886a9e16dc3.herokuapp.com' for production)
+For fastest setup, use our CDN:
 
-## Installation
-
-Install using npm:
-
-```bash
-npm i @acountpay/sdk
+```html
+<script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
+<script>
+  const acount = new Acount({
+    clientId: 'your-client-id-here'
+  });
+</script>
 ```
 
-Install the SDK using **yarn**:
+## Package Manager Installation
+
+### NPM Installation
 
 ```bash
-yarn add @acountpay/sdk
+npm i @acountpay/pis-sdk
 ```
 
-## Package Contents
+### Yarn Installation
 
-The SDK includes:
+```bash
+yarn add @acountpay/pis-sdk
+```
 
-- Core user payment flow utilities (no embedded UI/components)
-- TypeScript definitions for editor IntelliSense and types
-- ESM/CJS/UMD builds for broad compatibility
+## Usage Methods
 
-## Verify Installation
-
-### ESM/CommonJS usage:
+### 1. ES Module Import
 
 ```typescript
-// ES module (Vite, Next.js, etc.)
-import AcountPay from '@acountpay/sdk';
+import AcountPay from '@acountpay/pis-sdk';
 
-const sdk = new AcountPay({ clientId: '<YOUR_CLIENT_ID>' });
-console.log('AcountPay SDK loaded:', typeof AcountPay === 'function'); // should be true
+const acount = new AcountPay({ 
+  clientId: 'your-client-id' 
+});
 ```
 
-### UMD (script tag) usage:
+### 2. CDN Script Tag (Recommended)
 
 ```html
-<script src="/node_modules/@acountpay/sdk/dist/acount.umd.js"></script>
+<script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
 <script>
-  const sdk = new Acount({ clientId: '<YOUR_CLIENT_ID>' });
-  console.log('AcountPay SDK loaded:', typeof Acount === 'function'); // should be true
+  const acount = new Acount({ 
+    clientId: 'your-client-id' 
+  });
 </script>
 ```
 
-### CDN usage (recommended for quick testing):
+### 3. NPM Package UMD Build
 
 ```html
-<script src="https://unpkg.com/@acountpay/sdk@1.0.0/dist/acount.umd.js"></script>
+<script src="/node_modules/@acountpay/pis-sdk/dist/acount.umd.js"></script>
 <script>
-  const sdk = new Acount({ clientId: '<YOUR_CLIENT_ID>' });
-  console.log('AcountPay SDK loaded:', typeof Acount === 'function'); // should be true
+  const acount = new Acount({ 
+    clientId: 'your-client-id' 
+  });
 </script>
+```
+
+### 4. Unpkg CDN
+
+```html
+<script src="https://unpkg.com/@acountpay/pis-sdk@1.0.0/dist/acount.umd.js"></script>
+<script>
+  const acount = new Acount({ 
+    clientId: 'your-client-id' 
+  });
+</script>
+```
+
+## Platform-Specific Integration
+
+### Shopify
+
+1. Go to **Online Store** → **Themes** → **Edit HTML/CSS**
+2. Add to `theme.liquid` before `</head>`:
+
+```html
+<script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
+```
+
+3. Add payment button to checkout or product pages:
+
+```html
+<button onclick="payWithAcount()">Pay with AcountPay</button>
+<script>
+function payWithAcount() {
+  const acount = new Acount({
+    clientId: "{{ settings.acountpay_client_id }}"
+  });
+  
+  acount.initiatePayment({
+    amount: {{ cart.total_price | divided_by: 100.0 }},
+    referenceNumber: "{{ checkout.order_number }}",
+    onSuccess: function(result) {
+      window.location.href = "/checkout/success";
+    }
+  });
+}
+</script>
+```
+
+### WooCommerce
+
+1. Install "Header and Footer Scripts" plugin
+2. Add to header scripts:
+
+```html
+<script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
+```
+
+3. Add to checkout page:
+
+```php
+<?php
+// Add to functions.php
+function add_acountpay_button() {
+    ?>
+    <button id="acountpay-btn">Pay with AcountPay</button>
+    <script>
+    document.getElementById('acountpay-btn').onclick = function() {
+        const acount = new Acount({
+            clientId: "<?php echo get_option('acountpay_client_id'); ?>"
+        });
+        
+        acount.initiatePayment({
+            amount: <?php echo WC()->cart->get_total('raw'); ?>,
+            referenceNumber: "ORDER-<?php echo time(); ?>",
+            onSuccess: function(result) {
+                window.location.href = "<?php echo wc_get_checkout_url(); ?>?payment=success";
+            }
+        });
+    };
+    </script>
+    <?php
+}
+add_action('woocommerce_checkout_after_order_review', 'add_acountpay_button');
+?>
+```
+
+### React
+
+```bash
+npm i @acountpay/pis-sdk
+```
+
+```typescript
+// components/PaymentButton.tsx
+import AcountPay from '@acountpay/pis-sdk';
+
+export function PaymentButton() {
+  const handlePayment = async () => {
+    const acount = new AcountPay({
+      clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID!
+    });
+    
+    await acount.initiateUserPaymentByEmail({
+      amount: 99.99,
+      requestId: 'ORDER-123',
+      callbackURL: `${window.location.origin}/payment-callback`
+    });
+  };
+
+  return (
+    <button onClick={handlePayment}>
+      Pay with AcountPay
+    </button>
+  );
+}
+```
+
+### Vue.js
+
+```bash
+npm i @acountpay/pis-sdk
+```
+
+```vue
+<template>
+  <button @click="handlePayment">Pay with AcountPay</button>
+</template>
+
+<script>
+import AcountPay from '@acountpay/pis-sdk';
+
+export default {
+  methods: {
+    async handlePayment() {
+      const acount = new AcountPay({
+        clientId: process.env.VUE_APP_ACOUNTPAY_CLIENT_ID
+      });
+      
+      await acount.initiateUserPaymentByEmail({
+        amount: 99.99,
+        requestId: 'ORDER-123',
+        callbackURL: `${window.location.origin}/payment-callback`
+      });
+    }
+  }
+};
+</script>
+```
+
+### Next.js
+
+```bash
+npm i @acountpay/pis-sdk
+```
+
+```typescript
+// pages/checkout.tsx
+import { useEffect, useState } from 'react';
+
+export default function Checkout() {
+  const [acount, setAcount] = useState<any>(null);
+
+  useEffect(() => {
+    // Dynamic import for client-side only
+    import('@acountpay/pis-sdk').then((module) => {
+      const AcountPay = module.default;
+      setAcount(new AcountPay({
+        clientId: process.env.NEXT_PUBLIC_ACOUNTPAY_CLIENT_ID!
+      }));
+    });
+  }, []);
+
+  const handlePayment = async () => {
+    if (acount) {
+      await acount.initiateUserPaymentByEmail({
+        amount: 99.99,
+        requestId: 'ORDER-123',
+        callbackURL: `${window.location.origin}/payment-callback`
+      });
+    }
+  };
+
+  return (
+    <button onClick={handlePayment} disabled={!acount}>
+      Pay with AcountPay
+    </button>
+  );
+}
+```
+
+## Package Information
+
+### Contents
+- Core payment flow utilities
+- TypeScript definitions
+- ESM/CJS/UMD builds for broad compatibility
+- No embedded UI components (integrates with your existing design)
+
+### Browser Support
+- Modern browsers with ES6 support
+- Chrome 60+, Firefox 60+, Safari 12+, Edge 79+
+
+### Bundle Sizes
+- UMD: ~15KB gzipped
+- ESM: ~12KB gzipped
+- No external dependencies
+
+## Environment Variables
+
+For framework integrations, set up environment variables:
+
+```bash
+# .env file
+REACT_APP_ACOUNTPAY_CLIENT_ID=your-client-id
+# or
+VUE_APP_ACOUNTPAY_CLIENT_ID=your-client-id
+# or
+NEXT_PUBLIC_ACOUNTPAY_CLIENT_ID=your-client-id
 ```
 
 ## Important Notes
 
-- **UMD Global Constructor**: When using the UMD build, the global constructor is `Acount`, not `AcountPay`
-- **Runtime Configuration**: The SDK is configured at runtime (no baked-in API URLs). Set `window.__ACOUNTPAY_API_URL__` in HTML or pass `apiBaseUrl` to the constructor
-- **Authentication**: If your backend requires authentication, provide a bearer token at runtime
-- **Version Pinning**: For production use, pin to a specific version (e.g., `@1.0.0`) to avoid unexpected changes
+### Global Constructor Name
+- **NPM/ESM**: Import as `AcountPay`
+- **UMD/Script Tag**: Global constructor is `Acount` (not `AcountPay`)
 
-## Quick Start Example
+### Client ID Setup
+1. Get your Client ID from AcountPay merchant dashboard
+2. Use sandbox Client ID for testing
+3. Switch to production Client ID for live payments
+
+### Version Pinning
+For production, pin to specific versions:
+
+```html
+<!-- Pin to specific version -->
+<script src="https://unpkg.com/@acountpay/pis-sdk@1.0.4/dist/acount.umd.js"></script>
+```
+
+## 5-Minute Integration Example
+
+Complete working example:
 
 ```html
 <!DOCTYPE html>
 <html>
 <head>
-  <script>
-    // Runtime configuration
-    window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-7886a9e16dc3.herokuapp.com';
-    window.__ACOUNTPAY_ENV__ = 'sandbox';
-  </script>
-  <script src="https://unpkg.com/@acountpay/sdk@1.0.0/dist/acount.umd.js"></script>
+  <title>AcountPay Integration</title>
+  <script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
 </head>
 <body>
-  <button onclick="pay()">Pay with AcountPay</button>
+  <h1>Checkout</h1>
+  <p>Total: $99.99</p>
+  
+  <button id="pay-user">Pay with AcountPay Account</button>
+  <button id="pay-guest">Pay as Guest</button>
+
   <script>
-    const sdk = new Acount({ clientId: 'your-client-id' });
-    
-    async function pay() {
-      await sdk.initiateUserPaymentByEmail({
-        amount: 1,
-        requestId: 'PAY' + Date.now(),
-        callbackURL: 'https://your-callback-url.com'
+    const acount = new Acount({
+      clientId: 'your-client-id-here' // Replace with your Client ID
+    });
+
+    // User payment
+    document.getElementById('pay-user').onclick = async function() {
+      try {
+        await acount.initiateUserPaymentByEmail({
+          amount: 99.99,
+          requestId: 'ORDER-' + Date.now(),
+          callbackURL: window.location.origin + '/payment-success'
+        });
+      } catch (error) {
+        alert('Payment failed: ' + error.message);
+      }
+    };
+
+    // Guest payment
+    document.getElementById('pay-guest').onclick = function() {
+      acount.initiatePayment({
+        amount: 99.99,
+        referenceNumber: 'ORDER-' + Date.now(),
+        onSuccess: function(result) {
+          alert('Payment successful!');
+          window.location.href = '/order-confirmation';
+        },
+        onError: function(error) {
+          alert('Payment failed: ' + error.message);
+        }
       });
-    }
+    };
   </script>
 </body>
 </html>
 ```
 
-Next: [Setup SDK](/sdk/setup_sdk)
+## Next Steps
+
+1. **Get Client ID**: Sign up at [merchant.acountpay.com](https://merchant.acountpay.com)
+2. **Test Integration**: Use sandbox Client ID for testing
+3. **Go Live**: Switch to production Client ID
+
+See [Setup SDK](/sdk/setup_sdk) for detailed configuration and [Initialize Payment](/sdk/initialize_payment) for implementation examples.

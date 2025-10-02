@@ -10,7 +10,7 @@ This guide provides step-by-step instructions for initializing the AIS SDK and i
 ### Basic Initialization
 
 ```typescript
-import { Account } from 'acountais';
+import { Account } from '@acountpay/ais-sdk';
 
 const account = new Account({
   clientId: 'fdae2b5e-0c10-4fc5-8860-4f3e7a00b4bb'
@@ -34,7 +34,7 @@ const account = new Account({
 Ensure the SDK is properly initialized before using any methods:
 
 ```typescript
-import { Account } from 'acountais';
+import { Account } from '@acountpay/ais-sdk';
 
 const account = new Account({
   clientId: 'fdae2b5e-0c10-4fc5-8860-4f3e7a00b4bb'
@@ -44,7 +44,7 @@ const account = new Account({
 ### Step 2: Implement Account Linking
 
 ```typescript
-import { ACCOUNT_PERMISSIONS } from 'acountais';
+import { ACCOUNT_PERMISSIONS } from '@acountpay/ais-sdk';
 
 // Link a customer's bank account
 const result = await account.linkAccount({
@@ -121,7 +121,7 @@ const transactions = await account.getAccountTransactions({
 <head>
   <meta charset="UTF-8">
   <title>AIS SDK Integration</title>
-  <script src="https://unpkg.com/acountais@latest/dist/acount.umd.js"></script>
+  <script src="https://unpkg.com/@acountpay/ais-sdk@latest/dist/acount.umd.js"></script>
 </head>
 <body>
   <h1>Link Your Bank Account</h1>
@@ -129,7 +129,7 @@ const transactions = await account.getAccountTransactions({
   <div id="status"></div>
 
   <script>
-    const account = new Acount.Account({
+    const account = new AcountAIS.Account({
       clientId: 'your-client-id',
       apiBaseUrl: 'https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1'
     });

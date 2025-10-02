@@ -17,13 +17,11 @@ Initialize the SDK with your client ID and environment settings.
 ### Basic Setup
 
 ```typescript
-import AcountPay from '@acountpay/sdk';
+import AcountPay from '@acountpay/pis-sdk';
 
 // Initialize the SDK
-const sdk = new AcountPay({
+const acount = new AcountPay({
   clientId: 'your-client-id-here', // Required: From merchant dashboard
-  env: 'sandbox', // Optional: 'sandbox' or 'production' (default: 'production')
-  apiBaseUrl: 'https://acount-apis-7886a9e16dc3.herokuapp.com' // Optional: Override default API URL
 });
 ```
 
@@ -32,14 +30,23 @@ const sdk = new AcountPay({
 If using the UMD build, initialize without importing:
 
 ```html
-<script src="https://unpkg.com/@acountpay/sdk@1.0.0/dist/acount.umd.js"></script>
+<script src="https://unpkg.com/@acountpay/pis-sdk@1.0.0/dist/acount.umd.js"></script>
 <script>
-  // Runtime configuration (optional)
-  window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-7886a9e16dc3.herokuapp.com';
-  window.__ACOUNTPAY_ENV__ = 'sandbox';
+  // Initialize the SDK - note the global name is 'Acount'
+  const acount = new Acount({
+    clientId: 'your-client-id-here'
+  });
+</script>
+```
 
-  // Initialize the SDK
-  const sdk = new Acount({
+### CDN Integration (Recommended)
+
+For quick setup, use our CDN:
+
+```html
+<script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
+<script>
+  const acount = new Acount({
     clientId: 'your-client-id-here'
   });
 </script>
@@ -49,34 +56,191 @@ If using the UMD build, initialize without importing:
 
 | Option       | Type     | Required | Description |
 |--------------|----------|----------|-------------|
-| `clientId`   | `string` | ✅ Yes   | Your AcountPay client ID |
-| `env`        | `string` | ❌ No    | Environment: 'sandbox' or 'production' (default: 'production') |
-| `apiBaseUrl` | `string` | ❌ No    | Custom API base URL (overrides default) |
+| `clientId`   | `string` | ✅ Yes   | Your AcountPay client ID from the dashboard |
 
-## Runtime Configuration (UMD Only)
+## Payment Methods
 
-For UMD builds, you can set global variables before loading the script:
+The SDK provides two main payment initiation methods:
 
-- `window.__ACOUNTPAY_API_URL__`: API base URL
-- `window.__ACOUNTPAY_ENV__`: Environment ('sandbox' or 'production')
+### User Payment (Recommended)
 
-## Testing Setup
-
-To test in sandbox mode:
+For users with AcountPay accounts or those who want to create one:
 
 ```typescript
-const sdk = new AcountPay({
-  clientId: 'your-sandbox-client-id',
-  env: 'sandbox'
+await acount.initiateUserPaymentByEmail({
+  amount: 99.99,
+  requestId: 'ORDER-123',
+  callbackURL: 'https://your-website.com/payment-callback'
 });
 ```
 
+### Guest Payment
+
+For one-time payments without account creation:
+
+```typescript
+acount.initiatePayment({
+  amount: 99.99,
+  referenceNumber: 'ORDER-123',
+  onSuccess: (result) => {
+    console.log('Payment successful:', result);
+    // Redirect to success page or update UI
+  },
+  onError: (error) => {
+    console.error('Payment failed:', error);
+    // Handle error gracefully
+  }
+});
+```
+
+## Method Parameters
+
+### `initiateUserPaymentByEmail`
+
+| Parameter     | Type     | Required | Description |
+|---------------|----------|----------|-------------|
+| `amount`      | `number` | ✅ Yes   | Payment amount in major currency units |
+| `requestId`   | `string` | ✅ Yes   | Unique request identifier (your order ID) |
+| `callbackURL` | `string` | ✅ Yes   | URL to redirect after payment completion |
+
+### `initiatePayment`
+
+| Parameter         | Type       | Required | Description |
+|-------------------|------------|----------|-------------|
+| `amount`          | `number`   | ✅ Yes   | Payment amount in major currency units |
+| `referenceNumber` | `string`   | ✅ Yes   | Unique reference number (your order ID) |
+| `onSuccess`       | `function` | ❌ No    | Success callback function |
+| `onError`         | `function` | ❌ No    | Error callback function |
+
+## Real Implementation Examples
+
+### E-commerce Checkout
+
+```javascript
+// Replace demo values with actual transaction data
+const acount = new Acount({
+  clientId: "your-actual-client-id" // From AcountPay dashboard
+});
+
+// For guest payments
+document.getElementById('pay-button').onclick = function() {
+  acount.initiatePayment({
+    amount: cartTotal, // Your actual cart total
+    referenceNumber: orderId, // Your actual order ID
+    onSuccess: function(result) {
+      // Redirect to order confirmation
+      window.location.href = '/order-confirmation?order=' + orderId;
+    },
+    onError: function(error) {
+      alert('Payment failed. Please try again.');
+    }
+  });
+};
+```
+
+### Subscription Payment
+
+```javascript
+// For user accounts (recommended for subscriptions)
+async function processSubscription() {
+  const acount = new Acount({
+    clientId: "your-client-id"
+  });
+  
+  try {
+    await acount.initiateUserPaymentByEmail({
+      amount: subscriptionPrice,
+      requestId: 'SUB-' + userId + '-' + Date.now(),
+      callbackURL: 'https://yoursite.com/subscription-callback'
+    });
+  } catch (error) {
+    console.error('Subscription payment failed:', error);
+  }
+}
+```
+
+## Platform Integration
+
+### Shopify Integration
+
+```html
+<!-- Add to theme.liquid before </head> -->
+<script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
+
+<!-- Add payment button on checkout page -->
+<script>
+const acount = new Acount({
+  clientId: "{{ settings.acountpay_client_id }}"
+});
+
+document.getElementById('acountpay-button').onclick = function() {
+  acount.initiatePayment({
+    amount: {{ cart.total_price | divided_by: 100.0 }},
+    referenceNumber: "{{ checkout.order_number }}",
+    onSuccess: function(result) {
+      window.location.href = "{{ checkout.success_url }}";
+    }
+  });
+};
+</script>
+```
+
+### WooCommerce Integration
+
+```php
+// Add to functions.php
+function enqueue_acountpay_sdk() {
+    wp_enqueue_script('acountpay-sdk', 'https://cdn.acountpay.com/sdk/acount.umd.js', array(), '1.0.0', true);
+}
+add_action('wp_enqueue_scripts', 'enqueue_acountpay_sdk');
+```
+
+```javascript
+// Checkout page integration
+const acount = new Acount({
+  clientId: "<?php echo get_option('acountpay_client_id'); ?>"
+});
+
+jQuery('#acountpay-payment-button').click(function() {
+  acount.initiatePayment({
+    amount: <?php echo WC()->cart->get_total('raw'); ?>,
+    referenceNumber: "ORDER-" + Date.now(),
+    onSuccess: function(result) {
+      window.location.href = "<?php echo wc_get_checkout_url(); ?>?payment=success";
+    }
+  });
+});
+```
+
+## Important Notes
+
+### Client ID Setup
+1. Get your Client ID from the AcountPay merchant dashboard
+2. Replace `"your-client-id-here"` with your actual Client ID
+3. Use different Client IDs for sandbox and production environments
+
+### Amount Handling
+- Always use your actual transaction amounts
+- Amount should be in major currency units (e.g., 10.50 for $10.50)
+- Example: Replace `amount: 1` with `amount: productPrice` or `amount: cartTotal`
+
+### Reference Numbers
+- Use your actual order IDs or transaction references
+- This allows you to match payments back to orders in your system
+- Example: Replace `"ORDER-123"` with your actual order ID
+
 ## Next Steps
 
-Once set up, you can initiate payments. See [Initialize Payment](/sdk/initialize_payment) for examples.
+Once set up, test your integration:
+
+1. **Sandbox Testing**: Use sandbox Client ID for testing
+2. **Production**: Switch to production Client ID when ready
+3. **Webhooks**: Set up webhook endpoints for payment notifications
+
+See [Initialize Payment](/sdk/initialize_payment) for detailed examples and [Integration Testing](/guides/payment/integration_testing) for testing guidelines.
 
 ## Troubleshooting
 
-- **"AcountPay is not defined"**: Ensure the UMD script is loaded before initialization.
-- **Invalid client ID**: Verify your client ID from the merchant dashboard.
-- **API errors**: Check your API base URL and environment settings.
+- **"Acount is not defined"**: Ensure the script is loaded before initialization
+- **Invalid client ID**: Verify your client ID from the merchant dashboard
+- **Payment not processing**: Check browser console for errors and ensure all parameters are provided

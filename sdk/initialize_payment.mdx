@@ -1,78 +1,69 @@
 ---
 title: "Initialize Payment"
-description: "Start the user payment flow via the AcountPay SDK (redirects to user.acountpay.com to link IBAN)"
+description: "Start the user payment flow via the AcountPay SDK"
 ---
 
-After setting up the SDK, you can start the user-first flow. This redirects the customer to the AcountPay user portal to securely link IBAN and consent to payment, then returns them to your app.
+After setting up the SDK, you can initiate payments using two methods: User Payment (for account holders) or Guest Payment (for one-time payments).
 
-## Parameters
+## Payment Methods Overview
+
+| Method | Use Case | User Experience | Best For |
+|--------|----------|-----------------|----------|
+| **User Payment** | Account holders or new users | Redirects to AcountPay portal | Subscriptions, repeat customers |
+| **Guest Payment** | One-time payments | In-page payment flow | Single purchases, checkout flows |
+
+## User Payment Method
+
+For users with AcountPay accounts or those who want to create one.
+
+### Parameters
 
 | Parameter     | Type     | Required | Description                                                            |
 | ------------- | -------- | -------- | ---------------------------------------------------------------------- |
-| `amount`      | `number` | ✅ Yes    | Payment amount in major currency units (e.g., 1 = 1 DKK)               |
-| `requestId`   | `string` | ✅ Yes    | Unique request identifier (e.g., PAY123456)                            |
-| `callbackURL` | `string` | ✅ Yes    | URL the user is returned to after the portal flow                      |
-| `authToken`   | `string` | ❌ No     | Bearer token if your backend enforces authentication for this endpoint |
+| `amount`      | `number` | ✅ Yes    | Payment amount in major currency units (e.g., 10.50 = $10.50)         |
+| `requestId`   | `string` | ✅ Yes    | Unique request identifier (your order ID)                             |
+| `callbackURL` | `string` | ✅ Yes    | URL the user is returned to after the payment flow                    |
 
-## API Endpoint
+### Implementation
 
-The SDK calls your backend endpoint:
+```javascript
+const acount = new Acount({
+  clientId: 'your-client-id'
+});
 
-POST BASE/sdk/users/clientId/payment-request
-
-**Request Body:**
-
-```json
-{ 
-  "amount": 1, 
-  "requestId": "PAY123456", 
-  "callbackURL": "https://your-callback-url.com" 
-}
+await acount.initiateUserPaymentByEmail({
+  amount: 99.99,
+  requestId: 'ORDER-' + orderId,
+  callbackURL: 'https://your-website.com/payment-callback'
+});
 ```
 
-**Success Response:**
-
-```json
-{ 
-  "redirectTo": "https://user.acountpay.com/flow/..." 
-}
-```
-
-The SDK automatically redirects the browser to the `redirectTo` URL.
-
-## Complete Examples
-
-### Simple HTML Page
+### Complete Example
 
 ```html
 <!DOCTYPE html>
 <html>
 <head>
-  <script>
-    // Runtime configuration
-    window.__ACOUNTPAY_API_URL__ = 'https://acount-apis-7886a9e16dc3.herokuapp.com';
-    window.__ACOUNTPAY_ENV__ = 'sandbox';
-  </script>
-  <script src="https://unpkg.com/@acountpay/sdk@1.0.0/dist/acount.umd.js"></script>
+  <script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
 </head>
 <body>
-  <button onclick="pay()">Pay with AcountPay</button>
+  <button onclick="payAsUser()">Pay with AcountPay Account</button>
+  
   <script>
-    const sdk = new Acount({ 
-      clientId: 'your-client-id',
-      env: 'sandbox'
-    });
-    
-    async function pay() {
+    async function payAsUser() {
+      const acount = new Acount({ 
+        clientId: 'your-client-id'
+      });
+      
       try {
-        localStorage.setItem('paymentType', 'user');
-        await sdk.initiateUserPaymentByEmail({
-          amount: 1,
-          requestId: 'PAY' + Date.now(),
-          callbackURL: 'https://your-callback-url.com'
+        await acount.initiateUserPaymentByEmail({
+          amount: 99.99, // Your actual amount
+          requestId: 'ORDER-123', // Your actual order ID
+          callbackURL: 'https://your-website.com/payment-success'
         });
       } catch (error) {
         console.error('Payment failed:', error);
+        alert('Payment could not be initiated. Please try again.');
       }
     }
   </script>
@@ -80,37 +71,107 @@ The SDK automatically redirects the browser to the `redirectTo` URL.
 </html>
 ```
 
-### Framework Components
+## Guest Payment Method
 
-<Tabs>
-  <Tab title="React">
+For one-time payments without requiring account creation.
+
+### Parameters
+
+| Parameter         | Type       | Required | Description                                           |
+| ----------------- | ---------- | -------- | ----------------------------------------------------- |
+| `amount`          | `number`   | ✅ Yes    | Payment amount in major currency units               |
+| `referenceNumber` | `string`   | ✅ Yes    | Unique reference number (your order ID)              |
+| `onSuccess`       | `function` | ❌ No     | Success callback function                            |
+| `onError`         | `function` | ❌ No     | Error callback function                              |
+
+### Implementation
+
+```javascript
+const acount = new Acount({
+  clientId: 'your-client-id'
+});
+
+acount.initiatePayment({
+  amount: 99.99,
+  referenceNumber: 'ORDER-' + orderId,
+  onSuccess: (result) => {
+    console.log('Payment successful:', result);
+    // Redirect to success page or update UI
+    window.location.href = '/payment-success';
+  },
+  onError: (error) => {
+    console.error('Payment failed:', error);
+    // Handle error gracefully
+    alert('Payment failed. Please try again.');
+  }
+});
+```
+
+### Complete Example
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
+</head>
+<body>
+  <button onclick="payAsGuest()">Pay as Guest</button>
+  
+  <script>
+    function payAsGuest() {
+      const acount = new Acount({ 
+        clientId: 'your-client-id'
+      });
+      
+      acount.initiatePayment({
+        amount: 99.99, // Your actual amount
+        referenceNumber: 'ORDER-123', // Your actual order ID
+        onSuccess: function(result) {
+          console.log('Payment successful:', result);
+          window.location.href = '/order-confirmation';
+        },
+        onError: function(error) {
+          console.error('Payment failed:', error);
+          alert('Payment failed. Please try again.');
+        }
+      });
+    }
+  </script>
+</body>
+</html>
+```
+
+## Framework Integration Examples
+
+### React Component
 
 ```typescript
-import { useEffect, useState } from 'react';
-import AcountPay from '@acountpay/sdk';
+import { useState } from 'react';
 
-export function PayButton() {
-  const [sdk, setSdk] = useState<AcountPay | null>(null);
+// Note: Add script tag to index.html or load dynamically
+// <script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
+
+declare global {
+  interface Window {
+    Acount: any;
+  }
+}
+
+export function PaymentButton({ amount, orderId }: { amount: number; orderId: string }) {
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const acountSdk = new AcountPay({
-      clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID!,
-      env: process.env.REACT_APP_ACOUNTPAY_ENV || 'production',
-    });
-    setSdk(acountSdk);
-  }, []);
-
-  const handlePay = async () => {
-    if (!sdk) return;
-    
+  const handleUserPayment = async () => {
     setLoading(true);
+    const acount = new window.Acount({
+      clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID
+    });
+    
     try {
-      localStorage.setItem('paymentType', 'user');
-      await sdk.initiateUserPaymentByEmail({
-        amount: 1,
-        requestId: 'PAY' + Date.now(),
-        callbackURL: process.env.REACT_APP_ACOUNTPAY_REDIRECT_URI!,
+      await acount.initiateUserPaymentByEmail({
+        amount,
+        requestId: orderId,
+        callbackURL: `${window.location.origin}/payment-callback`
       });
     } catch (error) {
       console.error('Payment failed:', error);
@@ -118,177 +179,219 @@ export function PayButton() {
     }
   };
 
+  const handleGuestPayment = () => {
+    setLoading(true);
+    const acount = new window.Acount({
+      clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID
+    });
+    
+    acount.initiatePayment({
+      amount,
+      referenceNumber: orderId,
+      onSuccess: (result: any) => {
+        console.log('Payment successful:', result);
+        window.location.href = '/payment-success';
+      },
+      onError: (error: any) => {
+        console.error('Payment failed:', error);
+        setLoading(false);
+      }
+    });
+  };
+
   return (
-    <button onClick={handlePay} disabled={loading || !sdk}>
-      {loading ? 'Processing...' : 'Pay with AcountPay'}
-    </button>
+    <div className="space-y-4">
+      <button 
+        onClick={handleUserPayment} 
+        disabled={loading}
+        className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg"
+      >
+        {loading ? 'Processing...' : 'Pay with AcountPay Account'}
+      </button>
+      
+      <button 
+        onClick={handleGuestPayment} 
+        disabled={loading}
+        className="w-full bg-green-600 text-white py-3 px-6 rounded-lg"
+      >
+        {loading ? 'Processing...' : 'Pay as Guest'}
+      </button>
+    </div>
   );
 }
 ```
 
-  </Tab>
-  <Tab title="Vue.js">
+### Vue.js Component
 
-```javascript
+```vue
 <template>
-  <button @click="handlePay" :disabled="loading || !sdk">
-    {{ loading ? 'Processing...' : 'Pay with AcountPay' }}
-  </button>
+  <div class="payment-buttons">
+    <button @click="handleUserPayment" :disabled="loading">
+      {{ loading ? 'Processing...' : 'Pay with AcountPay Account' }}
+    </button>
+    <button @click="handleGuestPayment" :disabled="loading">
+      {{ loading ? 'Processing...' : 'Pay as Guest' }}
+    </button>
+  </div>
 </template>
 
 <script>
-import AcountPay from '@acountpay/sdk';
-
 export default {
-  name: 'PayButton',
+  name: 'PaymentButton',
+  props: {
+    amount: {
+      type: Number,
+      required: true
+    },
+    orderId: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
-      sdk: null,
       loading: false
     };
   },
-  mounted() {
-    this.sdk = new AcountPay({
-      clientId: process.env.VUE_APP_ACOUNTPAY_CLIENT_ID,
-      env: process.env.VUE_APP_ACOUNTPAY_ENV || 'production'
-    });
-  },
   methods: {
-    async handlePay() {
-      if (!this.sdk) return;
-      
+    async handleUserPayment() {
       this.loading = true;
+      const acount = new window.Acount({
+        clientId: process.env.VUE_APP_ACOUNTPAY_CLIENT_ID
+      });
+      
       try {
-        localStorage.setItem('paymentType', 'user');
-        await this.sdk.initiateUserPaymentByEmail({
-          amount: 1,
-          requestId: 'PAY' + Date.now(),
-          callbackURL: process.env.VUE_APP_ACOUNTPAY_REDIRECT_URI
+        await acount.initiateUserPaymentByEmail({
+          amount: this.amount,
+          requestId: this.orderId,
+          callbackURL: `${window.location.origin}/payment-callback`
         });
       } catch (error) {
         console.error('Payment failed:', error);
         this.loading = false;
       }
+    },
+    
+    handleGuestPayment() {
+      this.loading = true;
+      const acount = new window.Acount({
+        clientId: process.env.VUE_APP_ACOUNTPAY_CLIENT_ID
+      });
+      
+      acount.initiatePayment({
+        amount: this.amount,
+        referenceNumber: this.orderId,
+        onSuccess: (result) => {
+          console.log('Payment successful:', result);
+          this.$router.push('/payment-success');
+        },
+        onError: (error) => {
+          console.error('Payment failed:', error);
+          this.loading = false;
+        }
+      });
     }
   }
 };
 </script>
 ```
 
-  </Tab>
-  <Tab title="Angular">
-
-```typescript
-import { Component, OnInit } from '@angular/core';
-import AcountPay from '@acountpay/sdk';
-
-@Component({
-  selector: 'app-pay-button',
-  template: `
-    <button 
-      (click)="handlePay()" 
-      [disabled]="loading || !sdk">
-      {{ loading ? 'Processing...' : 'Pay with AcountPay' }}
-    </button>
-  `
-})
-export class PayButtonComponent implements OnInit {
-  sdk: AcountPay | null = null;
-  loading = false;
-
-  ngOnInit() {
-    this.sdk = new AcountPay({
-      clientId: this.envService.get('ACOUNTPAY_CLIENT_ID'),
-      env: this.envService.get('ACOUNTPAY_ENV') || 'production'
-    });
-  }
-
-  async handlePay() {
-    if (!this.sdk) return;
-    
-    this.loading = true;
-    try {
-      localStorage.setItem('paymentType', 'user');
-      await this.sdk.initiateUserPaymentByEmail({
-        amount: 1,
-        requestId: 'PAY' + Date.now(),
-        callbackURL: this.envService.get('ACOUNTPAY_REDIRECT_URI')
-      });
-    } catch (error) {
-      console.error('Payment failed:', error);
-      this.loading = false;
-    }
-  }
-}
-```
-
-  </Tab>
-</Tabs>
-
 ## Flow Overview
 
-1. **SDK Setup**: Initialize with your Client ID and environment
+### User Payment Flow
+1. **SDK Initialization**: Initialize with your Client ID
 2. **Payment Request**: SDK calls your backend with payment details
-3. **Backend Response**: Backend returns a `redirectTo` URL for the AcountPay user portal
-4. **User Portal**: Browser redirects to portal where user:
+3. **User Portal**: Browser redirects to AcountPay user portal where user:
+   - Creates account or logs in
    - Links IBAN to their account
    - Authenticates and consents to payment
-5. **Return**: User is redirected back to the`callbackURL`specified during onboarding
+4. **Return**: User is redirected back to your `callbackURL`
 
-## Important Notes
-
-- **Environment Configuration**: Always set the `env` option to match your environment (`'sandbox'` or `'production'`)
-- **Whitelisting**: Ensure your app origin and callbackURL are whitelisted on your backend
-- **Currency Units**: Use major currency units for amounts (e.g., `1` = 1 DKK)
-- **Authentication**: Provide a bearer token if your environment requires authentication
-
-## Troubleshooting
-
-### 400 Bad Request
-
-- **Cause**: Missing or incorrect parameters
-- **Solution**: Check `clientId`, `callbackURL`, and `amount` units
-- **Common Issues**:
-  - Missing environment configuration
-  - Incorrect callback URL format
-  - Amount not in major units
-
-### 403 Forbidden
-
-- **Cause**: Authentication or authorization issues
-- **Solution**:
-  - Check if bearer token is required and provided
-  - Verify client ID is correct
-  - Ensure app origin is whitelisted
-
-### "AcountPay is not defined" Error
-
-- **Cause**: Using wrong constructor name with UMD build
-- **Solution**: Use `new Acount({ clientId: '...' })` for UMD builds
-
-### No Redirect After Payment
-
-- **Cause**: Backend not returning correct response
-- **Solution**: Ensure your backend returns `{ redirectTo: "<URL>" }` for successful requests
-
-### Environment Issues
-
-- **Cause**: Missing or incorrect environment configuration
-- **Solution**: Set `env: 'sandbox'` or `env: 'production'` in SDK initialization
+### Guest Payment Flow
+1. **SDK Initialization**: Initialize with your Client ID
+2. **Payment Interface**: SDK opens payment interface
+3. **Bank Selection**: User selects their bank
+4. **Bank Authentication**: User authenticates with their bank
+5. **Completion**: Success/error callbacks are triggered
 
 ## Error Handling
 
-Common HTTP status codes and their meanings:
+### Common Error Scenarios
 
-| Status | Meaning      | Common Causes                               |
-| ------ | ------------ | ------------------------------------------- |
-| 400    | Bad Request  | Invalid parameters, missing required fields |
-| 401    | Unauthorized | Invalid client ID or missing authentication |
-| 403    | Forbidden    | Insufficient permissions or blocked origin  |
-| 500    | Server Error | Internal server error, try again later      |
+```javascript
+acount.initiatePayment({
+  amount: 99.99,
+  referenceNumber: 'ORDER-123',
+  onSuccess: (result) => {
+    // Payment successful
+    console.log('Payment completed:', result);
+    // Update UI, redirect, etc.
+  },
+  onError: (error) => {
+    // Handle different error types
+    if (error.type === 'user_cancelled') {
+      console.log('User cancelled the payment');
+      // Show appropriate message
+    } else if (error.type === 'insufficient_funds') {
+      console.log('Insufficient funds');
+      // Suggest alternative payment methods
+    } else {
+      console.error('Payment error:', error);
+      // Show generic error message
+    }
+  }
+});
+```
 
-## Troubleshooting Common Issues
+## Important Implementation Notes
 
-- **400 Bad Request**: Check that all required parameters are provided and correctly formatted
-- **CORS Errors**: Ensure your domain is whitelisted on the backend
-- **Callback URL Issues**: Verify the URL is accessible and properly formatted
+### Real Values Usage
+
+```javascript
+// ❌ Don't use demo values in production
+const acount = new Acount({
+  clientId: "YOUR_CLIENT_ID_HERE" // Replace with actual client ID
+});
+
+acount.initiatePayment({
+  amount: 1, // Replace with actual amount
+  referenceNumber: "PAY" + Math.random(), // Replace with actual order ID
+});
+
+// ✅ Use actual values
+const acount = new Acount({
+  clientId: "682ad984-e692-4438-8503-b7e8b6ca1f94" // Your real client ID
+});
+
+acount.initiatePayment({
+  amount: cartTotal, // Your actual transaction amount
+  referenceNumber: orderId, // Your actual order reference
+});
+```
+
+### Amount Guidelines
+- Use major currency units (e.g., 10.50 for $10.50)
+- Don't use smallest currency units (cents/pence)
+- Ensure amounts match your actual transaction values
+
+### Reference Number Best Practices
+- Use your internal order ID or transaction reference
+- Ensure uniqueness to avoid duplicate payments
+- This allows matching successful payments back to orders
+
+## Testing
+
+### Sandbox Testing
+1. Use your sandbox Client ID from the dashboard
+2. Test both payment methods
+3. Verify callback handling
+4. Check webhook notifications
+
+### Production Checklist
+- [ ] Production Client ID configured
+- [ ] Callback URLs working
+- [ ] Error handling implemented
+- [ ] Success flow tested
+- [ ] Webhook endpoints ready
+
+For detailed testing guidelines, see [Integration Testing](/guides/payment/integration_testing).

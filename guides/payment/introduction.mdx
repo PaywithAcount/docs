@@ -19,7 +19,7 @@ The core concept of customer payments with our system revolves around the SDK.
     ### Steps to Install:
 
     1. Choose your preferred programming language.
-    2. Install the SDK using the package manager for your environment.
+    2. Install the SDK using the package manager for your environment: `npm i @acountpay/pis-sdk`
     3. Configure the SDK with your API credentials.
 
     Once installed, you can start creating checkout sessions, handling payments, and managing transactions seamlessly.
@@ -27,14 +27,14 @@ The core concept of customer payments with our system revolves around the SDK.
   <Step title="Initialize Account in the SDK">
     To start using the SDK, you need to initialize your account. This involves:
 
-    1. **Importing the SDK** into your project.
+    1. **Importing the SDK** into your project: `import AcountPay from '@acountpay/pis-sdk'`
     2. **Providing your API credentials** for authentication.
     3. **Setting up the SDK instance** to connect with our payment system.
 
     Once initialized, you can create checkout sessions, process payments, and manage transactions seamlessly.
   </Step>
   <Step title="Payment Process Overview">
-    The payment process starts with the initiatePayment method, which securely creates a payment request and begins the transaction. This ensures that the payment details are processed safely and efficiently. Once the payment is completed successfully, a confirmation callback is triggered to send the user to the success callback URL.
+    The payment process starts with the `initiateUserPaymentByEmail` method, which securely creates a payment request and begins the transaction. This ensures that the payment details are processed safely and efficiently. Once the payment is completed successfully, a confirmation callback is triggered to send the user to the success callback URL.
 
     To use this method, your account must be properly set up with a valid client ID. This ensures that transactions are securely linked to your business and processed without interruptions.
 
