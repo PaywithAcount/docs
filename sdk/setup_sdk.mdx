@@ -209,217 +209,222 @@ acount.initiatePayment({
 
 ## Platform Integration
 
-### Simple Website Integration
+<AccordionGroup>
+  <Accordion title="Simple Website Integration">
+    For basic websites, add this to your checkout page:
 
-For basic websites, add this to your checkout page:
+    ```html
+    <!-- Add SDK -->
+    <script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
 
-```html
-<!-- Add SDK -->
-<script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
+    <!-- Payment Button -->
+    <button id="acountpay-btn" class="payment-button">
+      Pay with Bank Account
+    </button>
 
-<!-- Payment Button -->
-<button id="acountpay-btn" class="payment-button">
-  Pay with Bank Account
-</button>
-
-<script>
-document.getElementById('acountpay-btn').onclick = function() {
-  const acount = new Acount({
-    clientId: "your-client-id" // Replace with your actual client ID
-  });
-  
-  acount.initiatePayment({
-    amount: parseFloat(document.getElementById('total-amount').textContent),
-    referenceNumber: document.getElementById('order-id').value,
-    onSuccess: function(result) {
-      // Handle success
-      window.location.href = '/thank-you';
-    },
-    onError: function(error) {
-      // Handle error
-      alert('Payment failed: ' + error.message);
-    }
-  });
-};
-</script>
-```
-
-### WordPress/WooCommerce Simple Integration
-
-Add this to your theme's `functions.php`:
-
-```php
-// Add SDK script
-function add_acountpay_scripts() {
-    if (is_checkout()) {
-        wp_enqueue_script('acountpay-sdk', 'https://cdn.acountpay.com/sdk/acount.umd.js', array(), '1.0.4', true);
-    }
-}
-add_action('wp_enqueue_scripts', 'add_acountpay_scripts');
-
-// Add payment button to checkout
-function add_acountpay_button() {
-    if (is_checkout() && WC()->cart && WC()->cart->get_total('raw') > 0) {
-        ?>
-        <div style="margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
-            <h4>Pay with Bank Account</h4>
-            <button type="button" id="acountpay-btn" style="background: #0066cc; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">
-                Pay <?php echo WC()->cart->get_total(); ?> with AcountPay
-            </button>
-        </div>
-        
-        <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('acountpay-btn').onclick = function() {
-                if (typeof Acount === 'undefined') {
-                    alert('Payment system loading, please wait...');
-                    return;
-                }
-                
-                const acount = new Acount({
-                    clientId: "<?php echo esc_js(get_option('acountpay_client_id', '')); ?>"
-                });
-                
-                acount.initiatePayment({
-                    amount: <?php echo WC()->cart->get_total('raw'); ?>,
-                    referenceNumber: "ORDER-" + Date.now(),
-                    onSuccess: function(result) {
-                        alert('Payment successful! Your order will be processed.');
-                        window.location.reload();
-                    },
-                    onError: function(error) {
-                        alert('Payment failed: ' + error.message);
-                    }
-                });
-            };
-        });
-        </script>
-        <?php
-    }
-}
-add_action('woocommerce_checkout_after_customer_details', 'add_acountpay_button');
-
-// Add admin setting for client ID
-function acountpay_admin_setting() {
-    add_settings_field(
-        'acountpay_client_id',
-        'AcountPay Client ID',
-        function() {
-            $value = get_option('acountpay_client_id', '');
-            echo '<input type="text" name="acountpay_client_id" value="' . esc_attr($value) . '" />';
-            echo '<p class="description">Get this from your AcountPay dashboard</p>';
+    <script>
+    document.getElementById('acountpay-btn').onclick = function() {
+      const acount = new Acount({
+        clientId: "your-client-id" // Replace with your actual client ID
+      });
+      
+      acount.initiatePayment({
+        amount: parseFloat(document.getElementById('total-amount').textContent),
+        referenceNumber: document.getElementById('order-id').value,
+        onSuccess: function(result) {
+          // Handle success
+          window.location.href = '/thank-you';
         },
-        'general',
-        'default'
-    );
-    register_setting('general', 'acountpay_client_id');
-}
-add_action('admin_init', 'acountpay_admin_setting');
-```
+        onError: function(error) {
+          // Handle error
+          alert('Payment failed: ' + error.message);
+        }
+      });
+    };
+    </script>
+    ```
+  </Accordion>
 
-**Configuration:** Go to WordPress Admin → Settings → General → AcountPay Client ID
+  <Accordion title="WordPress/WooCommerce Integration">
+    Add this to your theme's `functions.php`:
 
-### Shopify Simple Integration
-
-1. Go to **Online Store** → **Themes** → **Actions** → **Edit code**
-2. In `theme.liquid`, add before `</head>`:
-
-```html
-<script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
-```
-
-3. Create `snippets/acountpay-button.liquid`:
-
-```liquid
-<div style="margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 8px;">
-  <h3>Pay with Bank Account</h3>
-  <button id="acountpay-btn" style="background: #0066cc; color: white; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; width: 100%;">
-    Pay with AcountPay
-  </button>
-</div>
-
-<script>
-document.getElementById('acountpay-btn').onclick = function() {
-  if (typeof Acount === 'undefined') {
-    alert('Payment system loading...');
-    return;
-  }
-  
-  const acount = new Acount({
-    clientId: "{{ settings.acountpay_client_id }}"
-  });
-  
-  {% if product %}
-    const amount = {{ product.price | divided_by: 100.0 }};
-    const reference = "SHOPIFY-PRODUCT-{{ product.id }}-" + Date.now();
-  {% elsif cart %}
-    const amount = {{ cart.total_price | divided_by: 100.0 }};
-    const reference = "SHOPIFY-CART-" + Date.now();
-  {% else %}
-    const amount = 0;
-    const reference = "SHOPIFY-" + Date.now();
-  {% endif %}
-  
-  if (amount <= 0) {
-    alert('Please add items to cart first');
-    return;
-  }
-  
-  acount.initiatePayment({
-    amount: amount,
-    referenceNumber: reference,
-    onSuccess: function(result) {
-      alert('Payment successful!');
-      window.location.href = "/pages/payment-success";
-    },
-    onError: function(error) {
-      alert('Payment failed: ' + error.message);
+    ```php
+    // Add SDK script
+    function add_acountpay_scripts() {
+        if (is_checkout()) {
+            wp_enqueue_script('acountpay-sdk', 'https://cdn.acountpay.com/sdk/acount.umd.js', array(), '1.0.4', true);
+        }
     }
-  });
-};
-</script>
-```
+    add_action('wp_enqueue_scripts', 'add_acountpay_scripts');
 
-4. Add to `config/settings_schema.json`:
+    // Add payment button to checkout
+    function add_acountpay_button() {
+        if (is_checkout() && WC()->cart && WC()->cart->get_total('raw') > 0) {
+            ?>
+            <div style="margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+                <h4>Pay with Bank Account</h4>
+                <button type="button" id="acountpay-btn" style="background: #0066cc; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">
+                    Pay <?php echo WC()->cart->get_total(); ?> with AcountPay
+                </button>
+            </div>
+            
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('acountpay-btn').onclick = function() {
+                    if (typeof Acount === 'undefined') {
+                        alert('Payment system loading, please wait...');
+                        return;
+                    }
+                    
+                    const acount = new Acount({
+                        clientId: "<?php echo esc_js(get_option('acountpay_client_id', '')); ?>"
+                    });
+                    
+                    acount.initiatePayment({
+                        amount: <?php echo WC()->cart->get_total('raw'); ?>,
+                        referenceNumber: "ORDER-" + Date.now(),
+                        onSuccess: function(result) {
+                            alert('Payment successful! Your order will be processed.');
+                            window.location.reload();
+                        },
+                        onError: function(error) {
+                            alert('Payment failed: ' + error.message);
+                        }
+                    });
+                };
+            });
+            </script>
+            <?php
+        }
+    }
+    add_action('woocommerce_checkout_after_customer_details', 'add_acountpay_button');
 
-```json
-{
-  "name": "AcountPay",
-  "settings": [
+    // Add admin setting for client ID
+    function acountpay_admin_setting() {
+        add_settings_field(
+            'acountpay_client_id',
+            'AcountPay Client ID',
+            function() {
+                $value = get_option('acountpay_client_id', '');
+                echo '<input type="text" name="acountpay_client_id" value="' . esc_attr($value) . '" />';
+                echo '<p class="description">Get this from your AcountPay dashboard</p>';
+            },
+            'general',
+            'default'
+        );
+        register_setting('general', 'acountpay_client_id');
+    }
+    add_action('admin_init', 'acountpay_admin_setting');
+    ```
+
+    **Configuration:** Go to WordPress Admin → Settings → General → AcountPay Client ID
+  </Accordion>
+
+  <Accordion title="Shopify Integration">
+    **Step 1:** Go to **Online Store** → **Themes** → **Actions** → **Edit code**
+
+    **Step 2:** In `theme.liquid`, add before `</head>`:
+    ```html
+    <script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
+    ```
+
+    **Step 3:** Create `snippets/acountpay-button.liquid`:
+    ```liquid
+    <div style="margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+      <h3>Pay with Bank Account</h3>
+      <button id="acountpay-btn" style="background: #0066cc; color: white; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; width: 100%;">
+        Pay with AcountPay
+      </button>
+    </div>
+
+    <script>
+    document.getElementById('acountpay-btn').onclick = function() {
+      if (typeof Acount === 'undefined') {
+        alert('Payment system loading...');
+        return;
+      }
+      
+      const acount = new Acount({
+        clientId: "{{ settings.acountpay_client_id }}"
+      });
+      
+      {% if product %}
+        const amount = {{ product.price | divided_by: 100.0 }};
+        const reference = "SHOPIFY-PRODUCT-{{ product.id }}-" + Date.now();
+      {% elsif cart %}
+        const amount = {{ cart.total_price | divided_by: 100.0 }};
+        const reference = "SHOPIFY-CART-" + Date.now();
+      {% else %}
+        const amount = 0;
+        const reference = "SHOPIFY-" + Date.now();
+      {% endif %}
+      
+      if (amount <= 0) {
+        alert('Please add items to cart first');
+        return;
+      }
+      
+      acount.initiatePayment({
+        amount: amount,
+        referenceNumber: reference,
+        onSuccess: function(result) {
+          alert('Payment successful!');
+          window.location.href = "/pages/payment-success";
+        },
+        onError: function(error) {
+          alert('Payment failed: ' + error.message);
+        }
+      });
+    };
+    </script>
+    ```
+
+    **Step 4:** Add to `config/settings_schema.json`:
+    ```json
     {
-      "type": "text",
-      "id": "acountpay_client_id",
-      "label": "Client ID",
-      "info": "Get this from AcountPay dashboard"
+      "name": "AcountPay",
+      "settings": [
+        {
+          "type": "text",
+          "id": "acountpay_client_id",
+          "label": "Client ID",
+          "info": "Get this from AcountPay dashboard"
+        }
+      ]
     }
-  ]
-}
-```
+    ```
 
-5. Include in templates:
-```liquid
-<!-- In product-form.liquid or cart.liquid -->
-{% if settings.acountpay_client_id != blank %}
-  {% include 'acountpay-button' %}
-{% endif %}
-```
+    **Step 5:** Include in templates:
+    ```liquid
+    <!-- In product-form.liquid or cart.liquid -->
+    {% if settings.acountpay_client_id != blank %}
+      {% include 'acountpay-button' %}
+    {% endif %}
+    ```
+  </Accordion>
+</AccordionGroup>
 
 ## Important Notes
 
-### Client ID Setup
-1. Get your Client ID from the AcountPay merchant dashboard
-2. Replace `"your-client-id-here"` with your actual Client ID
-3. Use different Client IDs for sandbox and production environments
+<AccordionGroup>
+  <Accordion title="Client ID Setup">
+    1. Get your Client ID from the AcountPay merchant dashboard
+    2. Replace `"your-client-id-here"` with your actual Client ID
+    3. Use different Client IDs for sandbox and production environments
+  </Accordion>
 
-### Amount and Reference Guidelines
-- **Amount**: Use actual transaction amounts in major currency units (e.g., 10.50 for $10.50)
-- **Reference**: Use your actual order IDs or transaction references for tracking
-- This allows you to match successful payments back to orders in your system
+  <Accordion title="Amount and Reference Guidelines">
+    - **Amount**: Use actual transaction amounts in major currency units (e.g., 10.50 for $10.50)
+    - **Reference**: Use your actual order IDs or transaction references for tracking
+    - This allows you to match successful payments back to orders in your system
+  </Accordion>
 
-### Testing
-1. **Sandbox**: Use sandbox Client ID for testing
-2. **Production**: Switch to production Client ID when ready
-3. **Error Handling**: Always implement proper error handling
+  <Accordion title="Testing">
+    1. **Sandbox**: Use sandbox Client ID for testing
+    2. **Production**: Switch to production Client ID when ready
+    3. **Error Handling**: Always implement proper error handling
+  </Accordion>
+</AccordionGroup>
 
 ## Next Steps
 
