@@ -5,13 +5,13 @@ description: "Quick setup guide to get your AcountPay Merchant POS system up and
 
 # Getting Started with AcountPay Merchant POS
 
-Get your AcountPay Merchant POS system up and running in minutes. This guide walks you through account creation, initial setup, and your first transaction.
+Get your AcountPay Merchant POS system up and running in minutes.
 
 ## Quick Start Checklist
 
 <Steps>
   <Step title="Create Your Account">
-    Sign up for an AcountPay merchant account at [merchant.acountpay.com](https://merchant.acountpay.com) and complete verification
+    Sign up at [merchant.acountpay.com](https://merchant.acountpay.com) and complete verification
   </Step>
   <Step title="Configure Basic Settings">
     Set up your business information, currency, and payment preferences
@@ -32,82 +32,82 @@ Get your AcountPay Merchant POS system up and running in minutes. This guide wal
 
 ## Account Creation
 
-### Sign Up Process
+Visit [merchant.acountpay.com](https://merchant.acountpay.com) to create your account.
 
-<img src="/images/signup-process.png" alt="Account Signup" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+**What You'll Need:**
+- Business email address
+- Business name and registration details
+- Tax information (VAT number)
+- Business bank account details
+- Valid ID and business documents
 
-**Get Started:**
-Visit [merchant.acountpay.com](https://merchant.acountpay.com) to create your AcountPay merchant account.
-
-**Registration Requirements:**
-- **Business Email**: Valid business email address
-- **Business Name**: Legal name of your business
-- **Business Type**: Corporation, LLC, sole proprietorship, etc.
-- **Tax Information**: VAT number or tax ID
-- **Contact Details**: Phone number and address
-
-**Verification Process:**
-1. **Email Verification**: Confirm your email address
-2. **Phone Verification**: SMS verification code
-3. **Business Verification**: Upload business documents
-4. **Bank Account Verification**: Confirm account ownership
-
-**Required Documents:**
-```markdown
-## Document Checklist
-
-- **Business Registration**: Certificate of incorporation or business license
-- **Tax Documents**: VAT registration or tax identification
-- **Bank Statement**: Recent statement showing business account
-- **ID Verification**: Government-issued ID for business owner
-- **Address Proof**: Utility bill or official correspondence
-```
-
-### Account Approval
-
-**Approval Timeline:**
-- **Instant Approval**: Most applications approved immediately
-- **Standard Review**: 1-2 business days for complex cases
-- **Additional Information**: May require extra documentation
-
-**Approval Status:**
-```javascript
-const approvalStatus = {
-  application: {
-    status: "approved", // pending, approved, rejected, needs_info
-    submittedAt: "2024-01-15T10:30:00Z",
-    approvedAt: "2024-01-15T11:45:00Z",
-    reviewTime: "1h 15m"
-  },
-  verification: {
-    email: "verified",
-    phone: "verified",
-    business: "verified",
-    bank: "pending"
-  }
-};
-```
+**Verification is usually instant** - most merchants are approved within minutes.
 
 ## Initial Setup
 
-### Business Configuration
+### Business Information
+- Enter your business name, address, and contact details
+- Choose your primary currency (EUR, DKK, SEK, NOK, GBP)
+- Set your tax rate and preferences
 
-<img src="/images/business-setup.png" alt="Business Setup" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+### Bank Account Connection
+- Select your bank from the list of supported institutions
+- Log in through your bank's secure interface
+- Grant permission for AcountPay to receive payments
+- Verify account ownership
 
-**Basic Information:**
-```javascript
-const businessSetup = {
-  businessInfo: {
-    legalName: "Your Business Ltd",
-    tradingName: "Your Store",
-    industry: "retail", // retail, food_service, professional_services
-    website: "https://yourbusiness.com"
-  },
-  location: {
-    address: "123 Business Street",
-    city: "Copenhagen",
-    postalCode: "1000",
-    country: "Denmark"
+**Supported Banks:** Major European banks including Danske Bank, Nordea, SEB, Handelsbanken, DNB, and many others.
+
+## Product Setup (Optional)
+
+### Quick Product Entry
+Add your products with:
+- Product name and description
+- Price and category
+- Stock levels (if applicable)
+
+### Bulk Import
+Upload a CSV file with multiple products at once. Download our template to get started.
+
+## Your First Payment
+
+### Test Transaction
+1. Open the POS terminal in your dashboard
+2. Enter a small test amount (€0.01)
+3. Generate a QR code
+4. Scan with your phone to complete the test payment
+
+### Verify Everything Works
+- Check the transaction appears in your dashboard
+- Confirm you receive payment notifications
+- Verify funds will be transferred to your account
+
+## Going Live
+
+### Pre-Launch Checklist
+- [ ] Bank account successfully linked
+- [ ] Test payment completed
+- [ ] Business information accurate
+- [ ] Staff trained on the system
+
+### Start Accepting Payments
+- Set up your tablet or device for payments
+- Train your staff on the simple 3-step process
+- Display QR codes for customer self-service
+- Monitor your first transactions
+
+## Support
+
+**Need Help?**
+- Email: support@acountpay.com
+- Live chat in your merchant dashboard
+- Comprehensive documentation and video tutorials
+
+**Most merchants are processing payments successfully within their first day of setup.**
+
+<Note>
+  The system is designed to be simple and intuitive. No technical knowledge required!
+</Note>
   },
   contact: {
     email: "info@yourbusiness.com",

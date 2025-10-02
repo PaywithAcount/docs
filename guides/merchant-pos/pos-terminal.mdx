@@ -1,122 +1,104 @@
 ---
 title: "POS Terminal System"
-description: "Complete guide to using the AcountPay POS terminal for processing payments"
+description: "Simple 3-step payment process for processing customer payments"
 ---
 
 # POS Terminal System
 
-The AcountPay POS terminal is designed for quick, efficient transactions with a three-step payment process optimized for touch devices and mobile interfaces.
+The AcountPay POS terminal makes accepting payments simple with a 3-step process that works on any device.
 
-## How the POS Terminal Works
-
-The POS terminal guides merchants through a streamlined payment process:
+## How It Works
 
 ### Step 1: Payment Details
+- Enter the payment amount
+- Ask the customer which bank they use
+- Select their bank from the dropdown list
+- Add optional description
 
-<img src="/images/pos-step1.png" alt="Payment Details" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+<img src="/images/posterminalpage1_bankselection.png" alt="POS Terminal Bank Selection" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
 
-**Enter Transaction Information:**
-- **Payment Amount**: Enter the total amount to be charged
-- **Payment Type**: Choose between Guest or User Account payment
-- **Bank Selection**: **Ask the customer which bank they use** and select it from the dropdown list
-- **Description**: Add optional transaction description for records
+**Important:** Always ask the customer which bank they use before generating the QR code. This ensures they're redirected to the correct banking app.
 
-**Bank Selection Process:**
-1. **Ask Customer**: "Which bank do you use for online banking?"
-2. **Select from List**: Choose the customer's bank from the dropdown menu
-3. **Confirm Selection**: Verify the correct bank is selected before proceeding
-
-**Validation:**
-- System validates amount format and minimum requirements
-- Ensures all required fields are completed before proceeding
-- Displays any validation errors clearly
-
-**Supported Banks:**
-- Major European banks through Token.io integration
-- Real-time bank availability checking
-- Automatic bank logo and branding display
-
-**Important Note:**
-The bank selection step is crucial as it ensures the customer will be redirected to their correct banking portal for payment authorization. Always confirm with the customer which bank they prefer to use for the transaction.
-
-### Step 2: Tip Management
-
-<img src="/images/pos-step2.png" alt="Tip Management" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
-
-**Tip Options** (if enabled in settings):
-- **Percentage Tips**: Quick select 10%, 15%, 20%, or 25%
-- **Custom Amount**: Enter specific tip amount
-- **Skip Tip**: Option to proceed without tip
-
-**Features:**
-- Automatic total calculation including tip
-- Clear display of base amount vs. total amount
-- Customer-facing tip selection interface
-- Configurable tip settings per merchant
-
-**Configuration:**
-- Toggle tip functionality on/off globally
-- Set default tip percentages
-- Customize tip display behavior
+### Step 2: Tips (Optional)
+If you have tips enabled:
+- Customer can add 10%, 15%, 20%, or 25%
+- Or enter a custom tip amount
+- Or skip the tip entirely
 
 ### Step 3: QR Code Generation
+- System generates a secure QR code
+- Show the code to your customer
+- They scan with their phone camera or banking app
+- Payment processes automatically
 
-<img src="/images/pos-step3.png" alt="QR Code Generation" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+## Payment Status
 
-**QR Code Features:**
-- **Secure Generation**: Unique encrypted payment token for each transaction
-- **Real-time Status**: Live updates on payment progress
-- **Download Option**: Save QR code as image for offline use
-- **Refresh Capability**: Generate new QR code if needed
-
-**QR Code Contents:**
-```json
-{
-  "merchantId": "merchant_123",
-  "amount": "99.99",
-  "currency": "EUR",
-  "paymentToken": "encrypted_token_here",
-  "bankId": "selected_bank",
-  "description": "Transaction description"
-}
-```
-
-**Payment Status Updates:**
-- **Pending**: QR code generated, waiting for customer scan
-- **Scanned**: Customer has scanned the QR code
-- **Processing**: Payment being processed by bank
-- **Completed**: Payment successfully processed
-- **Failed**: Payment declined or failed
-
-## Payment Flow
-
-### Customer Experience
-
-<img src="/images/customer-payment-flow.png" alt="Customer Payment Flow" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
-
-1. **Scan QR Code**: Customer uses banking app to scan merchant's QR code
-2. **Bank Selection**: Redirected to Token.io with pre-selected bank
-3. **Authentication**: Customer logs into their bank account
-4. **Payment Authorization**: Review and authorize the payment
-5. **Confirmation**: Instant confirmation to both merchant and customer
-
-### Merchant Experience
-
-1. **Generate Payment**: Create QR code through POS terminal
-2. **Display Code**: Show QR code to customer for scanning
-3. **Monitor Status**: Watch real-time payment progress
-4. **Receive Confirmation**: Get instant notification of completion
-5. **Print Receipt**: Optional receipt printing for customer
+You'll see real-time updates:
+- **Pending**: QR code created, waiting for customer
+- **Scanned**: Customer has scanned the code
+- **Processing**: Payment being processed
+- **Completed**: Payment successful
+- **Failed**: Payment was declined
 
 ## Transaction Management
 
-### Transaction History
+### View Your Transactions
+Access your complete payment history with:
+- Date and time filtering
+- Transaction amounts and status
+- Customer bank information
+- Success/failure details
 
-**Viewing Transactions:**
-- Access complete transaction history through the POS interface
-- Filter by date, amount, status, or payment method
-- View detailed transaction information and customer data
-- Monitor real-time payment status updates
+### Export to CSV
+**Two Ways to Export:**
+
+1. **From POS Terminal**: Navigate to Transactions → Export to CSV
+2. **From Dashboard**: Visit [merchant.acountpay.com](https://merchant.acountpay.com) → Transactions → Export
+
+**Use exports for:**
+- Accounting software import
+- Tax preparation
+- Business analysis
+- Record keeping
+
+## Customer Experience
+
+### What Customers See
+
+<img src="/images/posterminal_paymentpage.png" alt="Customer Payment Page" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+
+When customers scan the QR code, they'll see a clean, professional payment interface with:
+- Your business name and details
+- Payment amount clearly displayed
+- Secure bank login process
+- Instant payment confirmation
+
+## Troubleshooting
+
+### Common Issues
+
+**Customer doesn't know their bank:**
+- Ask to see their banking app or debit card
+- Help them recognize bank names from the list
+- Look for bank logos on their phone
+
+**Wrong bank selected:**
+- Simply generate a new QR code with correct bank
+- Always double-check before showing QR code
+
+**Payment fails:**
+- Wait a few minutes and try again
+- Check customer has good internet connection
+- Generate fresh QR code if needed
+
+## Technical Requirements
+
+**Device Requirements:**
+- Any tablet, phone, or computer
+- Stable internet connection
+- Modern web browser
+
+**No special hardware needed** - works with devices you already have!
 
 ### Transaction Export
 
@@ -150,17 +132,6 @@ Date,Time,Amount,Currency,Status,Bank,Reference,Customer Type,Description
 - **Record Keeping**: Maintain detailed transaction records
 - **Tax Reporting**: Simplified tax preparation and filing
 
-## Advanced Features
-
-### Multi-Currency Support
-
-```javascript
-// Supported currencies
-const supportedCurrencies = [
-  'EUR', 'DKK', 'SEK', 'NOK', 'GBP'
-];
-```
-
 ### Transaction Logging
 
 All transactions are automatically logged with:
@@ -184,45 +155,6 @@ All transactions are automatically logged with:
 - Customizable receipt templates
 - Logo and business information
 
-## Best Practices
-
-### For High-Volume Businesses
-
-- **Multiple Devices**: Use tablets at each checkout point
-- **Staff Training**: Train employees on the three-step process and bank selection
-- **Network Backup**: Ensure reliable internet connectivity
-- **Quick Setup**: Pre-configure common transaction amounts
-
-**Bank Selection Tips:**
-- **Know Your Customers**: Learn which banks are popular in your area
-- **Quick Reference**: Keep a list of supported banks visible
-- **Customer Education**: Help customers identify their banking app
-- **Backup Options**: Have alternative payment methods ready
-
-### For Mobile Businesses
-
-- **Tablet Setup**: Use tablet-optimized interface
-- **Offline Mode**: Generate QR codes for later processing
-- **Battery Management**: Keep devices charged for full-day use
-- **Mobile Hotspot**: Backup internet connection
-
-### Customer Service
-
-- **Clear Instructions**: Guide customers through QR scanning
-- **Bank Assistance**: Help customers identify their bank
-- **Problem Resolution**: Know how to handle failed payments
-- **Receipt Options**: Offer digital and physical receipts
-
-**Bank Selection Guidance:**
-```markdown
-## Helping Customers Choose Their Bank
-
-1. **Ask Clearly**: "Which bank do you use for online banking?"
-2. **Show Options**: Display the bank list if customer is unsure
-3. **Confirm Choice**: "You use [Bank Name], correct?"
-4. **Explain Process**: "You'll be redirected to your bank's secure login"
-```
-
 ## Troubleshooting
 
 ### Common Issues
@@ -231,12 +163,6 @@ All transactions are automatically logged with:
 - If customer realizes wrong bank was chosen, generate a new QR code
 - Cancel the current transaction and start over
 - Double-check bank selection before generating QR code
-
-**Customer Doesn't Know Their Bank:**
-- Ask to see their banking app or card
-- Look for bank logos or names on their phone
-- Check if they recognize any bank names from the list
-- Offer to help them identify their bank
 
 **QR Code Won't Generate:**
 - Check internet connection
@@ -265,73 +191,6 @@ All transactions are automatically logged with:
 | `POS003` | Payment timeout | Generate new QR code |
 | `POS004` | Network error | Check internet connection |
 
-## Technical Specifications
-
-### Device Requirements
-
-**Minimum Specifications:**
-- iOS 12+ or Android 8+
-- 2GB RAM minimum
-- Stable internet connection
-- Camera (for QR code generation apps)
-
-**Recommended Setup:**
-- Tablet with 10" screen or larger
-- 4GB RAM or more
-- Wi-Fi 6 or cellular data backup
-- Dedicated POS stand or mount
-
-### Integration Options
-
-**API Integration:**
-```javascript
-// Initialize POS terminal
-const pos = new AcountPOS({
-  merchantId: 'your_merchant_id',
-  environment: 'production'
-});
-
-// Process payment
-const payment = await pos.createPayment({
-  amount: 99.99,
-  currency: 'EUR',
-  paymentType: 'guest'
-});
-```
-
-**Webhook Notifications:**
-- Real-time payment status updates
-- Transaction completion notifications
-- Failed payment alerts
-- Daily summary reports
-
-### Bank Integration
-
-**Supported Financial Institutions:**
-The system integrates with major European banks through Token.io:
-
-- **Denmark**: Danske Bank, Nordea, Jyske Bank, Sydbank, Arbejdernes Landsbank
-- **Sweden**: SEB, Handelsbanken, Swedbank, Nordea, ICA Banken
-- **Norway**: DNB, Nordea, SpareBank 1, Handelsbanken, Sparebanken Vest
-- **Finland**: Nordea, OP Group, Danske Bank, S-Pankki
-- **Other EU**: Additional banks available through Token.io network
-
-**Bank Selection API:**
-```javascript
-// Get available banks for region
-const availableBanks = await pos.getBanks({
-  country: 'DK', // Denmark
-  currency: 'EUR'
-});
-
-// Bank selection in payment
-const payment = await pos.createPayment({
-  amount: 99.99,
-  currency: 'EUR',
-  bankId: 'danske_bank', // Selected bank
-  paymentType: 'guest'
-});
-```
 
 <Note>
   Always confirm the customer's bank selection before generating the QR code to ensure a smooth payment experience. The bank choice determines which login portal the customer will see.

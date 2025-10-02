@@ -1,84 +1,41 @@
 ---
 title: "User Management & Employee System"
-description: "Employee system with role-based permissions and activity tracking"
+description: "Add employees and manage their permissions for your POS system"
 ---
 
 # User Management & Employee System
 
-Manage your team with comprehensive user management tools, role-based permissions, and detailed activity tracking. Perfect for businesses of all sizes with multiple employees handling transactions.
+Add team members and control what they can access in your POS system. Perfect for businesses with multiple employees handling transactions.
 
-## Employee Management
+<img src="/images/employees_page.png" alt="Employee Management Dashboard" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
 
-### Adding Employees
+## Adding Employees
 
-<img src="/images/employee-management.png" alt="Employee Management Interface" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
-
-**Employee Information:**
-- **Personal Details**: Name, email, phone number
-- **Employment Info**: Start date, employee ID, department
+### Employee Information
+When adding new employees, you'll need:
+- **Name and Email**: Basic contact information
+- **Role Assignment**: Choose from predefined roles
 - **Login Credentials**: Username and secure password
-- **Role Assignment**: Predefined or custom roles
-- **Contact Information**: Emergency contacts and address
+- **Contact Details**: Phone number for notifications
 
-**Employee Profile:**
-```javascript
-const employee = {
-  id: "emp_123",
-  employeeId: "EMP-2024-001",
-  firstName: "John",
-  lastName: "Smith",
-  email: "john.smith@company.com",
-  phone: "+45 12 34 56 78",
-  role: "cashier",
-  department: "retail",
-  startDate: "2024-01-15",
-  status: "active",
-  permissions: [
-    "pos:access",
-    "transactions:create",
-    "inventory:view"
-  ],
-  lastLogin: "2024-01-20T09:15:00Z",
-  createdAt: "2024-01-10T14:30:00Z"
-};
-```
-
-### Employee Status Management
-
-**Status Types:**
+### Employee Status
 - **Active**: Full access to assigned permissions
 - **Inactive**: Temporarily disabled access
-- **Suspended**: Access revoked pending review
-- **Terminated**: Permanently disabled
+- **Suspended**: Access revoked if needed
 
-**Status Updates:**
-```javascript
-const statusChange = {
-  employeeId: "emp_123",
-  previousStatus: "active",
-  newStatus: "suspended",
-  reason: "policy_violation",
-  changedBy: "manager_456",
-  effectiveDate: "2024-01-20T15:00:00Z",
-  notes: "Pending investigation of transaction discrepancy"
-};
-```
-
-## Role-Based Access Control
+## Role-Based Permissions
 
 ### Predefined Roles
-
-<img src="/images/role-permissions.png" alt="Role Permissions Matrix" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
 
 **Admin Role:**
 - Full system access and configuration
 - User management and role assignment
-- Financial reporting and analytics
-- System settings and integrations
+- All reporting and analytics
+- System settings
 
 **Manager Role:**
-- Employee supervision and scheduling
-- Inventory management and ordering
+- Employee supervision
+- Inventory management
 - Sales reporting and analysis
 - Customer service oversight
 
@@ -88,47 +45,70 @@ const statusChange = {
 - Basic inventory viewing
 - Customer interaction
 
-**Custom Roles:**
-- Tailored permission combinations
-- Specific business function access
-- Departmental restrictions
-- Temporary role assignments
+### Permission Categories
 
-### Permission System
+| Category | What It Controls |
+|----------|------------------|
+| **POS Operations** | Who can use the payment terminal |
+| **Transactions** | Who can process payments and refunds |
+| **Inventory** | Who can view and edit products |
+| **Reporting** | Who can see sales reports and analytics |
+| **Administration** | Who can manage users and settings |
 
-**Permission Categories:**
+### Creating Custom Roles
 
-| Category | Permissions | Description |
-|----------|-------------|-------------|
-| **POS Operations** | `pos:access`, `pos:refund`, `pos:void` | Point of sale terminal usage |
-| **Transactions** | `transactions:create`, `transactions:view`, `transactions:refund` | Payment processing |
-| **Inventory** | `inventory:view`, `inventory:edit`, `inventory:import` | Product management |
-| **Reporting** | `reports:view`, `reports:export`, `reports:analytics` | Business intelligence |
-| **Administration** | `admin:users`, `admin:settings`, `admin:billing` | System management |
+**Role Builder Features:**
+- Visual permission selection interface
+- Choose specific permissions for each role
+- Set access restrictions by department or time
+- Test roles before assigning to employees
 
-**Permission Matrix:**
-```javascript
-const rolePermissions = {
-  admin: [
-    "pos:access", "pos:refund", "pos:void",
-    "transactions:create", "transactions:view", "transactions:refund",
-    "inventory:view", "inventory:edit", "inventory:import",
-    "reports:view", "reports:export", "reports:analytics",
-    "admin:users", "admin:settings", "admin:billing"
-  ],
-  manager: [
-    "pos:access", "pos:refund",
-    "transactions:create", "transactions:view", "transactions:refund",
-    "inventory:view", "inventory:edit",
-    "reports:view", "reports:export"
-  ],
-  cashier: [
-    "pos:access",
-    "transactions:create", "transactions:view",
-    "inventory:view"
-  ]
-};
-```
+**Custom Role Example:**
+You can create specialized roles like "Inventory Specialist" with permissions for:
+- View and edit inventory
+- Import product data
+- Generate inventory reports
+- No access to financial data or user management
+
+## Getting Started
+
+1. **Access User Management**: Log into your merchant dashboard
+2. **Add Employees**: Create accounts for your team members
+3. **Assign Roles**: Choose appropriate permission levels
+4. **Test Access**: Verify employees can access what they need
+5. **Monitor Activity**: Review logs to ensure proper usage
+
+## Best Practices
+
+### Security Guidelines
+- **Regular Reviews**: Check employee permissions monthly
+- **Strong Passwords**: Require secure login credentials
+- **Least Privilege**: Give employees only the access they need
+- **Remove Access**: Immediately disable accounts for departed employees
+
+### Training and Management
+- **System Training**: Ensure all employees understand their roles
+- **Clear Responsibilities**: Define what each role can and cannot do
+- **Regular Check-ins**: Monitor employee performance and satisfaction
+- **Quick Support**: Help employees with system questions promptly
+
+<Note>
+  The user management system is designed to be simple and secure. Most businesses can set up their entire team in just a few minutes.
+</Note>
+- **Regular Check-ins**: Monitor employee performance and satisfaction
+- **Quick Support**: Help employees with system questions promptly
+
+## Getting Started
+
+1. **Access User Management**: Log into your merchant dashboard
+2. **Add Employees**: Create accounts for your team members
+3. **Assign Roles**: Choose appropriate permission levels
+4. **Test Access**: Verify employees can access what they need
+5. **Monitor Activity**: Review logs to ensure proper usage
+
+<Note>
+  The user management system is designed to be simple and secure. Most businesses can set up their entire team in just a few minutes.
+</Note>
 
 ### Custom Role Creation
 
@@ -138,28 +118,6 @@ const rolePermissions = {
 - Role testing and validation
 - Template-based role creation
 
-**Custom Role Example:**
-```javascript
-const customRole = {
-  name: "inventory_specialist",
-  displayName: "Inventory Specialist",
-  description: "Specialized role for inventory management staff",
-  permissions: [
-    "inventory:view",
-    "inventory:edit",
-    "inventory:import",
-    "inventory:audit",
-    "reports:inventory"
-  ],
-  restrictions: {
-    departments: ["warehouse", "retail"],
-    timeRestrictions: {
-      allowedHours: "06:00-22:00",
-      allowedDays: ["monday", "tuesday", "wednesday", "thursday", "friday"]
-    }
-  }
-};
-```
 
 ## Activity Tracking
 
@@ -171,292 +129,6 @@ const customRole = {
 - System access monitoring
 - Data modification history
 
-**Activity Log Structure:**
-```javascript
-const activityLog = {
-  id: "log_789",
-  employeeId: "emp_123",
-  action: "transaction_created",
-  resourceType: "payment",
-  resourceId: "pay_456",
-  details: {
-    amount: 99.99,
-    currency: "EUR",
-    paymentMethod: "bank_transfer",
-    customerId: "customer_789"
-  },
-  ipAddress: "192.168.1.100",
-  userAgent: "Mozilla/5.0...",
-  timestamp: "2024-01-20T14:30:15Z",
-  location: {
-    terminalId: "terminal_001",
-    store: "main_store"
-  }
-};
-```
 
-### Performance Tracking
 
-**Employee Metrics:**
-- Transaction volume and value
-- Average transaction time
-- Error rates and accuracy
-- Customer satisfaction scores
 
-**Performance Dashboard:**
-```javascript
-const employeeMetrics = {
-  employeeId: "emp_123",
-  period: "2024-01",
-  metrics: {
-    transactionsProcessed: 245,
-    totalRevenue: 12450.75,
-    averageTransactionValue: 50.82,
-    averageProcessingTime: "2m 15s",
-    errorRate: 0.8,
-    customerRating: 4.7
-  },
-  comparisons: {
-    previousMonth: {
-      transactionsProcessed: +12,
-      totalRevenue: +8.5,
-      errorRate: -0.3
-    },
-    teamAverage: {
-      transactionsProcessed: +15,
-      customerRating: +0.2
-    }
-  }
-};
-```
-
-### Security Monitoring
-
-**Security Events:**
-- Failed login attempts
-- Unauthorized access attempts
-- Suspicious transaction patterns
-- Data export activities
-
-**Security Alerts:**
-```javascript
-const securityAlert = {
-  id: "alert_001",
-  type: "multiple_failed_logins",
-  severity: "medium",
-  employeeId: "emp_123",
-  details: {
-    failedAttempts: 5,
-    timeWindow: "5 minutes",
-    sourceIp: "203.0.113.1",
-    lastAttempt: "2024-01-20T15:45:30Z"
-  },
-  actions: [
-    "temporary_lockout",
-    "admin_notification",
-    "security_log_entry"
-  ],
-  status: "active"
-};
-```
-
-## Employee Scheduling
-
-### Shift Management
-
-<img src="/images/employee-scheduling.png" alt="Employee Scheduling" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
-
-**Scheduling Features:**
-- Weekly and monthly schedule views
-- Shift assignment and swapping
-- Availability tracking
-- Overtime calculation
-
-**Shift Structure:**
-```javascript
-const shift = {
-  id: "shift_456",
-  employeeId: "emp_123",
-  date: "2024-01-22",
-  startTime: "09:00",
-  endTime: "17:00",
-  breakTime: 60, // minutes
-  position: "cashier",
-  location: "main_store",
-  status: "scheduled",
-  actualStart: null,
-  actualEnd: null,
-  notes: "Training new employee"
-};
-```
-
-### Time Clock Integration
-
-**Clock In/Out:**
-- Digital time tracking
-- Location verification
-- Photo verification (optional)
-- Break time management
-
-**Time Tracking:**
-```javascript
-const timeEntry = {
-  employeeId: "emp_123",
-  date: "2024-01-22",
-  clockIn: "09:02:15",
-  clockOut: "17:05:30",
-  breakStart: "12:30:00",
-  breakEnd: "13:30:00",
-  totalHours: 7.05,
-  overtimeHours: 0.05,
-  location: "main_store",
-  status: "approved"
-};
-```
-
-## Communication Tools
-
-### Internal Messaging
-
-**Team Communication:**
-- Broadcast messages to all staff
-- Department-specific notifications
-- Individual employee messaging
-- Shift handover notes
-
-**Message Types:**
-- System announcements
-- Policy updates
-- Schedule changes
-- Training reminders
-- Performance feedback
-
-### Notification System
-
-**Alert Types:**
-- Login notifications
-- Transaction alerts
-- Schedule reminders
-- Policy violations
-- Performance milestones
-
-**Notification Settings:**
-```javascript
-const notificationPreferences = {
-  employeeId: "emp_123",
-  email: {
-    scheduleChanges: true,
-    policyUpdates: true,
-    performanceReports: false
-  },
-  sms: {
-    urgentAlerts: true,
-    shiftReminders: true
-  },
-  inApp: {
-    allNotifications: true
-  }
-};
-```
-
-## Training and Onboarding
-
-### Employee Onboarding
-
-**Onboarding Checklist:**
-- Account setup and credentials
-- System training completion
-- Policy acknowledgment
-- Equipment assignment
-- Mentor assignment
-
-**Training Modules:**
-- POS system operation
-- Payment processing
-- Customer service
-- Security protocols
-- Inventory management
-
-### Certification Tracking
-
-**Training Records:**
-```javascript
-const trainingRecord = {
-  employeeId: "emp_123",
-  module: "pos_operations",
-  completedDate: "2024-01-18",
-  score: 95,
-  certificateId: "cert_456",
-  validUntil: "2025-01-18",
-  trainer: "manager_789",
-  requiresRenewal: true
-};
-```
-
-## Reporting and Analytics
-
-### Employee Reports
-
-**Available Reports:**
-- Individual performance summaries
-- Team productivity analysis
-- Training completion status
-- Attendance and punctuality
-- Commission and incentive tracking
-
-### HR Analytics
-
-**Workforce Insights:**
-- Employee turnover rates
-- Training effectiveness
-- Performance trends
-- Scheduling optimization
-- Cost per employee analysis
-
-## Integration Features
-
-### Payroll Integration
-
-**Payroll Data Export:**
-- Hours worked calculation
-- Overtime tracking
-- Commission calculation
-- Deduction management
-
-### HR System Sync
-
-**Data Synchronization:**
-- Employee information updates
-- Role and permission changes
-- Performance data sharing
-- Compliance reporting
-
-## Best Practices
-
-### Security Guidelines
-
-**Access Control:**
-- Regular permission reviews
-- Principle of least privilege
-- Strong password requirements
-- Multi-factor authentication
-
-### Performance Management
-
-**Regular Reviews:**
-- Monthly performance check-ins
-- Quarterly goal setting
-- Annual comprehensive reviews
-- Continuous feedback culture
-
-### Training and Development
-
-**Ongoing Education:**
-- Regular system updates training
-- Customer service skills development
-- Security awareness programs
-- Career development paths
-
-<Warning>
-  Regular review of employee permissions and access levels is essential for maintaining system security and operational efficiency.
-</Warning>

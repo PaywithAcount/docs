@@ -1,564 +1,102 @@
 ---
 title: "Analytics & Reporting"
-description: "Business intelligence with transaction analytics and financial reporting"
+description: "Track sales and export data for your business"
 ---
 
 # Analytics & Reporting
 
-Gain valuable insights into your business performance with comprehensive analytics and reporting tools. Track transactions, analyze trends, and make data-driven decisions to grow your business.
+Track your business performance with simple analytics and easy data exports for accounting and tax purposes.
 
-## Transaction Analytics
+## Real-time Dashboard
 
-### Real-time Dashboard
+<img src="/images/analytics_page.png" alt="Analytics Dashboard" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
 
-<img src="/images/analytics-dashboard.png" alt="Analytics Dashboard" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+**Key Metrics You'll See:**
+- **Today's Sales**: Current revenue and transaction count
+- **Success Rate**: Percentage of completed payments
+- **Popular Payment Times**: When customers pay most
+- **Top Products**: Best-selling items (if using product catalog)
 
-**Key Metrics:**
-- **Today's Sales**: Real-time revenue tracking
-- **Transaction Count**: Number of payments processed
-- **Average Transaction Value**: Mean payment amount
-- **Success Rate**: Percentage of successful payments
-- **Peak Hours**: Busiest transaction times
+## Transaction History
 
-**Dashboard Widgets:**
-```javascript
-const dashboardMetrics = {
-  today: {
-    revenue: 2845.50,
-    transactions: 47,
-    averageValue: 60.54,
-    successRate: 98.7,
-    peakHour: "14:00-15:00"
-  },
-  realTime: {
-    activeTransactions: 3,
-    pendingPayments: 1,
-    lastTransaction: "2024-01-20T15:45:30Z",
-    currentHourRevenue: 245.00
-  }
-};
-```
+<img src="/images/transactions_page.png" alt="Transactions History Page" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
 
-### Transaction Monitoring
+**View All Payments:**
+- Complete list of all transactions
+- Filter by date, amount, or status
+- Search specific transactions
+- Real-time status updates
 
-**Live Transaction Feed:**
-- Real-time transaction updates
-- Payment status changes
-- Error notifications
-- Customer interaction tracking
+**Transaction Details Include:**
+- Date and time
+- Payment amount and currency
+- Customer's bank
+- Success or failure status
+- Processing fees
+- Employee who processed (if applicable)
 
-**Transaction Details:**
-```javascript
-const transactionDetail = {
-  id: "txn_789",
-  timestamp: "2024-01-20T15:30:00Z",
-  amount: 99.99,
-  currency: "EUR",
-  status: "completed",
-  paymentMethod: "bank_transfer",
-  customer: {
-    type: "guest",
-    bankId: "danske_bank"
-  },
-  employee: "emp_123",
-  terminal: "terminal_001",
-  processingTime: "45s",
-  fees: {
-    processing: 1.50,
-    gateway: 0.25
-  }
-};
-```
+## Export Your Data
 
-### Payment Method Analysis
+### Quick CSV Export
+**Two Easy Ways:**
 
-**Performance by Method:**
-- Bank transfer success rates
-- Payment time comparisons
-- Customer preference trends
-- Error rate analysis
+1. **From POS Terminal**: Navigate to Transactions → Export to CSV
+2. **From Dashboard**: Visit [merchant.acountpay.com](https://merchant.acountpay.com) → Transactions → Export
 
-**Bank Performance:**
-```javascript
-const bankAnalytics = {
-  "danske_bank": {
-    transactions: 125,
-    successRate: 99.2,
-    averageTime: "42s",
-    revenue: 6250.75
-  },
-  "nordea": {
-    transactions: 98,
-    successRate: 97.8,
-    averageTime: "38s",
-    revenue: 4890.20
-  }
-};
-```
+**What Gets Exported:**
+- Transaction date and time
+- Payment amounts
+- Bank information
+- Success/failure status
+- Reference numbers
+- Processing fees
 
-## Business Intelligence
+### Use Exports For:
+- **Accounting Software**: Import into QuickBooks, Xero, etc.
+- **Tax Preparation**: Organized data for filing
+- **Business Analysis**: Track trends and patterns
+- **Record Keeping**: Maintain transaction history
 
-### Revenue Tracking
+## Basic Reports
 
-<img src="/images/revenue-tracking.png" alt="Revenue Tracking" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+### Daily Summary
+- Total sales for the day
+- Number of transactions
+- Average transaction amount
+- Peak payment hours
 
-**Revenue Metrics:**
-- **Gross Revenue**: Total payments received
-- **Net Revenue**: Revenue after fees
-- **Growth Rate**: Period-over-period comparison
-- **Revenue per Customer**: Average customer value
-- **Refund Rate**: Percentage of refunded transactions
+### Monthly Overview
+- Revenue growth compared to previous month
+- Most popular payment methods
+- Busiest days and times
+- Top-selling products (if applicable)
 
-**Revenue Analytics:**
-```javascript
-const revenueAnalytics = {
-  daily: {
-    gross: 2845.50,
-    net: 2782.30,
-    fees: 63.20,
-    transactions: 47,
-    revenuePerTransaction: 60.54
-  },
-  monthly: {
-    gross: 45720.80,
-    net: 44685.60,
-    growth: 12.5, // percentage
-    targetProgress: 76.2
-  },
-  yearly: {
-    gross: 548649.60,
-    net: 536412.20,
-    growth: 18.3,
-    projection: 652000.00
-  }
-};
-```
-
-### Customer Behavior Analysis
-
-**Customer Insights:**
-- **New vs Returning**: Customer acquisition metrics
-- **Payment Preferences**: Preferred payment methods
-- **Transaction Patterns**: Time and amount preferences
-- **Geographic Distribution**: Payment locations
-
-**Customer Metrics:**
-```javascript
-const customerAnalytics = {
-  segmentation: {
-    newCustomers: 23,
-    returningCustomers: 67,
-    retentionRate: 74.4
-  },
-  behavior: {
-    averageTransactionValue: 65.80,
-    frequencyPerMonth: 3.2,
-    preferredPaymentTime: "afternoon",
-    seasonalTrends: {
-      peak: "december",
-      low: "february"
-    }
-  }
-};
-```
-
-### Top-Selling Products
-
-**Product Performance:**
-- **Best Sellers**: Highest volume products
-- **Revenue Leaders**: Highest earning products
-- **Trending Items**: Growing popularity
-- **Slow Movers**: Products needing attention
-
-**Product Analytics:**
-```javascript
-const productAnalytics = {
-  topSellers: [
-    {
-      productId: "prod_coffee_001",
-      name: "Premium Coffee",
-      unitsSold: 245,
-      revenue: 6127.55,
-      growth: 15.2
-    },
-    {
-      productId: "prod_pastry_002",
-      name: "Croissant",
-      unitsSold: 198,
-      revenue: 693.00,
-      growth: 8.7
-    }
-  ],
-  categories: {
-    beverages: {
-      revenue: 15420.30,
-      units: 1240,
-      averagePrice: 12.44
-    },
-    food: {
-      revenue: 8965.20,
-      units: 2156,
-      averagePrice: 4.16
-    }
-  }
-};
-```
-
-## Financial Reporting
-
-### Automated Reports
-
-<img src="/images/financial-reports.png" alt="Financial Reports" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
-
-**Report Types:**
-- **Daily Sales Summary**: End-of-day reports
-- **Weekly Performance**: Week-over-week analysis
-- **Monthly Financial**: Comprehensive monthly review
-- **Tax Reports**: VAT and tax calculations
-- **Fee Analysis**: Processing cost breakdown
-
-**Report Generation:**
-```javascript
-const reportConfig = {
-  type: "monthly_financial",
-  period: {
-    start: "2024-01-01",
-    end: "2024-01-31"
-  },
-  includeMetrics: [
-    "gross_revenue",
-    "net_revenue",
-    "transaction_fees",
-    "tax_collected",
-    "refunds_issued"
-  ],
-  format: "pdf",
-  emailRecipients: ["manager@company.com"]
-};
-```
-
-### Export Capabilities
-
-**Export Formats:**
-- **CSV**: For spreadsheet analysis
-- **PDF**: For professional reports
-- **JSON**: For system integration
-- **Excel**: For detailed analysis
-
-**Transaction Export Options:**
-
-**Quick Export from POS:**
-- Access directly from the POS terminal's transaction section
-- Export daily, weekly, or monthly transaction data
-- Download immediately to your device
-- Perfect for daily reconciliation
-
-**Advanced Export from Dashboard:**
-- Visit [merchant.acountpay.com](https://merchant.acountpay.com) for comprehensive export options
-- Custom date ranges and filtering
-- Multiple export formats available
-- Scheduled automated exports
-
-**Export Data Fields:**
-```csv
-# Standard CSV Export Fields
-Transaction ID,Date,Time,Amount,Currency,Status,Bank,Payment Type,Reference Number,Description,Customer Type,Employee,Terminal,Processing Fee
-```
-
-**Export Options:**
-```javascript
-const exportOptions = {
-  transactions: {
-    fields: ["date", "amount", "status", "bank", "fees", "customer_type"],
-    filter: {
-      dateRange: "last_30_days",
-      status: "completed",
-      paymentType: "all" // guest, user, or all
-    },
-    format: "csv", // csv, excel, pdf
-    groupBy: "daily" // daily, weekly, monthly
-  },
-  products: {
-    fields: ["name", "sales_count", "revenue", "profit_margin"],
-    groupBy: "category",
-    format: "excel"
-  }
-};
-```
-
-**Export Use Cases:**
-- **Daily Reconciliation**: Export today's transactions for accounting
-- **Monthly Reports**: Comprehensive monthly business analysis  
-- **Tax Preparation**: Export data for tax filing and compliance
-- **Accounting Integration**: Import into QuickBooks, Xero, or other systems
-- **Business Analysis**: Analyze trends and customer behavior
-
-### Tax Compliance
-
-**Tax Reporting:**
+### Tax Information
 - Automatic VAT calculations
-- Tax-exempt transaction tracking
-- Quarterly tax summaries
-- Compliance documentation
+- Tax breakdown by rate
+- Tax-exempt transactions
+- Quarterly summaries
 
-**Tax Summary:**
-```javascript
-const taxSummary = {
-  period: "Q4_2024",
-  vatCollected: {
-    standard: 11430.25, // 25% rate
-    reduced: 1245.80,   // 12% rate
-    total: 12676.05
-  },
-  exemptTransactions: {
-    count: 23,
-    value: 1150.00
-  },
-  compliance: {
-    reportingDeadline: "2024-02-15",
-    status: "ready_to_submit"
-  }
-};
-```
+## Performance Insights
 
-## Performance Analytics
+**Simple Metrics:**
+- **Best Days**: Which days bring most revenue
+- **Peak Hours**: When customers pay most often
+- **Popular Banks**: Most-used payment methods
+- **Average Amount**: Typical transaction size
 
-### Employee Performance
+**Employee Performance** (if using multiple staff):
+- Transactions processed per person
+- Processing times
+- Success rates
 
-**Staff Metrics:**
-- **Transaction Volume**: Payments processed per employee
-- **Average Transaction Time**: Processing efficiency
-- **Error Rates**: Accuracy measurements
-- **Customer Ratings**: Service quality scores
+## Getting Started
 
-**Employee Leaderboard:**
-```javascript
-const employeePerformance = {
-  topPerformers: [
-    {
-      employeeId: "emp_123",
-      name: "Alice Johnson",
-      transactions: 245,
-      revenue: 12450.75,
-      averageTime: "2m 15s",
-      customerRating: 4.8
-    },
-    {
-      employeeId: "emp_456",
-      name: "Bob Smith",
-      transactions: 198,
-      revenue: 9875.50,
-      averageTime: "2m 05s",
-      customerRating: 4.6
-    }
-  ]
-};
-```
-
-### Peak Time Analysis
-
-**Traffic Patterns:**
-- **Hourly Distribution**: Transaction volume by hour
-- **Daily Patterns**: Busiest days of the week
-- **Seasonal Trends**: Monthly and yearly patterns
-- **Special Events**: Holiday and promotion impact
-
-**Peak Hours Analysis:**
-```javascript
-const peakAnalysis = {
-  hourlyDistribution: {
-    "09:00": 15, // transaction count
-    "12:00": 45,
-    "15:00": 38,
-    "18:00": 52
-  },
-  weeklyPattern: {
-    monday: 245,
-    tuesday: 198,
-    wednesday: 267,
-    thursday: 289,
-    friday: 356,
-    saturday: 445,
-    sunday: 189
-  }
-};
-```
-
-## Custom Analytics
-
-### KPI Tracking
-
-**Key Performance Indicators:**
-- **Revenue Growth**: Month-over-month increase
-- **Customer Acquisition Cost**: Marketing efficiency
-- **Customer Lifetime Value**: Long-term customer worth
-- **Payment Conversion Rate**: Successful payment percentage
-
-**Custom KPIs:**
-```javascript
-const customKPIs = {
-  revenueGrowth: {
-    target: 15.0, // percentage
-    actual: 12.5,
-    status: "approaching_target"
-  },
-  customerAcquisition: {
-    target: 50, // new customers per month
-    actual: 47,
-    cost: 25.50 // per customer
-  },
-  conversionRate: {
-    target: 95.0, // percentage
-    actual: 98.7,
-    status: "exceeding_target"
-  }
-};
-```
-
-### Goal Setting and Tracking
-
-**Business Goals:**
-- Set monthly revenue targets
-- Track progress against goals
-- Performance alerts and notifications
-- Goal achievement celebrations
-
-**Goal Management:**
-```javascript
-const businessGoals = {
-  monthly: {
-    revenue: {
-      target: 60000,
-      current: 45720,
-      progress: 76.2,
-      projectedEnd: 58500
-    },
-    transactions: {
-      target: 800,
-      current: 645,
-      progress: 80.6
-    }
-  }
-};
-```
-
-## Reporting Automation
-
-### Scheduled Reports
-
-**Automated Delivery:**
-- Daily end-of-day summaries
-- Weekly performance reviews
-- Monthly financial statements
-- Quarterly business reviews
-
-**Report Scheduling:**
-```javascript
-const reportSchedule = {
-  dailySummary: {
-    frequency: "daily",
-    time: "23:30",
-    recipients: ["manager@company.com"],
-    format: "email_summary"
-  },
-  weeklyReport: {
-    frequency: "weekly",
-    day: "sunday",
-    time: "20:00",
-    recipients: ["owner@company.com", "accountant@company.com"],
-    format: "pdf_attachment"
-  }
-};
-```
-
-### Alert System
-
-**Automated Alerts:**
-- Low transaction volume warnings
-- High error rate notifications
-- Revenue target progress updates
-- System performance alerts
-
-**Alert Configuration:**
-```javascript
-const alertConfig = {
-  lowVolume: {
-    threshold: 20, // transactions per day
-    enabled: true,
-    recipients: ["manager@company.com"]
-  },
-  highErrorRate: {
-    threshold: 5.0, // percentage
-    enabled: true,
-    immediateAlert: true
-  },
-  revenueTarget: {
-    checkpoints: [25, 50, 75, 90], // percentage milestones
-    enabled: true
-  }
-};
-```
-
-## Integration Features
-
-### Third-party Analytics
-
-**Supported Integrations:**
-- Google Analytics for web traffic correlation
-- Facebook Pixel for advertising attribution
-- Mailchimp for customer segmentation
-- QuickBooks for accounting sync
-
-### API Access
-
-**Analytics API:**
-```javascript
-// Get transaction analytics
-GET /api/analytics/transactions?period=last_30_days
-
-// Get revenue metrics
-GET /api/analytics/revenue?granularity=daily
-
-// Get product performance
-GET /api/analytics/products?sort=revenue_desc
-
-// Export data
-POST /api/analytics/export
-{
-  "type": "transactions",
-  "format": "csv",
-  "filter": {
-    "dateRange": "last_month"
-  }
-}
-```
-
-## Best Practices
-
-### Data-Driven Decisions
-
-**Regular Review Process:**
-- Weekly performance meetings
-- Monthly trend analysis
-- Quarterly goal adjustments
-- Annual strategic planning
-
-### Actionable Insights
-
-**Using Analytics:**
-- Identify peak hours for staffing
-- Optimize product offerings
-- Improve customer experience
-- Reduce processing errors
-
-### Privacy and Compliance
-
-**Data Protection:**
-- Customer data anonymization
-- GDPR compliance measures
-- Data retention policies
-- Secure report sharing
+1. **View Dashboard**: Check daily performance in real-time
+2. **Export Data**: Download transaction history regularly
+3. **Review Trends**: Look for patterns in customer behavior
+4. **Use for Taxes**: Export quarterly data for accounting
 
 <Note>
-  Regular analysis of your business metrics helps identify opportunities for growth and areas needing improvement.
+  All data is automatically calculated and updated in real-time. No complex setup required.
 </Note>
