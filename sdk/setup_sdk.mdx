@@ -8,11 +8,10 @@ After installing the AcountPay SDK, follow these steps to set it up in your proj
 
 - Installed AcountPay SDK (see [Install the SDK](/sdk/install_sdk))
 - Your AcountPay Client ID from the merchant dashboard
-- API Base URL (e.g., 'https://acount-apis-7886a9e16dc3.herokuapp.com' for production)
 
 ## Initialization
 
-Initialize the SDK with your client ID and environment settings.
+Initialize the SDK with your client ID.
 
 ### Basic Setup
 
@@ -25,20 +24,6 @@ const acount = new AcountPay({
 });
 ```
 
-### UMD Build Setup (Script Tag)
-
-If using the UMD build, initialize without importing:
-
-```html
-<script src="https://unpkg.com/@acountpay/pis-sdk@1.0.0/dist/acount.umd.js"></script>
-<script>
-  // Initialize the SDK - note the global name is 'Acount'
-  const acount = new Acount({
-    clientId: 'your-client-id-here'
-  });
-</script>
-```
-
 ### CDN Integration (Recommended)
 
 For quick setup, use our CDN:
@@ -46,6 +31,20 @@ For quick setup, use our CDN:
 ```html
 <script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
 <script>
+  const acount = new Acount({
+    clientId: 'your-client-id-here'
+  });
+</script>
+```
+
+### UMD Build Setup (Script Tag)
+
+If using the UMD build from npm:
+
+```html
+<script src="https://unpkg.com/@acountpay/pis-sdk@1.0.4/dist/acount.umd.js"></script>
+<script>
+  // Initialize the SDK - note the global name is 'Acount'
   const acount = new Acount({
     clientId: 'your-client-id-here'
   });
@@ -114,102 +113,293 @@ acount.initiatePayment({
 
 ## Real Implementation Examples
 
-### E-commerce Checkout
+### Basic E-commerce Integration
 
-```javascript
-// Replace demo values with actual transaction data
-const acount = new Acount({
-  clientId: "your-actual-client-id" // From AcountPay dashboard
-});
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
+</head>
+<body>
+  <div class="checkout">
+    <h2>Checkout - $99.99</h2>
+    <button id="pay-button">Pay with AcountPay</button>
+  </div>
 
-// For guest payments
-document.getElementById('pay-button').onclick = function() {
-  acount.initiatePayment({
-    amount: cartTotal, // Your actual cart total
-    referenceNumber: orderId, // Your actual order ID
-    onSuccess: function(result) {
-      // Redirect to order confirmation
-      window.location.href = '/order-confirmation?order=' + orderId;
-    },
-    onError: function(error) {
-      alert('Payment failed. Please try again.');
-    }
-  });
-};
+  <script>
+    // Replace with your actual client ID from dashboard
+    const acount = new Acount({
+      clientId: "your-actual-client-id"
+    });
+
+    document.getElementById('pay-button').onclick = function() {
+      acount.initiatePayment({
+        amount: 99.99, // Use your actual product/cart total
+        referenceNumber: "ORDER-" + Date.now(), // Use your actual order ID
+        onSuccess: function(result) {
+          console.log('Payment successful:', result);
+          // Redirect to success page
+          window.location.href = '/order-confirmation';
+        },
+        onError: function(error) {
+          console.error('Payment failed:', error);
+          alert('Payment failed. Please try again.');
+        }
+      });
+    };
+  </script>
+</body>
+</html>
 ```
 
-### Subscription Payment
+### React Integration Example
 
-```javascript
-// For user accounts (recommended for subscriptions)
-async function processSubscription() {
-  const acount = new Acount({
-    clientId: "your-client-id"
-  });
-  
-  try {
-    await acount.initiateUserPaymentByEmail({
-      amount: subscriptionPrice,
-      requestId: 'SUB-' + userId + '-' + Date.now(),
-      callbackURL: 'https://yoursite.com/subscription-callback'
-    });
-  } catch (error) {
-    console.error('Subscription payment failed:', error);
+```typescript
+// components/PaymentButton.tsx
+import { useState } from 'react';
+
+// Add script tag to public/index.html:
+// <script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
+
+declare global {
+  interface Window {
+    Acount: any;
   }
+}
+
+export function PaymentButton({ amount, orderId }: { amount: number; orderId: string }) {
+  const [loading, setLoading] = useState(false);
+
+  const handlePayment = () => {
+    setLoading(true);
+    
+    const acount = new window.Acount({
+      clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID
+    });
+    
+    acount.initiatePayment({
+      amount,
+      referenceNumber: orderId,
+      onSuccess: (result: any) => {
+        console.log('Payment successful:', result);
+        window.location.href = '/payment-success';
+      },
+      onError: (error: any) => {
+        console.error('Payment failed:', error);
+        setLoading(false);
+        alert('Payment failed. Please try again.');
+      }
+    });
+  };
+
+  return (
+    <button 
+      onClick={handlePayment} 
+      disabled={loading}
+      className="bg-blue-600 text-white px-6 py-3 rounded"
+    >
+      {loading ? 'Processing...' : 'Pay with AcountPay'}
+    </button>
+  );
 }
 ```
 
 ## Platform Integration
 
-### Shopify Integration
+### Simple Website Integration
+
+For basic websites, add this to your checkout page:
 
 ```html
-<!-- Add to theme.liquid before </head> -->
+<!-- Add SDK -->
 <script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
 
-<!-- Add payment button on checkout page -->
-<script>
-const acount = new Acount({
-  clientId: "{{ settings.acountpay_client_id }}"
-});
+<!-- Payment Button -->
+<button id="acountpay-btn" class="payment-button">
+  Pay with Bank Account
+</button>
 
-document.getElementById('acountpay-button').onclick = function() {
+<script>
+document.getElementById('acountpay-btn').onclick = function() {
+  const acount = new Acount({
+    clientId: "your-client-id" // Replace with your actual client ID
+  });
+  
   acount.initiatePayment({
-    amount: {{ cart.total_price | divided_by: 100.0 }},
-    referenceNumber: "{{ checkout.order_number }}",
+    amount: parseFloat(document.getElementById('total-amount').textContent),
+    referenceNumber: document.getElementById('order-id').value,
     onSuccess: function(result) {
-      window.location.href = "{{ checkout.success_url }}";
+      // Handle success
+      window.location.href = '/thank-you';
+    },
+    onError: function(error) {
+      // Handle error
+      alert('Payment failed: ' + error.message);
     }
   });
 };
 </script>
 ```
 
-### WooCommerce Integration
+### WordPress/WooCommerce Simple Integration
+
+Add this to your theme's `functions.php`:
 
 ```php
-// Add to functions.php
-function enqueue_acountpay_sdk() {
-    wp_enqueue_script('acountpay-sdk', 'https://cdn.acountpay.com/sdk/acount.umd.js', array(), '1.0.0', true);
+// Add SDK script
+function add_acountpay_scripts() {
+    if (is_checkout()) {
+        wp_enqueue_script('acountpay-sdk', 'https://cdn.acountpay.com/sdk/acount.umd.js', array(), '1.0.4', true);
+    }
 }
-add_action('wp_enqueue_scripts', 'enqueue_acountpay_sdk');
+add_action('wp_enqueue_scripts', 'add_acountpay_scripts');
+
+// Add payment button to checkout
+function add_acountpay_button() {
+    if (is_checkout() && WC()->cart && WC()->cart->get_total('raw') > 0) {
+        ?>
+        <div style="margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+            <h4>Pay with Bank Account</h4>
+            <button type="button" id="acountpay-btn" style="background: #0066cc; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">
+                Pay <?php echo WC()->cart->get_total(); ?> with AcountPay
+            </button>
+        </div>
+        
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('acountpay-btn').onclick = function() {
+                if (typeof Acount === 'undefined') {
+                    alert('Payment system loading, please wait...');
+                    return;
+                }
+                
+                const acount = new Acount({
+                    clientId: "<?php echo esc_js(get_option('acountpay_client_id', '')); ?>"
+                });
+                
+                acount.initiatePayment({
+                    amount: <?php echo WC()->cart->get_total('raw'); ?>,
+                    referenceNumber: "ORDER-" + Date.now(),
+                    onSuccess: function(result) {
+                        alert('Payment successful! Your order will be processed.');
+                        window.location.reload();
+                    },
+                    onError: function(error) {
+                        alert('Payment failed: ' + error.message);
+                    }
+                });
+            };
+        });
+        </script>
+        <?php
+    }
+}
+add_action('woocommerce_checkout_after_customer_details', 'add_acountpay_button');
+
+// Add admin setting for client ID
+function acountpay_admin_setting() {
+    add_settings_field(
+        'acountpay_client_id',
+        'AcountPay Client ID',
+        function() {
+            $value = get_option('acountpay_client_id', '');
+            echo '<input type="text" name="acountpay_client_id" value="' . esc_attr($value) . '" />';
+            echo '<p class="description">Get this from your AcountPay dashboard</p>';
+        },
+        'general',
+        'default'
+    );
+    register_setting('general', 'acountpay_client_id');
+}
+add_action('admin_init', 'acountpay_admin_setting');
 ```
 
-```javascript
-// Checkout page integration
-const acount = new Acount({
-  clientId: "<?php echo get_option('acountpay_client_id'); ?>"
-});
+**Configuration:** Go to WordPress Admin → Settings → General → AcountPay Client ID
 
-jQuery('#acountpay-payment-button').click(function() {
+### Shopify Simple Integration
+
+1. Go to **Online Store** → **Themes** → **Actions** → **Edit code**
+2. In `theme.liquid`, add before `</head>`:
+
+```html
+<script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
+```
+
+3. Create `snippets/acountpay-button.liquid`:
+
+```liquid
+<div style="margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+  <h3>Pay with Bank Account</h3>
+  <button id="acountpay-btn" style="background: #0066cc; color: white; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; width: 100%;">
+    Pay with AcountPay
+  </button>
+</div>
+
+<script>
+document.getElementById('acountpay-btn').onclick = function() {
+  if (typeof Acount === 'undefined') {
+    alert('Payment system loading...');
+    return;
+  }
+  
+  const acount = new Acount({
+    clientId: "{{ settings.acountpay_client_id }}"
+  });
+  
+  {% if product %}
+    const amount = {{ product.price | divided_by: 100.0 }};
+    const reference = "SHOPIFY-PRODUCT-{{ product.id }}-" + Date.now();
+  {% elsif cart %}
+    const amount = {{ cart.total_price | divided_by: 100.0 }};
+    const reference = "SHOPIFY-CART-" + Date.now();
+  {% else %}
+    const amount = 0;
+    const reference = "SHOPIFY-" + Date.now();
+  {% endif %}
+  
+  if (amount <= 0) {
+    alert('Please add items to cart first');
+    return;
+  }
+  
   acount.initiatePayment({
-    amount: <?php echo WC()->cart->get_total('raw'); ?>,
-    referenceNumber: "ORDER-" + Date.now(),
+    amount: amount,
+    referenceNumber: reference,
     onSuccess: function(result) {
-      window.location.href = "<?php echo wc_get_checkout_url(); ?>?payment=success";
+      alert('Payment successful!');
+      window.location.href = "/pages/payment-success";
+    },
+    onError: function(error) {
+      alert('Payment failed: ' + error.message);
     }
   });
-});
+};
+</script>
+```
+
+4. Add to `config/settings_schema.json`:
+
+```json
+{
+  "name": "AcountPay",
+  "settings": [
+    {
+      "type": "text",
+      "id": "acountpay_client_id",
+      "label": "Client ID",
+      "info": "Get this from AcountPay dashboard"
+    }
+  ]
+}
+```
+
+5. Include in templates:
+```liquid
+<!-- In product-form.liquid or cart.liquid -->
+{% if settings.acountpay_client_id != blank %}
+  {% include 'acountpay-button' %}
+{% endif %}
 ```
 
 ## Important Notes
@@ -219,28 +409,22 @@ jQuery('#acountpay-payment-button').click(function() {
 2. Replace `"your-client-id-here"` with your actual Client ID
 3. Use different Client IDs for sandbox and production environments
 
-### Amount Handling
-- Always use your actual transaction amounts
-- Amount should be in major currency units (e.g., 10.50 for $10.50)
-- Example: Replace `amount: 1` with `amount: productPrice` or `amount: cartTotal`
+### Amount and Reference Guidelines
+- **Amount**: Use actual transaction amounts in major currency units (e.g., 10.50 for $10.50)
+- **Reference**: Use your actual order IDs or transaction references for tracking
+- This allows you to match successful payments back to orders in your system
 
-### Reference Numbers
-- Use your actual order IDs or transaction references
-- This allows you to match payments back to orders in your system
-- Example: Replace `"ORDER-123"` with your actual order ID
+### Testing
+1. **Sandbox**: Use sandbox Client ID for testing
+2. **Production**: Switch to production Client ID when ready
+3. **Error Handling**: Always implement proper error handling
 
 ## Next Steps
-
-Once set up, test your integration:
-
-1. **Sandbox Testing**: Use sandbox Client ID for testing
-2. **Production**: Switch to production Client ID when ready
-3. **Webhooks**: Set up webhook endpoints for payment notifications
 
 See [Initialize Payment](/sdk/initialize_payment) for detailed examples and [Integration Testing](/guides/payment/integration_testing) for testing guidelines.
 
 ## Troubleshooting
 
 - **"Acount is not defined"**: Ensure the script is loaded before initialization
-- **Invalid client ID**: Verify your client ID from the merchant dashboard
+- **Invalid client ID**: Verify your client ID from the merchant dashboard  
 - **Payment not processing**: Check browser console for errors and ensure all parameters are provided
