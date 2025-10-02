@@ -1,0 +1,522 @@
+---
+title: "Settings & Configuration"
+description: "Configure and customize your AcountPay POS system settings"
+---
+
+# Settings & Configuration
+
+Customize your AcountPay POS system to match your business needs with comprehensive settings for payments, tips, business information, and more.
+
+## Tip Management
+
+### Tip Configuration
+
+<img src="/images/tip-settings.png" alt="Tip Settings" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+
+**Global Tip Settings:**
+- **Enable/Disable Tips**: Toggle tip functionality system-wide
+- **Default Percentages**: Set standard tip options (10%, 15%, 20%, 25%)
+- **Custom Amount**: Allow customers to enter custom tip amounts
+- **Mandatory Tips**: Make tips required for certain transaction types
+
+**Tip Configuration:**
+```javascript
+const tipSettings = {
+  enabled: true,
+  defaultPercentages: [10, 15, 20, 25],
+  allowCustomAmount: true,
+  mandatoryForServices: false,
+  displayBehavior: {
+    showOnAllTransactions: true,
+    skipOption: true,
+    customerFacing: true
+  },
+  minimumTipAmount: 0.50,
+  maximumTipPercentage: 50
+};
+```
+
+### Tip Display Options
+
+**Customer Interface:**
+- **Customer-facing Display**: Tips shown to customer during payment
+- **Merchant Control**: Staff can add tips on customer's behalf
+- **Receipt Options**: Show tip breakdown on receipts
+- **Digital Receipts**: Include tip in email/SMS receipts
+
+**Advanced Tip Features:**
+- **Service-based Tips**: Different tip settings for different services
+- **Time-based Tips**: Automatic tip suggestions based on time of day
+- **Employee Tip Tracking**: Monitor tip distribution to staff
+- **Tip Pool Management**: Distribute tips among team members
+
+## Payment Settings
+
+### Currency Configuration
+
+<img src="/images/payment-settings.png" alt="Payment Settings" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+
+**Supported Currencies:**
+- **Primary Currency**: Main business currency (EUR, DKK, SEK, NOK, GBP)
+- **Multi-currency Support**: Accept payments in multiple currencies
+- **Exchange Rates**: Automatic or manual rate updates
+- **Display Format**: Currency symbol position and decimal places
+
+**Currency Settings:**
+```javascript
+const currencyConfig = {
+  primary: "EUR",
+  supported: ["EUR", "DKK", "SEK", "NOK", "GBP"],
+  displayFormat: {
+    symbol: "€",
+    position: "after", // before or after
+    decimals: 2,
+    thousandsSeparator: ".",
+    decimalSeparator: ","
+  },
+  exchangeRates: {
+    autoUpdate: true,
+    provider: "ecb", // European Central Bank
+    updateFrequency: "daily"
+  }
+};
+```
+
+### Payment Processing
+
+**Default Settings:**
+- **Payment Methods**: Enabled payment types
+- **Transaction Limits**: Minimum and maximum amounts
+- **Timeout Settings**: Payment expiration times
+- **Retry Logic**: Failed payment handling
+
+**Processing Configuration:**
+```javascript
+const paymentConfig = {
+  methods: {
+    bankTransfer: {
+      enabled: true,
+      minAmount: 0.01,
+      maxAmount: 10000.00,
+      timeout: 300 // seconds
+    },
+    qrCode: {
+      enabled: true,
+      expirationTime: 600, // seconds
+      refreshable: true
+    }
+  },
+  retryPolicy: {
+    maxAttempts: 3,
+    backoffStrategy: "exponential",
+    timeoutIncrement: 30
+  }
+};
+```
+
+### Bank Account Management
+
+**Merchant Bank Details:**
+- **Primary Account**: Main receiving account
+- **Backup Accounts**: Alternative receiving options
+- **Account Verification**: Bank account validation
+- **Settlement Preferences**: Automatic or manual settlements
+
+**Account Configuration:**
+```javascript
+const bankConfig = {
+  primaryAccount: {
+    iban: "DK5000400440116243",
+    bankName: "Danske Bank",
+    accountHolder: "Your Business Name",
+    verified: true,
+    isDefault: true
+  },
+  settlementSettings: {
+    frequency: "daily", // daily, weekly, manual
+    minimumAmount: 100.00,
+    autoSettle: true,
+    settlementTime: "23:00"
+  }
+};
+```
+
+## Business Configuration
+
+### Business Information
+
+<img src="/images/business-settings.png" alt="Business Settings" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+
+**Company Details:**
+- **Business Name**: Legal and display names
+- **Address**: Physical business location
+- **Contact Information**: Phone, email, website
+- **Tax Information**: VAT number, tax registration
+- **Legal Details**: Business registration number
+
+**Business Profile:**
+```javascript
+const businessInfo = {
+  legalName: "Your Business Ltd",
+  displayName: "Your Store",
+  address: {
+    street: "123 Business Street",
+    city: "Copenhagen",
+    postalCode: "1000",
+    country: "Denmark"
+  },
+  contact: {
+    phone: "+45 12 34 56 78",
+    email: "info@yourbusiness.com",
+    website: "https://yourbusiness.com"
+  },
+  tax: {
+    vatNumber: "DK12345678",
+    registrationNumber: "REG123456",
+    taxRate: 25.0
+  }
+};
+```
+
+### Branding and Display
+
+**Visual Identity:**
+- **Logo Upload**: Business logo for receipts and displays
+- **Color Scheme**: Brand colors for POS interface
+- **Custom Messages**: Welcome messages and promotional text
+- **Receipt Customization**: Footer text and contact information
+
+**Branding Configuration:**
+```javascript
+const brandingConfig = {
+  logo: {
+    url: "https://yourbusiness.com/logo.png",
+    displayOnReceipts: true,
+    displayOnPOS: true,
+    maxSize: "200x100"
+  },
+  colors: {
+    primary: "#0066cc",
+    secondary: "#f8f9fa",
+    accent: "#28a745"
+  },
+  messages: {
+    welcome: "Welcome to Your Store!",
+    thankYou: "Thank you for your business",
+    footer: "Visit us online at yourbusiness.com"
+  }
+};
+```
+
+### Tax Configuration
+
+**Tax Settings:**
+- **Default Tax Rate**: Standard VAT/tax percentage
+- **Product-specific Rates**: Different rates for different products
+- **Tax-exempt Items**: Zero-rated or exempt products
+- **Tax Reporting**: Automatic tax calculation and reporting
+
+**Tax Configuration:**
+```javascript
+const taxConfig = {
+  defaultRate: 25.0, // 25% VAT
+  rates: {
+    standard: 25.0,
+    reduced: 12.0, // for food items
+    zero: 0.0,     // for exempt items
+    books: 6.0     // special rate for books
+  },
+  productCategories: {
+    food: "reduced",
+    beverages: "standard",
+    books: "books",
+    services: "standard"
+  },
+  inclusive: true, // prices include tax
+  reporting: {
+    frequency: "monthly",
+    autoGenerate: true
+  }
+};
+```
+
+## Operational Settings
+
+### Terminal Configuration
+
+**POS Terminal Setup:**
+- **Device Names**: Identify multiple terminals
+- **Operating Hours**: Business hours and availability
+- **Offline Mode**: Handle connectivity issues
+- **Security Settings**: Login requirements and timeouts
+
+**Terminal Settings:**
+```javascript
+const terminalConfig = {
+  devices: [
+    {
+      id: "terminal_001",
+      name: "Main Counter",
+      location: "Front Desk",
+      type: "tablet",
+      isActive: true
+    },
+    {
+      id: "terminal_002",
+      name: "Mobile Unit",
+      location: "Floor Service",
+      type: "mobile",
+      isActive: true
+    }
+  ],
+  operatingHours: {
+    monday: { open: "09:00", close: "18:00" },
+    tuesday: { open: "09:00", close: "18:00" },
+    wednesday: { open: "09:00", close: "18:00" },
+    thursday: { open: "09:00", close: "18:00" },
+    friday: { open: "09:00", close: "20:00" },
+    saturday: { open: "10:00", close: "20:00" },
+    sunday: { closed: true }
+  },
+  security: {
+    autoLogout: 30, // minutes
+    requirePin: true,
+    sessionTimeout: 120 // minutes
+  }
+};
+```
+
+### Notification Preferences
+
+**Alert Settings:**
+- **Email Notifications**: Transaction alerts and reports
+- **SMS Alerts**: Critical system notifications
+- **Push Notifications**: Mobile app alerts
+- **Webhook URLs**: Third-party system integration
+
+**Notification Configuration:**
+```javascript
+const notificationConfig = {
+  email: {
+    enabled: true,
+    recipients: ["manager@company.com", "owner@company.com"],
+    events: [
+      "payment_completed",
+      "payment_failed",
+      "daily_summary",
+      "system_alerts"
+    ]
+  },
+  sms: {
+    enabled: true,
+    number: "+45 12 34 56 78",
+    events: ["system_error", "high_value_transaction"]
+  },
+  webhooks: {
+    enabled: true,
+    endpoints: [
+      {
+        url: "https://yoursystem.com/webhook/payments",
+        events: ["payment_completed", "payment_failed"],
+        secret: "webhook_secret_key"
+      }
+    ]
+  }
+};
+```
+
+## Security Settings
+
+### Access Control
+
+<img src="/images/security-settings.png" alt="Security Settings" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+
+**Authentication:**
+- **Two-factor Authentication**: Enhanced security for admin accounts
+- **Password Requirements**: Complexity and expiration policies
+- **Session Management**: Automatic logout and session timeouts
+- **IP Restrictions**: Limit access to specific IP addresses
+
+**Security Configuration:**
+```javascript
+const securityConfig = {
+  authentication: {
+    twoFactorRequired: true,
+    passwordPolicy: {
+      minLength: 8,
+      requireUppercase: true,
+      requireNumbers: true,
+      requireSymbols: true,
+      expirationDays: 90
+    },
+    sessionTimeout: 30, // minutes
+    maxFailedAttempts: 5
+  },
+  access: {
+    ipWhitelist: ["192.168.1.0/24"],
+    allowedCountries: ["DK", "SE", "NO"],
+    restrictedHours: {
+      enabled: false,
+      start: "22:00",
+      end: "06:00"
+    }
+  }
+};
+```
+
+### Audit Logging
+
+**Activity Tracking:**
+- **User Actions**: All user activities logged
+- **System Events**: Payment processing and errors
+- **Data Changes**: Configuration and setting modifications
+- **Security Events**: Login attempts and access violations
+
+**Audit Configuration:**
+```javascript
+const auditConfig = {
+  logging: {
+    enabled: true,
+    retentionDays: 365,
+    logLevel: "detailed", // basic, detailed, verbose
+    encryptLogs: true
+  },
+  events: [
+    "user_login",
+    "payment_created",
+    "settings_changed",
+    "data_exported",
+    "security_violation"
+  ],
+  alerts: {
+    suspiciousActivity: true,
+    dataExport: true,
+    configurationChanges: true
+  }
+};
+```
+
+## Integration Settings
+
+### API Configuration
+
+**Third-party Integrations:**
+- **Accounting Software**: QuickBooks, Xero integration
+- **E-commerce Platforms**: Shopify, WooCommerce sync
+- **CRM Systems**: Customer data synchronization
+- **Analytics Tools**: Google Analytics, custom dashboards
+
+**API Settings:**
+```javascript
+const integrationConfig = {
+  accounting: {
+    provider: "quickbooks",
+    enabled: true,
+    syncFrequency: "daily",
+    credentials: "encrypted_token"
+  },
+  ecommerce: {
+    platform: "shopify",
+    storeUrl: "yourstore.myshopify.com",
+    syncInventory: true,
+    syncOrders: true
+  },
+  analytics: {
+    googleAnalytics: {
+      enabled: true,
+      trackingId: "GA-XXXXXXXX-X"
+    },
+    customDashboard: {
+      enabled: true,
+      apiKey: "dashboard_api_key"
+    }
+  }
+};
+```
+
+### Webhook Management
+
+**Event Notifications:**
+- **Payment Events**: Transaction status updates
+- **System Events**: Configuration changes and alerts
+- **Custom Events**: Business-specific notifications
+- **Retry Logic**: Failed webhook handling
+
+**Webhook Configuration:**
+```javascript
+const webhookConfig = {
+  endpoints: [
+    {
+      name: "Payment Processor",
+      url: "https://api.yourbackend.com/webhooks/payments",
+      events: ["payment.completed", "payment.failed"],
+      secret: "webhook_secret_123",
+      active: true,
+      retryPolicy: {
+        maxRetries: 3,
+        backoffMultiplier: 2
+      }
+    }
+  ],
+  security: {
+    verifySignature: true,
+    ipWhitelist: ["203.0.113.0/24"],
+    timeout: 30 // seconds
+  }
+};
+```
+
+## Backup and Recovery
+
+### Data Backup
+
+**Backup Settings:**
+- **Automatic Backups**: Scheduled data protection
+- **Cloud Storage**: Secure off-site backup storage
+- **Retention Policies**: How long to keep backup data
+- **Recovery Testing**: Verify backup integrity
+
+**Backup Configuration:**
+```javascript
+const backupConfig = {
+  automatic: {
+    enabled: true,
+    frequency: "daily",
+    time: "02:00",
+    retention: 30 // days
+  },
+  storage: {
+    provider: "aws_s3",
+    bucket: "your-backup-bucket",
+    encryption: true,
+    redundancy: "multi_region"
+  },
+  testing: {
+    verifyIntegrity: true,
+    testFrequency: "weekly",
+    alertOnFailure: true
+  }
+};
+```
+
+## Support and Maintenance
+
+### System Monitoring
+
+**Health Checks:**
+- **Performance Monitoring**: System response times
+- **Error Tracking**: Automatic error detection
+- **Uptime Monitoring**: Service availability
+- **Resource Usage**: Memory and storage monitoring
+
+### Update Management
+
+**Software Updates:**
+- **Automatic Updates**: Keep system current
+- **Update Scheduling**: Control when updates occur
+- **Rollback Options**: Revert problematic updates
+- **Feature Flags**: Enable/disable new features
+
+<Warning>
+  Always test configuration changes in a safe environment before applying to production systems.
+</Warning>

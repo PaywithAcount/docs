@@ -41,6 +41,20 @@
             "pages": []
           },
           {
+            "group": "Merchant POS",
+            "pages": [
+              "guides/merchant-pos/overview",
+              "guides/merchant-pos/pos-terminal",
+              "guides/merchant-pos/invoice-payments",
+              "guides/merchant-pos/product-management",
+              "guides/merchant-pos/user-management",
+              "guides/merchant-pos/analytics-reporting",
+              "guides/merchant-pos/settings-configuration",
+              "guides/merchant-pos/static-qr-codes",
+              "guides/merchant-pos/getting-started"
+            ]
+          },
+          {
             "group": "User Experience",
             "pages": []
           }

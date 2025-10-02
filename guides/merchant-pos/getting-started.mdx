@@ -1,0 +1,414 @@
+---
+title: "Getting Started"
+description: "Quick setup guide to get your AcountPay Merchant POS system up and running"
+---
+
+# Getting Started with AcountPay Merchant POS
+
+Get your AcountPay Merchant POS system up and running in minutes. This guide walks you through account creation, initial setup, and your first transaction.
+
+## Quick Start Checklist
+
+<Steps>
+  <Step title="Create Your Account">
+    Sign up for an AcountPay merchant account at [merchant.acountpay.com](https://merchant.acountpay.com) and complete verification
+  </Step>
+  <Step title="Configure Basic Settings">
+    Set up your business information, currency, and payment preferences
+  </Step>
+  <Step title="Link Your Bank Account">
+    Connect your business bank account for payment settlements
+  </Step>
+  <Step title="Add Products (Optional)">
+    Create your product catalog or import existing inventory
+  </Step>
+  <Step title="Process Your First Payment">
+    Test the system with a small transaction
+  </Step>
+  <Step title="Go Live">
+    Start accepting real payments from customers
+  </Step>
+</Steps>
+
+## Account Creation
+
+### Sign Up Process
+
+<img src="/images/signup-process.png" alt="Account Signup" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+
+**Get Started:**
+Visit [merchant.acountpay.com](https://merchant.acountpay.com) to create your AcountPay merchant account.
+
+**Registration Requirements:**
+- **Business Email**: Valid business email address
+- **Business Name**: Legal name of your business
+- **Business Type**: Corporation, LLC, sole proprietorship, etc.
+- **Tax Information**: VAT number or tax ID
+- **Contact Details**: Phone number and address
+
+**Verification Process:**
+1. **Email Verification**: Confirm your email address
+2. **Phone Verification**: SMS verification code
+3. **Business Verification**: Upload business documents
+4. **Bank Account Verification**: Confirm account ownership
+
+**Required Documents:**
+```markdown
+## Document Checklist
+
+- **Business Registration**: Certificate of incorporation or business license
+- **Tax Documents**: VAT registration or tax identification
+- **Bank Statement**: Recent statement showing business account
+- **ID Verification**: Government-issued ID for business owner
+- **Address Proof**: Utility bill or official correspondence
+```
+
+### Account Approval
+
+**Approval Timeline:**
+- **Instant Approval**: Most applications approved immediately
+- **Standard Review**: 1-2 business days for complex cases
+- **Additional Information**: May require extra documentation
+
+**Approval Status:**
+```javascript
+const approvalStatus = {
+  application: {
+    status: "approved", // pending, approved, rejected, needs_info
+    submittedAt: "2024-01-15T10:30:00Z",
+    approvedAt: "2024-01-15T11:45:00Z",
+    reviewTime: "1h 15m"
+  },
+  verification: {
+    email: "verified",
+    phone: "verified",
+    business: "verified",
+    bank: "pending"
+  }
+};
+```
+
+## Initial Setup
+
+### Business Configuration
+
+<img src="/images/business-setup.png" alt="Business Setup" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+
+**Basic Information:**
+```javascript
+const businessSetup = {
+  businessInfo: {
+    legalName: "Your Business Ltd",
+    tradingName: "Your Store",
+    industry: "retail", // retail, food_service, professional_services
+    website: "https://yourbusiness.com"
+  },
+  location: {
+    address: "123 Business Street",
+    city: "Copenhagen",
+    postalCode: "1000",
+    country: "Denmark"
+  },
+  contact: {
+    email: "info@yourbusiness.com",
+    phone: "+45 12 34 56 78",
+    supportEmail: "support@yourbusiness.com"
+  }
+};
+```
+
+**Currency and Region:**
+- **Primary Currency**: EUR, DKK, SEK, NOK, GBP
+- **Tax Settings**: VAT rate and tax-inclusive pricing
+- **Time Zone**: Business operating timezone
+- **Language**: Interface language preference
+
+### Payment Settings
+
+**Default Configuration:**
+```javascript
+const paymentDefaults = {
+  currency: "EUR",
+  taxRate: 25.0, // 25% VAT
+  taxInclusive: true,
+  tips: {
+    enabled: true,
+    defaultPercentages: [10, 15, 20, 25],
+    allowCustom: true
+  },
+  limits: {
+    minAmount: 0.01,
+    maxAmount: 10000.00,
+    dailyLimit: 50000.00
+  }
+};
+```
+
+## Bank Account Setup
+
+### Linking Your Account
+
+<img src="/images/bank-linking.png" alt="Bank Account Linking" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+
+**AIS Integration:**
+The system uses Account Information Services (AIS) to securely connect your bank account:
+
+1. **Select Your Bank**: Choose from supported financial institutions
+2. **Secure Authentication**: Log in through your bank's interface
+3. **Grant Permissions**: Authorize AcountPay to receive payments
+4. **Verification**: Confirm account ownership
+
+**Supported Banks:**
+- **Denmark**: Danske Bank, Nordea, Jyske Bank, Sydbank
+- **Sweden**: SEB, Handelsbanken, Swedbank, Nordea
+- **Norway**: DNB, Nordea, SpareBank 1, Handelsbanken
+- **Other EU**: Major banks through Token.io integration
+
+**Account Requirements:**
+```javascript
+const accountRequirements = {
+  accountType: "business", // Must be business account
+  currency: "EUR", // Must match your business currency
+  status: "active", // Account must be active
+  permissions: [
+    "receive_payments",
+    "account_verification",
+    "balance_inquiry"
+  ]
+};
+```
+
+### Settlement Configuration
+
+**Payment Settlement:**
+- **Automatic Settlement**: Daily transfer to your account
+- **Manual Settlement**: On-demand transfers
+- **Minimum Amount**: Set minimum for automatic transfers
+- **Settlement Time**: Choose preferred transfer time
+
+## Product Catalog Setup
+
+### Quick Product Entry
+
+<img src="/images/product-setup.png" alt="Product Setup" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+
+**Essential Product Information:**
+```javascript
+const quickProduct = {
+  name: "Coffee - Large",
+  price: 4.50,
+  category: "beverages",
+  taxRate: 25.0, // Use business default
+  stockLevel: 100, // Optional for services
+  description: "Large coffee with milk options"
+};
+```
+
+**Product Categories:**
+- **Food & Beverages**: Restaurant and cafe items
+- **Retail Products**: Physical goods for sale
+- **Services**: Consulting, repairs, treatments
+- **Digital Products**: Software, subscriptions, downloads
+
+### Bulk Import (Optional)
+
+**CSV Import Format:**
+```csv
+name,price,category,stock_level,description
+Coffee Large,4.50,beverages,100,Large coffee with milk
+Croissant,3.50,food,50,Fresh baked croissant
+Consulting Hour,75.00,services,0,Professional consulting
+```
+
+**Import Process:**
+1. **Download Template**: Get CSV template with required columns
+2. **Fill Product Data**: Add your products to the template
+3. **Upload File**: Import through the dashboard
+4. **Review and Confirm**: Check imported data before saving
+
+## Your First Transaction
+
+### Test Payment
+
+<img src="/images/first-transaction.png" alt="First Transaction" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+
+**Test Transaction Steps:**
+1. **Open POS Terminal**: Access the payment interface
+2. **Enter Amount**: Start with a small amount (€0.01)
+3. **Select Payment Type**: Choose "Guest Payment"
+4. **Generate QR Code**: Create payment QR code
+5. **Test Scan**: Use your phone to scan and complete payment
+
+**Test Payment Example:**
+```javascript
+const testPayment = {
+  amount: 0.01, // Small test amount
+  description: "Test transaction",
+  paymentType: "guest",
+  expectedFlow: [
+    "qr_generated",
+    "customer_scanned",
+    "payment_processing",
+    "payment_completed"
+  ]
+};
+```
+
+### Verify Transaction
+
+**Check Transaction Status:**
+- **Dashboard**: View transaction in real-time dashboard
+- **Receipt**: Verify receipt generation
+- **Settlement**: Confirm funds will be transferred
+- **Reporting**: Check transaction appears in reports
+
+## Going Live
+
+### Pre-Launch Checklist
+
+**System Verification:**
+- [ ] **Bank Account**: Successfully linked and verified
+- [ ] **Test Payment**: Completed successfully
+- [ ] **Settings**: Business information accurate
+- [ ] **Staff Training**: Team knows how to use system
+- [ ] **Backup Plan**: Alternative payment method ready
+
+**Security Check:**
+- [ ] **Passwords**: Strong, unique passwords set
+- [ ] **Permissions**: Staff have appropriate access levels
+- [ ] **Notifications**: Alerts configured for your email
+- [ ] **Backup**: Important settings documented
+
+### Launch Day Setup
+
+**Prepare Your Space:**
+```markdown
+## Physical Setup
+
+- **Device Positioning**: Place tablet/device for easy access
+- **QR Code Display**: Print static QR codes for tables/displays
+- **WiFi Backup**: Ensure reliable internet connection
+- **Staff Briefing**: Quick refresher on payment process
+- **Customer Instructions**: Simple signs explaining QR payments
+```
+
+**Staff Training Points:**
+1. **POS Operation**: How to create payments and generate QR codes
+2. **Customer Support**: Help customers scan QR codes
+3. **Problem Resolution**: Handle failed payments
+4. **Receipt Options**: Offer digital and physical receipts
+
+### Marketing Your New Payment Option
+
+**Customer Communication:**
+- **Signage**: "We Accept Digital Payments" signs
+- **Social Media**: Announce new payment options
+- **Email Newsletter**: Inform existing customers
+- **Website Update**: Add payment information to website
+
+**Promotional Ideas:**
+```markdown
+## Launch Promotions
+
+- **Discount**: 5% off for digital payments first week
+- **Social Contest**: Share payment experience for prizes
+- **Loyalty Program**: Extra points for digital payments
+- **Referral Bonus**: Customer referrals for new payment users
+```
+
+## Support and Resources
+
+### Getting Help
+
+**Support Channels:**
+- **Email Support**: support@acountpay.com
+- **Live Chat**: Available in merchant dashboard at [merchant.acountpay.com](https://merchant.acountpay.com)
+- **Phone Support**: +45 XX XX XX XX (business hours)
+- **Documentation**: Comprehensive guides and tutorials
+
+**Response Times:**
+- **Critical Issues**: 2-4 hours
+- **General Support**: 24 hours
+- **Feature Requests**: 1-2 business days
+
+### Training Resources
+
+**Available Resources:**
+- **Video Tutorials**: Step-by-step video guides
+- **Webinar Training**: Live training sessions
+- **User Manual**: Downloadable PDF guides
+- **FAQ Section**: Common questions and answers
+
+**Advanced Training:**
+- **Staff Certification**: Training programs for your team
+- **Custom Onboarding**: Personalized setup assistance
+- **Integration Support**: Help with third-party connections
+
+### Community and Updates
+
+**Stay Connected:**
+- **Newsletter**: Monthly updates and tips
+- **User Community**: Connect with other merchants
+- **Feature Updates**: Early access to new features
+- **Best Practices**: Tips from successful merchants
+
+## Next Steps
+
+Once your system is running smoothly:
+
+1. **Optimize Settings**: Fine-tune based on usage patterns
+2. **Add Features**: Explore advanced functionality  
+3. **Train Staff**: Ongoing education and certification
+4. **Analyze Performance**: Use analytics to improve operations
+5. **Expand Usage**: Consider additional locations or services
+
+**Ready to Get Started?**
+Visit [merchant.acountpay.com](https://merchant.acountpay.com) to create your account and begin accepting digital payments today.
+
+## Troubleshooting Common Issues
+
+### Setup Problems
+
+**Account Verification Delays:**
+- Check email spam folder for verification messages
+- Ensure uploaded documents are clear and complete
+- Contact support if verification takes over 48 hours
+
+**Bank Linking Issues:**
+- Verify you're using a business bank account
+- Check account currency matches business settings
+- Try linking during bank's operating hours
+
+**Payment Test Failures:**
+- Ensure stable internet connection
+- Check that business is approved and active
+- Verify bank account is properly linked
+
+### Technical Issues
+
+**QR Code Won't Generate:**
+- Check internet connection
+- Verify merchant account status
+- Clear browser cache and try again
+
+**Payment Processing Errors:**
+- Check transaction amount limits
+- Verify customer's bank supports QR payments
+- Wait a few minutes and retry
+
+<Warning>
+  If you encounter persistent issues during setup, contact our support team immediately for assistance. We're here to ensure your successful launch.
+</Warning>
+
+## Success Tips
+
+**For Best Results:**
+- **Start Small**: Begin with test transactions and small amounts
+- **Train Thoroughly**: Ensure all staff understand the system
+- **Monitor Closely**: Watch first week's transactions carefully
+- **Gather Feedback**: Ask customers about their payment experience
+- **Stay Updated**: Keep informed about new features and updates
+
+<Note>
+  The AcountPay Merchant POS system is designed to be intuitive and easy to use. Most merchants are processing payments successfully within their first day of setup.
+</Note>

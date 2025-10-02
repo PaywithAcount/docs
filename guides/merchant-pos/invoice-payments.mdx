@@ -1,0 +1,332 @@
+---
+title: "Invoice Payments"
+description: "Generate secure payment links and manage invoices with bulk processing capabilities"
+---
+
+# Invoice Payment Links
+
+Create and manage secure payment links that can be sent to customers via email, SMS, or messaging platforms. Perfect for remote payments, recurring billing, and B2B transactions.
+
+## Creating Invoice Payment Links
+
+### Single Invoice Creation
+
+<img src="/images/invoice-creation.png" alt="Invoice Creation Interface" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+
+**Invoice Details:**
+- **Invoice Number**: Unique identifier for tracking
+- **Customer Information**: Name, email, phone, billing address
+- **Due Date**: Payment deadline with automatic reminders
+- **Currency**: Support for multiple currencies (EUR, DKK, SEK, etc.)
+
+**Line Items:**
+- **Product/Service**: Description of items or services
+- **Quantity**: Number of units
+- **Unit Price**: Price per item
+- **Tax Rate**: Configurable tax calculations
+- **Discounts**: Line-item or total discounts
+
+**Payment Terms:**
+- Due date and payment deadlines
+- Late payment fees (if applicable)
+- Payment instructions and notes
+- Terms and conditions
+
+### Invoice Generation Process
+
+```javascript
+// Example invoice structure
+const invoice = {
+  invoiceNumber: "INV-2024-001",
+  customerId: "customer_123",
+  customerInfo: {
+    name: "John Smith",
+    email: "john@company.com",
+    billingAddress: {
+      street: "123 Business St",
+      city: "Copenhagen",
+      country: "Denmark"
+    }
+  },
+  lineItems: [
+    {
+      description: "Consulting Services",
+      quantity: 10,
+      unitPrice: 150.00,
+      taxRate: 0.25
+    }
+  ],
+  dueDate: "2024-02-15",
+  currency: "EUR"
+};
+```
+
+### Secure Payment Links
+
+**Link Generation:**
+- Encrypted payment tokens for security
+- Unique URLs for each invoice
+- Expiration dates for time-sensitive payments
+- One-time use or recurring payment options
+
+**Link Format:**
+```
+https://pay.acountpay.com/invoice/[encrypted-token]
+```
+
+**Security Features:**
+- JWT-based encryption
+- Token expiration management
+- IP-based access controls (optional)
+- Payment attempt limiting
+
+## Bulk Invoice Import
+
+### CSV Upload Process
+
+<img src="/images/bulk-import.png" alt="Bulk Invoice Import" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+
+**Step 1: Prepare CSV File**
+
+Required CSV columns:
+```csv
+customer_name,customer_email,invoice_number,amount,due_date,description
+John Smith,john@company.com,INV-001,1500.00,2024-02-15,Consulting Services
+Jane Doe,jane@business.com,INV-002,750.50,2024-02-20,Design Work
+```
+
+**Step 2: Upload and Validate**
+- Drag-and-drop file upload interface
+- Automatic data validation and error checking
+- Preview of parsed invoice data
+- Duplicate detection and handling
+
+**Step 3: Review and Process**
+- Review all invoices before generation
+- Modify individual entries if needed
+- Select which invoices to process
+- Bulk generate payment links
+
+### Data Validation
+
+**Automatic Checks:**
+- Email format validation
+- Amount format verification
+- Date format compliance
+- Required field completion
+
+**Error Handling:**
+- Clear error messages for invalid data
+- Line-by-line error reporting
+- Bulk correction options
+- Export error reports for fixing
+
+## Invoice Management
+
+### Invoice Dashboard
+
+<img src="/images/invoice-dashboard.png" alt="Invoice Dashboard" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+
+**Status Tracking:**
+- **Draft**: Invoice created but not sent
+- **Sent**: Payment link sent to customer
+- **Viewed**: Customer has viewed the invoice
+- **Paid**: Payment completed successfully
+- **Overdue**: Past due date without payment
+- **Cancelled**: Invoice cancelled or voided
+
+**Bulk Operations:**
+- Send reminder emails to multiple customers
+- Mark invoices as paid manually
+- Export invoice data to CSV
+- Generate batch reports
+
+### Payment Tracking
+
+**Real-time Updates:**
+- WebSocket integration for live status updates
+- Email notifications for payment completions
+- SMS alerts for overdue payments
+- Dashboard notifications
+
+**Payment History:**
+```javascript
+{
+  invoiceId: "inv_123",
+  payments: [
+    {
+      paymentId: "pay_456",
+      amount: 1500.00,
+      status: "completed",
+      timestamp: "2024-01-15T10:30:00Z",
+      paymentMethod: "bank_transfer"
+    }
+  ],
+  totalPaid: 1500.00,
+  remainingBalance: 0.00
+}
+```
+
+## Customer Experience
+
+### Payment Page
+
+<img src="/images/customer-payment-page.png" alt="Customer Payment Page" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+
+**Customer Interface:**
+- Clean, professional payment page
+- Invoice details clearly displayed
+- Multiple bank options for payment
+- Secure Token.io integration
+
+**Payment Process:**
+1. Customer clicks payment link
+2. Reviews invoice details
+3. Selects their bank
+4. Authorizes payment through banking app
+5. Receives confirmation
+
+### Customer Communication
+
+**Automated Emails:**
+- Invoice delivery with payment link
+- Payment reminders before due date
+- Overdue payment notifications
+- Payment confirmation receipts
+
+**Email Templates:**
+```html
+Subject: Invoice INV-2024-001 - Payment Required
+
+Dear {{ customer_name }},
+
+Please find attached your invoice for {{ amount }} {{ currency }}.
+
+Payment Link: {{ secure_payment_url }}
+Due Date: {{ due_date }}
+
+Thank you for your business.
+```
+
+## Advanced Features
+
+### Recurring Invoices
+
+**Setup:**
+- Define recurring schedule (monthly, quarterly, yearly)
+- Automatic invoice generation
+- Customer notification settings
+- Payment attempt handling
+
+**Configuration:**
+```javascript
+const recurringInvoice = {
+  customerId: "customer_123",
+  templateId: "template_456",
+  schedule: {
+    frequency: "monthly",
+    startDate: "2024-01-01",
+    endDate: "2024-12-31"
+  },
+  autoSend: true
+};
+```
+
+### Multi-language Support
+
+**Supported Languages:**
+- English
+- Danish
+- German
+- Swedish
+- Norwegian
+
+**Localization:**
+- Currency formatting
+- Date format preferences
+- Tax calculation rules
+- Legal text compliance
+
+### Integration Options
+
+**API Integration:**
+```javascript
+// Create invoice via API
+const invoice = await acountpay.invoices.create({
+  customerId: 'customer_123',
+  amount: 1500.00,
+  currency: 'EUR',
+  dueDate: '2024-02-15',
+  description: 'Consulting services'
+});
+
+// Get payment link
+const paymentLink = invoice.paymentUrl;
+```
+
+**Webhook Events:**
+- `invoice.created`
+- `invoice.sent`
+- `invoice.viewed`
+- `invoice.paid`
+- `invoice.overdue`
+
+## Best Practices
+
+### Invoice Design
+
+**Professional Appearance:**
+- Include business logo and branding
+- Clear invoice numbering system
+- Detailed line item descriptions
+- Professional email templates
+
+### Payment Terms
+
+**Clear Communication:**
+- Specify payment deadlines clearly
+- Include late payment policies
+- Provide customer support contact
+- Offer multiple payment options
+
+### Follow-up Process
+
+**Automated Reminders:**
+- 7 days before due date
+- On due date
+- 3 days after due date
+- Weekly for overdue invoices
+
+### Data Security
+
+**Privacy Protection:**
+- Encrypt customer data
+- Secure payment link generation
+- GDPR compliance measures
+- Regular security audits
+
+## Troubleshooting
+
+### Common Issues
+
+**Payment Link Not Working:**
+- Check link expiration date
+- Verify customer email delivery
+- Test link in different browsers
+- Regenerate link if necessary
+
+**Customer Can't Complete Payment:**
+- Verify bank compatibility
+- Check payment amount limits
+- Test with different banks
+- Contact customer support
+
+**Bulk Import Errors:**
+- Validate CSV format
+- Check data encoding (UTF-8)
+- Verify all required fields
+- Review error log details
+
+<Warning>
+  Always test payment links before sending to customers to ensure they work correctly and provide a smooth payment experience.
+</Warning>

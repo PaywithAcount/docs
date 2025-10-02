@@ -1,0 +1,402 @@
+---
+title: "Static QR Code System"
+description: "Permanent QR codes for flexible customer-initiated payments"
+---
+
+# Static QR Code System
+
+Generate permanent QR codes that customers can scan to initiate payments with amounts they choose themselves. Perfect for table service, tip collection, donations, and flexible payment scenarios.
+
+## How Static QR Codes Work
+
+### Customer-Initiated Payments
+
+<img src="/images/static-qr-overview.png" alt="Static QR Code Overview" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+
+**The Process:**
+1. **Merchant Generates**: Create a permanent QR code for your business
+2. **Customer Scans**: Customer uses any QR scanner or banking app
+3. **Amount Entry**: Customer enters their desired payment amount
+4. **Payment Flow**: Standard secure payment processing through Token.io
+5. **Confirmation**: Both parties receive payment confirmation
+
+**Key Benefits:**
+- **Flexible Amounts**: Customers choose how much to pay
+- **No Staff Required**: Self-service payment option
+- **Multiple Uses**: One QR code for all transactions
+- **Quick Setup**: Generate once, use indefinitely
+
+## QR Code Generation
+
+### Creating Your Static QR Code
+
+<img src="/images/qr-generation.png" alt="QR Code Generation" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+
+**Generation Process:**
+```javascript
+const staticQRConfig = {
+  merchantId: "merchant_123",
+  businessName: "Your Coffee Shop",
+  currency: "EUR",
+  logo: "https://yourbusiness.com/logo.png",
+  description: "Pay Your Coffee Shop",
+  features: {
+    variableAmount: true,
+    tipOption: true,
+    customerInfo: false
+  }
+};
+```
+
+**QR Code Features:**
+- **Business Branding**: Include your logo and business name
+- **Currency Selection**: Specify your preferred currency
+- **Custom Description**: Add payment purpose description
+- **Security Token**: Unique encrypted identifier for your business
+
+### Customization Options
+
+**Visual Customization:**
+- **Logo Integration**: Embed your business logo in the QR code
+- **Color Schemes**: Match your brand colors
+- **Size Options**: Different sizes for various display needs
+- **Error Correction**: High redundancy for clear scanning
+
+**Functional Options:**
+```javascript
+const qrCustomization = {
+  visual: {
+    logo: {
+      enabled: true,
+      url: "https://business.com/logo.png",
+      size: "medium" // small, medium, large
+    },
+    colors: {
+      foreground: "#000000",
+      background: "#FFFFFF",
+      accent: "#0066CC"
+    },
+    errorCorrection: "high" // low, medium, high
+  },
+  features: {
+    allowTips: true,
+    minimumAmount: 0.50,
+    maximumAmount: 1000.00,
+    suggestedAmounts: [5, 10, 20, 50],
+    collectCustomerInfo: false
+  }
+};
+```
+
+## Use Cases
+
+### Restaurant Table Service
+
+<img src="/images/table-qr.png" alt="Table QR Code" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+
+**Implementation:**
+- **Table Tents**: Small displays with QR codes on each table
+- **Menu Integration**: QR codes printed on menus
+- **Bill Payment**: Customers pay their calculated bill amount
+- **Tip Addition**: Easy tip addition through the payment flow
+
+**Table Service Benefits:**
+- **Reduced Wait Times**: No waiting for servers to process payment
+- **Contactless Service**: Hygienic payment option
+- **Staff Efficiency**: Servers focus on service, not payment processing
+- **Customer Control**: Diners pay when ready
+
+### Service Business Payments
+
+**Variable Service Payments:**
+- **Consulting Services**: Clients pay for actual time used
+- **Repair Services**: Payment after service completion
+- **Cleaning Services**: Pay based on services rendered
+- **Personal Training**: Session-based payments
+
+**Service Payment Flow:**
+```javascript
+const servicePayment = {
+  serviceType: "consulting",
+  provider: "John's Consulting",
+  sessionDetails: {
+    duration: "2 hours",
+    rate: "€75/hour",
+    suggestedAmount: 150.00
+  },
+  paymentOptions: {
+    allowPartialPayment: true,
+    installmentOptions: false,
+    tipEnabled: false
+  }
+};
+```
+
+### Tip Collection
+
+**Staff Tip Collection:**
+- **Service Staff**: Waiters, delivery drivers, guides
+- **Beauty Services**: Hairdressers, nail technicians, spa staff
+- **Hotel Services**: Housekeeping, concierge, bellhops
+- **Event Staff**: Wedding services, catering staff
+
+**Tip Collection Features:**
+- **Individual Staff Codes**: Track tips per employee
+- **Suggested Amounts**: Percentage or fixed amount suggestions
+- **Anonymous Tipping**: Optional customer information
+- **Digital Receipt**: Tip confirmation for both parties
+
+### Donation Collection
+
+**Non-profit Organizations:**
+- **Charity Fundraising**: Event-based donation collection
+- **Religious Organizations**: Digital offering collection
+- **Community Projects**: Local fundraising campaigns
+- **Emergency Relief**: Disaster response donations
+
+**Donation Features:**
+```javascript
+const donationConfig = {
+  organization: "Local Charity",
+  campaign: "Winter Relief Fund",
+  description: "Help families stay warm this winter",
+  features: {
+    recurringDonations: false,
+    anonymousDonations: true,
+    suggestedAmounts: [10, 25, 50, 100],
+    customAmount: true,
+    donorReceipts: true
+  }
+};
+```
+
+## Display and Distribution
+
+### Physical Display Options
+
+**Print-Ready Formats:**
+- **High Resolution**: 300 DPI for professional printing
+- **Multiple Sizes**: Business card to poster size
+- **Vector Format**: Scalable without quality loss
+- **Color and Monochrome**: Options for different printing needs
+
+**Display Materials:**
+```javascript
+const displayOptions = {
+  formats: [
+    {
+      type: "table_tent",
+      size: "10cm x 15cm",
+      orientation: "portrait",
+      includes: ["qr_code", "instructions", "business_info"]
+    },
+    {
+      type: "poster",
+      size: "A3",
+      orientation: "portrait",
+      includes: ["large_qr", "branding", "payment_steps"]
+    },
+    {
+      type: "business_card",
+      size: "8.5cm x 5.5cm",
+      orientation: "landscape",
+      includes: ["qr_code", "contact_info"]
+    }
+  ]
+};
+```
+
+### Digital Distribution
+
+**Online Sharing:**
+- **Website Integration**: Embed QR code on your website
+- **Social Media**: Share QR code on social platforms
+- **Email Signatures**: Include in business communications
+- **Digital Displays**: Use on screens and digital signage
+
+**Digital Integration:**
+```html
+<!-- Website Integration Example -->
+<div class="payment-qr-section">
+  <h3>Pay Us Easily</h3>
+  <img src="https://api.acountpay.com/qr/merchant_123.png" 
+       alt="Pay with AcountPay" 
+       class="qr-code" />
+  <p>Scan to pay any amount securely</p>
+</div>
+```
+
+## Customer Experience
+
+### Payment Flow
+
+<img src="/images/customer-qr-flow.png" alt="Customer QR Payment Flow" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+
+**Step-by-Step Process:**
+1. **Scan QR Code**: Using phone camera or banking app
+2. **Business Recognition**: See business name and logo
+3. **Amount Entry**: Enter desired payment amount
+4. **Payment Method**: Choose bank or payment method
+5. **Confirmation**: Complete secure payment
+
+**Customer Interface:**
+```javascript
+const customerInterface = {
+  screen1: {
+    title: "Pay Your Coffee Shop",
+    logo: "coffee_shop_logo.png",
+    description: "Enter the amount you wish to pay",
+    amountInput: {
+      currency: "EUR",
+      placeholder: "0.00",
+      suggestions: [5, 10, 20, 50]
+    }
+  },
+  screen2: {
+    title: "Add Tip (Optional)",
+    baseAmount: 12.50,
+    tipOptions: [
+      { percentage: 10, amount: 1.25 },
+      { percentage: 15, amount: 1.88 },
+      { percentage: 20, amount: 2.50 },
+      { text: "Custom", type: "input" }
+    ]
+  }
+};
+```
+
+### Payment Confirmation
+
+**Confirmation Details:**
+- **Transaction Summary**: Amount, business, timestamp
+- **Receipt Options**: Email, SMS, or screen capture
+- **Reference Number**: Transaction tracking
+- **Business Contact**: For questions or issues
+
+## Technical Specifications
+
+### QR Code Standards
+
+**Technical Details:**
+- **Format**: QR Code 2005 standard
+- **Error Correction**: Level H (30% recovery)
+- **Encoding**: UTF-8 for international support
+- **Size**: Minimum 2x2 cm for reliable scanning
+
+**Code Structure:**
+```
+https://pay.acountpay.com/s/[merchant_token]
+```
+
+**Token Contents:**
+```javascript
+const qrToken = {
+  merchantId: "merchant_123",
+  tokenType: "static",
+  issuedAt: "2024-01-15T10:30:00Z",
+  expiresAt: null, // Never expires
+  features: ["variable_amount", "tips"],
+  version: "1.0"
+};
+```
+
+### Security Features
+
+**Security Measures:**
+- **Encrypted Tokens**: Merchant information encrypted
+- **HTTPS Required**: All transactions over secure connections
+- **Rate Limiting**: Prevent abuse and fraud attempts
+- **Fraud Detection**: Automatic suspicious activity monitoring
+
+**Security Configuration:**
+```javascript
+const securityConfig = {
+  encryption: {
+    algorithm: "AES-256",
+    tokenRotation: false, // Static tokens don't rotate
+    signatureVerification: true
+  },
+  rateLimiting: {
+    maxTransactionsPerHour: 100,
+    maxAmountPerTransaction: 1000.00,
+    suspiciousActivityThreshold: 10
+  },
+  monitoring: {
+    fraudDetection: true,
+    geolocationTracking: false,
+    deviceFingerprinting: true
+  }
+};
+```
+
+## Management and Analytics
+
+### QR Code Analytics
+
+**Usage Metrics:**
+- **Scan Frequency**: How often QR code is scanned
+- **Conversion Rate**: Scans that result in payments
+- **Average Payment Amount**: Mean transaction value
+- **Peak Usage Times**: When QR code is most used
+
+**Analytics Dashboard:**
+```javascript
+const qrAnalytics = {
+  metrics: {
+    totalScans: 1247,
+    successfulPayments: 892,
+    conversionRate: 71.5,
+    averageAmount: 34.50,
+    totalRevenue: 30762.00
+  },
+  trends: {
+    peakHours: ["12:00-14:00", "18:00-20:00"],
+    popularAmounts: [5, 10, 25, 50],
+    tipRate: 68.3,
+    averageTip: 4.25
+  }
+};
+```
+
+### QR Code Management
+
+**Administrative Controls:**
+- **Regenerate Codes**: Create new QR codes if needed
+- **Disable/Enable**: Temporarily stop accepting payments
+- **Update Business Info**: Modify displayed business information
+- **Download Formats**: Get new print-ready files
+
+## Best Practices
+
+### Placement and Visibility
+
+**Optimal Positioning:**
+- **Eye Level**: Easy to see and scan
+- **Good Lighting**: Avoid shadows and glare
+- **Clean Surface**: Keep QR codes clean and unobstructed
+- **Clear Instructions**: Include simple scanning instructions
+
+### Customer Education
+
+**User Instructions:**
+```markdown
+## How to Pay with QR Code
+
+1. **Open** your phone's camera or banking app
+2. **Point** camera at the QR code
+3. **Tap** the notification to open payment page
+4. **Enter** your payment amount
+5. **Complete** secure payment with your bank
+```
+
+### Maintenance
+
+**Regular Checks:**
+- **Scan Testing**: Verify QR codes work properly
+- **Print Quality**: Ensure codes remain clear and scannable
+- **Information Updates**: Keep business details current
+- **Performance Monitoring**: Track usage and issues
+
+<Note>
+  Static QR codes provide maximum flexibility for customer-initiated payments while maintaining security and ease of use.
+</Note>

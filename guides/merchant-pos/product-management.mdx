@@ -1,0 +1,436 @@
+---
+title: "Product Management & Cart System"
+description: "Comprehensive catalog system with inventory tracking and bulk import features"
+---
+
+# Product Management & Cart System
+
+Manage your product catalog with comprehensive tools for inventory tracking, pricing, and sales optimization. The system includes a powerful cart functionality and bulk import capabilities for efficient product management.
+
+## Product Catalog
+
+### Creating Products
+
+<img src="/images/product-creation.png" alt="Product Creation Interface" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+
+**Product Information:**
+- **Name**: Product title and description
+- **SKU**: Unique product identifier
+- **Price**: Base price with currency support
+- **Category**: Organizational grouping
+- **Stock Level**: Inventory tracking
+- **Product Images**: Visual identification
+
+**Product Details:**
+```javascript
+const product = {
+  id: "prod_123",
+  name: "Premium Coffee Beans",
+  description: "Single origin arabica beans from Colombia",
+  sku: "COFFEE-COL-001",
+  price: 24.99,
+  currency: "EUR",
+  category: "beverages",
+  stockLevel: 150,
+  lowStockThreshold: 20,
+  images: [
+    {
+      url: "https://example.com/coffee-image.jpg",
+      alt: "Premium Coffee Beans"
+    }
+  ],
+  isActive: true,
+  createdAt: "2024-01-15T10:30:00Z"
+};
+```
+
+### Product Categories
+
+**Category Management:**
+- Create hierarchical category structures
+- Assign products to multiple categories
+- Filter and search by category
+- Category-based reporting and analytics
+
+**Category Examples:**
+- Food & Beverages
+  - Hot Drinks
+  - Cold Drinks
+  - Snacks
+- Retail Products
+  - Electronics
+  - Clothing
+  - Accessories
+- Services
+  - Consulting
+  - Maintenance
+  - Training
+
+### Inventory Management
+
+**Stock Tracking:**
+- Real-time inventory levels
+- Low stock alerts and notifications
+- Automatic stock deduction on sales
+- Stock adjustment history
+
+**Inventory Features:**
+```javascript
+const inventoryUpdate = {
+  productId: "prod_123",
+  operation: "adjustment",
+  quantity: -5, // Negative for reduction
+  reason: "damaged_goods",
+  adjustedBy: "employee_456",
+  timestamp: "2024-01-15T14:20:00Z",
+  notes: "Water damage during delivery"
+};
+```
+
+**Stock Alerts:**
+- Email notifications for low stock
+- Dashboard warnings
+- Automated reorder suggestions
+- Stock movement reports
+
+## Cart Functionality
+
+### Adding Products to Cart
+
+<img src="/images/cart-interface.png" alt="Cart Interface" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+
+**Cart Operations:**
+- Add products with quantity selection
+- Modify quantities after adding
+- Remove individual items
+- Clear entire cart
+- Save cart for later completion
+
+**Cart Structure:**
+```javascript
+const cart = {
+  id: "cart_789",
+  customerId: "customer_123",
+  items: [
+    {
+      productId: "prod_123",
+      name: "Premium Coffee Beans",
+      price: 24.99,
+      quantity: 2,
+      subtotal: 49.98
+    },
+    {
+      productId: "prod_456",
+      name: "Ceramic Mug",
+      price: 12.50,
+      quantity: 1,
+      subtotal: 12.50
+    }
+  ],
+  subtotal: 62.48,
+  taxRate: 0.25,
+  taxAmount: 15.62,
+  discountAmount: 5.00,
+  total: 73.10,
+  currency: "EUR"
+};
+```
+
+### Pricing and Discounts
+
+**Discount Types:**
+- **Percentage Discounts**: 10%, 15%, 20% off
+- **Fixed Amount**: €5, €10 off total
+- **Buy X Get Y**: Promotional offers
+- **Category Discounts**: Specific product categories
+- **Customer Discounts**: VIP customer pricing
+
+**Promotional Codes:**
+```javascript
+const discount = {
+  code: "WELCOME10",
+  type: "percentage",
+  value: 10,
+  minAmount: 50.00,
+  maxDiscount: 20.00,
+  validFrom: "2024-01-01",
+  validUntil: "2024-12-31",
+  usageLimit: 100,
+  usedCount: 23
+};
+```
+
+### Tax Calculations
+
+**Tax Configuration:**
+- Configurable tax rates per region
+- Product-specific tax categories
+- Automatic tax calculation
+- Tax-inclusive or exclusive pricing
+
+**Tax Examples:**
+```javascript
+const taxConfig = {
+  defaultRate: 0.25, // 25% VAT
+  categories: {
+    food: 0.12, // Reduced rate for food
+    books: 0.06, // Lower rate for books
+    services: 0.25 // Standard rate for services
+  },
+  displayInclusive: true // Show prices including tax
+};
+```
+
+## Bulk Product Import
+
+### CSV Upload Process
+
+<img src="/images/bulk-product-import.png" alt="Bulk Product Import" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+
+**Step 1: Prepare CSV File**
+
+Required CSV format:
+```csv
+name,description,sku,price,category,stock_level,image_url
+Premium Coffee Beans,Single origin arabica,COFFEE-001,24.99,beverages,150,https://example.com/coffee.jpg
+Ceramic Mug,Handcrafted ceramic mug,MUG-001,12.50,accessories,75,https://example.com/mug.jpg
+Croissant,Fresh baked croissant,FOOD-001,3.50,food,0,https://example.com/croissant.jpg
+```
+
+**CSV Field Descriptions:**
+- `name`: Product name (required)
+- `description`: Product description
+- `sku`: Unique identifier (required)
+- `price`: Product price (required)
+- `category`: Product category
+- `stock_level`: Initial inventory level
+- `image_url`: Product image URL
+
+**Step 2: Upload and Validation**
+
+**Import Process:**
+1. **File Upload**: Drag-and-drop or browse for CSV file
+2. **Data Parsing**: Automatic column mapping and validation
+3. **Error Detection**: Identify and highlight data issues
+4. **Preview**: Review parsed data before import
+5. **Confirmation**: Execute the import process
+
+**Validation Checks:**
+- Required fields completion
+- Price format validation
+- SKU uniqueness verification
+- Category existence check
+- Image URL accessibility
+
+**Error Handling:**
+```javascript
+const importResult = {
+  totalRows: 100,
+  successfulImports: 95,
+  failedImports: 5,
+  errors: [
+    {
+      row: 23,
+      field: "price",
+      error: "Invalid price format",
+      value: "invalid-price"
+    },
+    {
+      row: 45,
+      field: "sku",
+      error: "Duplicate SKU",
+      value: "EXISTING-SKU"
+    }
+  ]
+};
+```
+
+### Bulk Operations
+
+**Mass Updates:**
+- Update prices across multiple products
+- Change categories in bulk
+- Adjust stock levels
+- Apply discounts to product groups
+
+**Bulk Actions:**
+```javascript
+const bulkUpdate = {
+  operation: "price_increase",
+  filter: {
+    category: "beverages"
+  },
+  change: {
+    type: "percentage",
+    value: 5 // 5% price increase
+  },
+  affectedProducts: 45
+};
+```
+
+## Advanced Features
+
+### Product Variants
+
+**Variant Management:**
+- Size variations (Small, Medium, Large)
+- Color options
+- Material choices
+- Custom attributes
+
+**Variant Structure:**
+```javascript
+const productWithVariants = {
+  id: "prod_tshirt_001",
+  name: "Cotton T-Shirt",
+  basePrice: 19.99,
+  variants: [
+    {
+      id: "var_001",
+      attributes: {
+        size: "Medium",
+        color: "Blue"
+      },
+      sku: "TSHIRT-M-BLUE",
+      priceModifier: 0,
+      stockLevel: 25
+    },
+    {
+      id: "var_002",
+      attributes: {
+        size: "Large",
+        color: "Red"
+      },
+      sku: "TSHIRT-L-RED",
+      priceModifier: 2.00,
+      stockLevel: 15
+    }
+  ]
+};
+```
+
+### Barcode Integration
+
+**Barcode Support:**
+- Generate barcodes for products
+- Scan barcodes for quick product lookup
+- Integrate with barcode scanners
+- Print barcode labels
+
+**Barcode Features:**
+- EAN-13, UPC-A format support
+- QR code generation for products
+- Batch barcode printing
+- Inventory scanning
+
+### Product Analytics
+
+<img src="/images/product-analytics.png" alt="Product Analytics Dashboard" style={{borderRadius: '8px', border: '1px solid #e1e5e9'}} />
+
+**Performance Metrics:**
+- Best-selling products
+- Slow-moving inventory
+- Profit margin analysis
+- Category performance
+
+**Analytics Dashboard:**
+```javascript
+const productAnalytics = {
+  topProducts: [
+    {
+      productId: "prod_123",
+      name: "Premium Coffee",
+      unitsSold: 245,
+      revenue: 6127.55
+    }
+  ],
+  categoryPerformance: {
+    beverages: {
+      revenue: 15420.30,
+      units: 1240,
+      growthRate: 12.5
+    }
+  },
+  lowStockItems: 8,
+  outOfStockItems: 3
+};
+```
+
+## Integration Features
+
+### POS Integration
+
+**Seamless Connection:**
+- Direct product selection in POS
+- Real-time inventory updates
+- Automatic cart synchronization
+- Cross-device compatibility
+
+### E-commerce Sync
+
+**Online Store Integration:**
+- Sync with online catalogs
+- Unified inventory management
+- Consistent pricing across channels
+- Automated stock updates
+
+### API Access
+
+**Product API:**
+```javascript
+// Get products
+GET /api/products?category=beverages&limit=50
+
+// Create product
+POST /api/products
+{
+  "name": "New Product",
+  "price": 29.99,
+  "category": "retail"
+}
+
+// Update stock
+PATCH /api/products/prod_123/stock
+{
+  "quantity": 100,
+  "operation": "set"
+}
+```
+
+## Best Practices
+
+### Product Organization
+
+**Naming Conventions:**
+- Use clear, descriptive product names
+- Include key attributes in names
+- Maintain consistent naming patterns
+- Avoid special characters in SKUs
+
+### Inventory Management
+
+**Stock Control:**
+- Set appropriate low stock thresholds
+- Regular inventory audits
+- Track product movement patterns
+- Plan for seasonal variations
+
+### Pricing Strategy
+
+**Price Management:**
+- Regular competitor analysis
+- Cost-plus pricing calculations
+- Dynamic pricing for demand management
+- Bundle pricing opportunities
+
+### Data Quality
+
+**Maintenance Tasks:**
+- Regular data cleanup
+- Image quality checks
+- Description updates
+- Category reorganization
+
+<Note>
+  Regular maintenance of your product catalog ensures optimal performance and customer experience across all sales channels.
+</Note>
