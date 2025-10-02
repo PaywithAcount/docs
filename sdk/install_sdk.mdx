@@ -40,48 +40,50 @@ yarn add @acountpay/pis-sdk
 
 ## Usage Methods
 
-### 1. ES Module Import
+<AccordionGroup>
+  <Accordion title="ES Module Import">
+    ```typescript
+    import AcountPay from '@acountpay/pis-sdk';
 
-```typescript
-import AcountPay from '@acountpay/pis-sdk';
+    const acount = new AcountPay({ 
+      clientId: 'your-client-id' 
+    });
+    ```
+  </Accordion>
 
-const acount = new AcountPay({ 
-  clientId: 'your-client-id' 
-});
-```
+  <Accordion title="CDN Script Tag (Recommended)">
+    ```html
+    <script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
+    <script>
+      const acount = new Acount({ 
+        clientId: 'your-client-id' 
+      });
+    </script>
+    ```
+  </Accordion>
 
-### 2. CDN Script Tag (Recommended)
+  <Accordion title="NPM Package UMD Build">
+    ```html
+    <script src="/node_modules/@acountpay/pis-sdk/dist/acount.umd.js"></script>
+    <script>
+      const acount = new Acount({ 
+        clientId: 'your-client-id' 
+      });
+    </script>
+    ```
+  </Accordion>
 
-```html
-<script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
-<script>
-  const acount = new Acount({ 
-    clientId: 'your-client-id' 
-  });
-</script>
-```
-
-### 3. NPM Package UMD Build
-
-```html
-<script src="/node_modules/@acountpay/pis-sdk/dist/acount.umd.js"></script>
-<script>
-  const acount = new Acount({ 
-    clientId: 'your-client-id' 
-  });
-</script>
-```
-
-### 4. Unpkg CDN
-
-```html
-<script src="https://unpkg.com/@acountpay/pis-sdk@1.0.0/dist/acount.umd.js"></script>
-<script>
-  const acount = new Acount({ 
-    clientId: 'your-client-id' 
-  });
-</script>
-```
+  <Accordion title="Unpkg CDN">
+    ```html
+    <script src="https://unpkg.com/@acountpay/pis-sdk@1.0.0/dist/acount.umd.js"></script>
+    <script>
+      const acount = new Acount({ 
+        clientId: 'your-client-id' 
+      });
+    </script>
+    ```
+  </Accordion>
+</AccordionGroup>
 
 ## Platform-Specific Integration
 
@@ -756,20 +758,25 @@ const acount = new AcountPay({
 
 ## Package Information
 
-### Contents
-- Core payment flow utilities
-- TypeScript definitions
-- ESM/CJS/UMD builds for broad compatibility
-- No embedded UI components (integrates with your existing design)
+<AccordionGroup>
+  <Accordion title="Contents">
+    - Core payment flow utilities
+    - TypeScript definitions
+    - ESM/CJS/UMD builds for broad compatibility
+    - No embedded UI components (integrates with your existing design)
+  </Accordion>
 
-### Browser Support
-- Modern browsers with ES6 support
-- Chrome 60+, Firefox 60+, Safari 12+, Edge 79+
+  <Accordion title="Browser Support">
+    - Modern browsers with ES6 support
+    - Chrome 60+, Firefox 60+, Safari 12+, Edge 79+
+  </Accordion>
 
-### Bundle Sizes
-- UMD: ~15KB gzipped
-- ESM: ~12KB gzipped
-- No external dependencies
+  <Accordion title="Bundle Sizes">
+    - UMD: ~15KB gzipped
+    - ESM: ~12KB gzipped
+    - No external dependencies
+  </Accordion>
+</AccordionGroup>
 
 ## Environment Variables
 
@@ -807,22 +814,27 @@ For framework integrations, set up environment variables:
 
 ## Important Notes
 
-### Global Constructor Name
-- **NPM/ESM**: Import as `AcountPay`
-- **UMD/Script Tag**: Global constructor is `Acount` (not `AcountPay`)
+<AccordionGroup>
+  <Accordion title="Global Constructor Name">
+    - **NPM/ESM**: Import as `AcountPay`
+    - **UMD/Script Tag**: Global constructor is `Acount` (not `AcountPay`)
+  </Accordion>
 
-### Client ID Setup
-1. Get your Client ID from AcountPay merchant dashboard
-2. Use sandbox Client ID for testing
-3. Switch to production Client ID for live payments
+  <Accordion title="Client ID Setup">
+    1. Get your Client ID from AcountPay merchant dashboard
+    2. Use sandbox Client ID for testing
+    3. Switch to production Client ID for live payments
+  </Accordion>
 
-### Version Pinning
-For production, pin to specific versions:
+  <Accordion title="Version Pinning">
+    For production, pin to specific versions:
 
-```html
-<!-- Pin to specific version -->
-<script src="https://unpkg.com/@acountpay/pis-sdk@1.0.4/dist/acount.umd.js"></script>
-```
+    ```html
+    <!-- Pin to specific version -->
+    <script src="https://unpkg.com/@acountpay/pis-sdk@1.0.4/dist/acount.umd.js"></script>
+    ```
+  </Accordion>
+</AccordionGroup>
 
 ## Next Steps
 

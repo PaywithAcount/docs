@@ -16,131 +16,135 @@ After setting up the SDK, you can initiate payments using two methods: User Paym
 
 For users with AcountPay accounts or those who want to create one.
 
-### Parameters
+<AccordionGroup>
+  <Accordion title="Parameters">
+    | Parameter     | Type     | Required | Description                                                            |
+    | ------------- | -------- | -------- | ---------------------------------------------------------------------- |
+    | `amount`      | `number` | ✅ Yes    | Payment amount in major currency units (e.g., 10.50 = $10.50)         |
+    | `requestId`   | `string` | ✅ Yes    | Unique request identifier (your order ID)                             |
+    | `callbackURL` | `string` | ✅ Yes    | URL the user is returned to after the payment flow                    |
+  </Accordion>
 
-| Parameter     | Type     | Required | Description                                                            |
-| ------------- | -------- | -------- | ---------------------------------------------------------------------- |
-| `amount`      | `number` | ✅ Yes    | Payment amount in major currency units (e.g., 10.50 = $10.50)         |
-| `requestId`   | `string` | ✅ Yes    | Unique request identifier (your order ID)                             |
-| `callbackURL` | `string` | ✅ Yes    | URL the user is returned to after the payment flow                    |
+  <Accordion title="Basic Implementation">
+    ```javascript
+    const acount = new Acount({
+      clientId: 'your-client-id'
+    });
 
-### Implementation
+    await acount.initiateUserPaymentByEmail({
+      amount: 99.99,
+      requestId: 'ORDER-' + orderId,
+      callbackURL: 'https://your-website.com/payment-callback'
+    });
+    ```
+  </Accordion>
 
-```javascript
-const acount = new Acount({
-  clientId: 'your-client-id'
-});
-
-await acount.initiateUserPaymentByEmail({
-  amount: 99.99,
-  requestId: 'ORDER-' + orderId,
-  callbackURL: 'https://your-website.com/payment-callback'
-});
-```
-
-### Complete Example
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
-</head>
-<body>
-  <button onclick="payAsUser()">Pay with AcountPay Account</button>
-  
-  <script>
-    async function payAsUser() {
-      const acount = new Acount({ 
-        clientId: 'your-client-id'
-      });
+  <Accordion title="Complete Example">
+    ```html
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
+    </head>
+    <body>
+      <button onclick="payAsUser()">Pay with AcountPay Account</button>
       
-      try {
-        await acount.initiateUserPaymentByEmail({
-          amount: 99.99, // Your actual amount
-          requestId: 'ORDER-123', // Your actual order ID
-          callbackURL: 'https://your-website.com/payment-success'
-        });
-      } catch (error) {
-        console.error('Payment failed:', error);
-        alert('Payment could not be initiated. Please try again.');
-      }
-    }
-  </script>
-</body>
-</html>
-```
+      <script>
+        async function payAsUser() {
+          const acount = new Acount({ 
+            clientId: 'your-client-id'
+          });
+          
+          try {
+            await acount.initiateUserPaymentByEmail({
+              amount: 99.99, // Your actual amount
+              requestId: 'ORDER-123', // Your actual order ID
+              callbackURL: 'https://your-website.com/payment-success'
+            });
+          } catch (error) {
+            console.error('Payment failed:', error);
+            alert('Payment could not be initiated. Please try again.');
+          }
+        }
+      </script>
+    </body>
+    </html>
+    ```
+  </Accordion>
+</AccordionGroup>
 
 ## Guest Payment Method
 
 For one-time payments without requiring account creation.
 
-### Parameters
+<AccordionGroup>
+  <Accordion title="Parameters">
+    | Parameter         | Type       | Required | Description                                           |
+    | ----------------- | ---------- | -------- | ----------------------------------------------------- |
+    | `amount`          | `number`   | ✅ Yes    | Payment amount in major currency units               |
+    | `referenceNumber` | `string`   | ✅ Yes    | Unique reference number (your order ID)              |
+    | `onSuccess`       | `function` | ❌ No     | Success callback function                            |
+    | `onError`         | `function` | ❌ No     | Error callback function                              |
+  </Accordion>
 
-| Parameter         | Type       | Required | Description                                           |
-| ----------------- | ---------- | -------- | ----------------------------------------------------- |
-| `amount`          | `number`   | ✅ Yes    | Payment amount in major currency units               |
-| `referenceNumber` | `string`   | ✅ Yes    | Unique reference number (your order ID)              |
-| `onSuccess`       | `function` | ❌ No     | Success callback function                            |
-| `onError`         | `function` | ❌ No     | Error callback function                              |
+  <Accordion title="Basic Implementation">
+    ```javascript
+    const acount = new Acount({
+      clientId: 'your-client-id'
+    });
 
-### Implementation
+    acount.initiatePayment({
+      amount: 99.99,
+      referenceNumber: 'ORDER-' + orderId,
+      onSuccess: (result) => {
+        console.log('Payment successful:', result);
+        // Redirect to success page or update UI
+        window.location.href = '/payment-success';
+      },
+      onError: (error) => {
+        console.error('Payment failed:', error);
+        // Handle error gracefully
+        alert('Payment failed. Please try again.');
+      }
+    });
+    ```
+  </Accordion>
 
-```javascript
-const acount = new Acount({
-  clientId: 'your-client-id'
-});
-
-acount.initiatePayment({
-  amount: 99.99,
-  referenceNumber: 'ORDER-' + orderId,
-  onSuccess: (result) => {
-    console.log('Payment successful:', result);
-    // Redirect to success page or update UI
-    window.location.href = '/payment-success';
-  },
-  onError: (error) => {
-    console.error('Payment failed:', error);
-    // Handle error gracefully
-    alert('Payment failed. Please try again.');
-  }
-});
-```
-
-### Complete Example
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
-</head>
-<body>
-  <button onclick="payAsGuest()">Pay as Guest</button>
-  
-  <script>
-    function payAsGuest() {
-      const acount = new Acount({ 
-        clientId: 'your-client-id'
-      });
+  <Accordion title="Complete Example">
+    ```html
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
+    </head>
+    <body>
+      <button onclick="payAsGuest()">Pay as Guest</button>
       
-      acount.initiatePayment({
-        amount: 99.99, // Your actual amount
-        referenceNumber: 'ORDER-123', // Your actual order ID
-        onSuccess: function(result) {
-          console.log('Payment successful:', result);
-          window.location.href = '/order-confirmation';
-        },
-        onError: function(error) {
-          console.error('Payment failed:', error);
-          alert('Payment failed. Please try again.');
+      <script>
+        function payAsGuest() {
+          const acount = new Acount({ 
+            clientId: 'your-client-id'
+          });
+          
+          acount.initiatePayment({
+            amount: 99.99, // Your actual amount
+            referenceNumber: 'ORDER-123', // Your actual order ID
+            onSuccess: function(result) {
+              console.log('Payment successful:', result);
+              window.location.href = '/order-confirmation';
+            },
+            onError: function(error) {
+              console.error('Payment failed:', error);
+              alert('Payment failed. Please try again.');
+            }
+          });
         }
-      });
-    }
-  </script>
-</body>
-</html>
-```
+      </script>
+    </body>
+    </html>
+    ```
+  </Accordion>
+</AccordionGroup>
 
 ## Framework Integration Examples
 
