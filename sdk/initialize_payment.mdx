@@ -144,157 +144,159 @@ acount.initiatePayment({
 
 ## Framework Integration Examples
 
-### React Component
+<Tabs>
+  <Tab title="React">
+    ```typescript
+    import { useState } from 'react';
 
-```typescript
-import { useState } from 'react';
+    // Note: Add script tag to index.html or load dynamically
+    // <script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
 
-// Note: Add script tag to index.html or load dynamically
-// <script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
-
-declare global {
-  interface Window {
-    Acount: any;
-  }
-}
-
-export function PaymentButton({ amount, orderId }: { amount: number; orderId: string }) {
-  const [loading, setLoading] = useState(false);
-
-  const handleUserPayment = async () => {
-    setLoading(true);
-    const acount = new window.Acount({
-      clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID
-    });
-    
-    try {
-      await acount.initiateUserPaymentByEmail({
-        amount,
-        requestId: orderId,
-        callbackURL: `${window.location.origin}/payment-callback`
-      });
-    } catch (error) {
-      console.error('Payment failed:', error);
-      setLoading(false);
-    }
-  };
-
-  const handleGuestPayment = () => {
-    setLoading(true);
-    const acount = new window.Acount({
-      clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID
-    });
-    
-    acount.initiatePayment({
-      amount,
-      referenceNumber: orderId,
-      onSuccess: (result: any) => {
-        console.log('Payment successful:', result);
-        window.location.href = '/payment-success';
-      },
-      onError: (error: any) => {
-        console.error('Payment failed:', error);
-        setLoading(false);
+    declare global {
+      interface Window {
+        Acount: any;
       }
-    });
-  };
-
-  return (
-    <div className="space-y-4">
-      <button 
-        onClick={handleUserPayment} 
-        disabled={loading}
-        className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg"
-      >
-        {loading ? 'Processing...' : 'Pay with AcountPay Account'}
-      </button>
-      
-      <button 
-        onClick={handleGuestPayment} 
-        disabled={loading}
-        className="w-full bg-green-600 text-white py-3 px-6 rounded-lg"
-      >
-        {loading ? 'Processing...' : 'Pay as Guest'}
-      </button>
-    </div>
-  );
-}
-```
-
-### Vue.js Component
-
-```vue
-<template>
-  <div class="payment-buttons">
-    <button @click="handleUserPayment" :disabled="loading">
-      {{ loading ? 'Processing...' : 'Pay with AcountPay Account' }}
-    </button>
-    <button @click="handleGuestPayment" :disabled="loading">
-      {{ loading ? 'Processing...' : 'Pay as Guest' }}
-    </button>
-  </div>
-</template>
-
-<script>
-export default {
-  name: 'PaymentButton',
-  props: {
-    amount: {
-      type: Number,
-      required: true
-    },
-    orderId: {
-      type: String,
-      required: true
     }
-  },
-  data() {
-    return {
-      loading: false
-    };
-  },
-  methods: {
-    async handleUserPayment() {
-      this.loading = true;
-      const acount = new window.Acount({
-        clientId: process.env.VUE_APP_ACOUNTPAY_CLIENT_ID
-      });
-      
-      try {
-        await acount.initiateUserPaymentByEmail({
-          amount: this.amount,
-          requestId: this.orderId,
-          callbackURL: `${window.location.origin}/payment-callback`
+
+    export function PaymentButton({ amount, orderId }: { amount: number; orderId: string }) {
+      const [loading, setLoading] = useState(false);
+
+      const handleUserPayment = async () => {
+        setLoading(true);
+        const acount = new window.Acount({
+          clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID
         });
-      } catch (error) {
-        console.error('Payment failed:', error);
-        this.loading = false;
-      }
-    },
-    
-    handleGuestPayment() {
-      this.loading = true;
-      const acount = new window.Acount({
-        clientId: process.env.VUE_APP_ACOUNTPAY_CLIENT_ID
-      });
-      
-      acount.initiatePayment({
-        amount: this.amount,
-        referenceNumber: this.orderId,
-        onSuccess: (result) => {
-          console.log('Payment successful:', result);
-          this.$router.push('/payment-success');
-        },
-        onError: (error) => {
+        
+        try {
+          await acount.initiateUserPaymentByEmail({
+            amount,
+            requestId: orderId,
+            callbackURL: `${window.location.origin}/payment-callback`
+          });
+        } catch (error) {
           console.error('Payment failed:', error);
-          this.loading = false;
+          setLoading(false);
         }
-      });
+      };
+
+      const handleGuestPayment = () => {
+        setLoading(true);
+        const acount = new window.Acount({
+          clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID
+        });
+        
+        acount.initiatePayment({
+          amount,
+          referenceNumber: orderId,
+          onSuccess: (result: any) => {
+            console.log('Payment successful:', result);
+            window.location.href = '/payment-success';
+          },
+          onError: (error: any) => {
+            console.error('Payment failed:', error);
+            setLoading(false);
+          }
+        });
+      };
+
+      return (
+        <div className="space-y-4">
+          <button 
+            onClick={handleUserPayment} 
+            disabled={loading}
+            className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg"
+          >
+            {loading ? 'Processing...' : 'Pay with AcountPay Account'}
+          </button>
+          
+          <button 
+            onClick={handleGuestPayment} 
+            disabled={loading}
+            className="w-full bg-green-600 text-white py-3 px-6 rounded-lg"
+          >
+            {loading ? 'Processing...' : 'Pay as Guest'}
+          </button>
+        </div>
+      );
     }
-  }
-};
-</script>
-```
+    ```
+  </Tab>
+  
+  <Tab title="Vue.js">
+    ```vue
+    <template>
+      <div class="payment-buttons">
+        <button @click="handleUserPayment" :disabled="loading">
+          {{ loading ? 'Processing...' : 'Pay with AcountPay Account' }}
+        </button>
+        <button @click="handleGuestPayment" :disabled="loading">
+          {{ loading ? 'Processing...' : 'Pay as Guest' }}
+        </button>
+      </div>
+    </template>
+
+    <script>
+    export default {
+      name: 'PaymentButton',
+      props: {
+        amount: {
+          type: Number,
+          required: true
+        },
+        orderId: {
+          type: String,
+          required: true
+        }
+      },
+      data() {
+        return {
+          loading: false
+        };
+      },
+      methods: {
+        async handleUserPayment() {
+          this.loading = true;
+          const acount = new window.Acount({
+            clientId: process.env.VUE_APP_ACOUNTPAY_CLIENT_ID
+          });
+          
+          try {
+            await acount.initiateUserPaymentByEmail({
+              amount: this.amount,
+              requestId: this.orderId,
+              callbackURL: `${window.location.origin}/payment-callback`
+            });
+          } catch (error) {
+            console.error('Payment failed:', error);
+            this.loading = false;
+          }
+        },
+        
+        handleGuestPayment() {
+          this.loading = true;
+          const acount = new window.Acount({
+            clientId: process.env.VUE_APP_ACOUNTPAY_CLIENT_ID
+          });
+          
+          acount.initiatePayment({
+            amount: this.amount,
+            referenceNumber: this.orderId,
+            onSuccess: (result) => {
+              console.log('Payment successful:', result);
+              this.$router.push('/payment-success');
+            },
+            onError: (error) => {
+              console.error('Payment failed:', error);
+              this.loading = false;
+            }
+          });
+        }
+      }
+    };
+    </script>
+    ```
+  </Tab>
+</Tabs>
 
 ## Flow Overview
 
