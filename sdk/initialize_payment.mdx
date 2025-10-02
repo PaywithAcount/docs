@@ -357,53 +357,61 @@ For one-time payments without requiring account creation.
 
 ## Important Implementation Notes
 
-### Real Values Usage
+<AccordionGroup>
+  <Accordion title="Real Values Usage">
+    ```javascript
+    // ❌ Don't use demo values in production
+    const acount = new Acount({
+      clientId: "YOUR_CLIENT_ID_HERE" // Replace with actual client ID
+    });
 
-```javascript
-// ❌ Don't use demo values in production
-const acount = new Acount({
-  clientId: "YOUR_CLIENT_ID_HERE" // Replace with actual client ID
-});
+    acount.initiatePayment({
+      amount: 1, // Replace with actual amount
+      referenceNumber: "PAY" + Math.random(), // Replace with actual order ID
+    });
 
-acount.initiatePayment({
-  amount: 1, // Replace with actual amount
-  referenceNumber: "PAY" + Math.random(), // Replace with actual order ID
-});
+    // ✅ Use actual values
+    const acount = new Acount({
+      clientId: "682ad984-e692-4438-8503-b7e8b6ca1f94" // Your real client ID
+    });
 
-// ✅ Use actual values
-const acount = new Acount({
-  clientId: "682ad984-e692-4438-8503-b7e8b6ca1f94" // Your real client ID
-});
+    acount.initiatePayment({
+      amount: cartTotal, // Your actual transaction amount
+      referenceNumber: orderId, // Your actual order reference
+    });
+    ```
+  </Accordion>
 
-acount.initiatePayment({
-  amount: cartTotal, // Your actual transaction amount
-  referenceNumber: orderId, // Your actual order reference
-});
-```
+  <Accordion title="Amount Guidelines">
+    - Use major currency units (e.g., 10.50 for $10.50)
+    - Don't use smallest currency units (cents/pence)
+    - Ensure amounts match your actual transaction values
+  </Accordion>
 
-### Amount Guidelines
-- Use major currency units (e.g., 10.50 for $10.50)
-- Don't use smallest currency units (cents/pence)
-- Ensure amounts match your actual transaction values
-
-### Reference Number Best Practices
-- Use your internal order ID or transaction reference
-- Ensure uniqueness to avoid duplicate payments
-- This allows matching successful payments back to orders
+  <Accordion title="Reference Number Best Practices">
+    - Use your internal order ID or transaction reference
+    - Ensure uniqueness to avoid duplicate payments
+    - This allows matching successful payments back to orders
+  </Accordion>
+</AccordionGroup>
 
 ## Testing
 
-### Sandbox Testing
-1. Use your sandbox Client ID from the dashboard
-2. Test both payment methods
-3. Verify callback handling
-4. Check webhook notifications
+<AccordionGroup>
+  <Accordion title="Sandbox Testing">
+    1. Use your sandbox Client ID from the dashboard
+    2. Test both payment methods
+    3. Verify callback handling
+    4. Check webhook notifications
+  </Accordion>
 
-### Production Checklist
-- [ ] Production Client ID configured
-- [ ] Callback URLs working
-- [ ] Error handling implemented
-- [ ] Success flow tested
-- [ ] Webhook endpoints ready
+  <Accordion title="Production Checklist">
+    - [ ] Production Client ID configured
+    - [ ] Callback URLs working
+    - [ ] Error handling implemented
+    - [ ] Success flow tested
+    - [ ] Webhook endpoints ready
 
-For detailed testing guidelines, see [Integration Testing](/guides/payment/integration_testing).
+    For detailed testing guidelines, see [Integration Testing](/guides/payment/integration_testing).
+  </Accordion>
+</AccordionGroup>
