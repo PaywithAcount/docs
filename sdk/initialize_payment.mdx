@@ -304,50 +304,56 @@ For one-time payments without requiring account creation.
 
 ## Flow Overview
 
-### User Payment Flow
-1. **SDK Initialization**: Initialize with your Client ID
-2. **Payment Request**: SDK calls your backend with payment details
-3. **User Portal**: Browser redirects to AcountPay user portal where user:
-   - Creates account or logs in
-   - Links IBAN to their account
-   - Authenticates and consents to payment
-4. **Return**: User is redirected back to your `callbackURL`
+<AccordionGroup>
+  <Accordion title="User Payment Flow">
+    1. **SDK Initialization**: Initialize with your Client ID
+    2. **Payment Request**: SDK calls your backend with payment details
+    3. **User Portal**: Browser redirects to AcountPay user portal where user:
+       - Creates account or logs in
+       - Links IBAN to their account
+       - Authenticates and consents to payment
+    4. **Return**: User is redirected back to your `callbackURL`
+  </Accordion>
 
-### Guest Payment Flow
-1. **SDK Initialization**: Initialize with your Client ID
-2. **Payment Interface**: SDK opens payment interface
-3. **Bank Selection**: User selects their bank
-4. **Bank Authentication**: User authenticates with their bank
-5. **Completion**: Success/error callbacks are triggered
+  <Accordion title="Guest Payment Flow">
+    1. **SDK Initialization**: Initialize with your Client ID
+    2. **Payment Interface**: SDK opens payment interface
+    3. **Bank Selection**: User selects their bank
+    4. **Bank Authentication**: User authenticates with their bank
+    5. **Completion**: Success/error callbacks are triggered
+  </Accordion>
+</AccordionGroup>
 
 ## Error Handling
 
-### Common Error Scenarios
-
-```javascript
-acount.initiatePayment({
-  amount: 99.99,
-  referenceNumber: 'ORDER-123',
-  onSuccess: (result) => {
-    // Payment successful
-    console.log('Payment completed:', result);
-    // Update UI, redirect, etc.
-  },
-  onError: (error) => {
-    // Handle different error types
-    if (error.type === 'user_cancelled') {
-      console.log('User cancelled the payment');
-      // Show appropriate message
-    } else if (error.type === 'insufficient_funds') {
-      console.log('Insufficient funds');
-      // Suggest alternative payment methods
-    } else {
-      console.error('Payment error:', error);
-      // Show generic error message
-    }
-  }
-});
-```
+<AccordionGroup>
+  <Accordion title="Common Error Scenarios">
+    ```javascript
+    acount.initiatePayment({
+      amount: 99.99,
+      referenceNumber: 'ORDER-123',
+      onSuccess: (result) => {
+        // Payment successful
+        console.log('Payment completed:', result);
+        // Update UI, redirect, etc.
+      },
+      onError: (error) => {
+        // Handle different error types
+        if (error.type === 'user_cancelled') {
+          console.log('User cancelled the payment');
+          // Show appropriate message
+        } else if (error.type === 'insufficient_funds') {
+          console.log('Insufficient funds');
+          // Suggest alternative payment methods
+        } else {
+          console.error('Payment error:', error);
+          // Show generic error message
+        }
+      }
+    });
+    ```
+  </Accordion>
+</AccordionGroup>
 
 ## Important Implementation Notes
 
