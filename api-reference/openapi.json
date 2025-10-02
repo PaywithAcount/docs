@@ -1,0 +1,397 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "AcountPay Data API",
+    "description": "API for accessing bank account data and transactions",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://acount-apis-staging-a8cdb2402163.herokuapp.com",
+      "description": "Staging server"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Account": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "example": "acc_2abc123def456"
+          },
+          "bankId": {
+            "type": "string",
+            "example": "obDanske"
+          },
+          "accountHolderName": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "iban": {
+            "type": "string",
+            "example": "DK5000400440116243"
+          },
+          "currency": {
+            "type": "string",
+            "example": "DKK"
+          },
+          "balance": {
+            "type": "string",
+            "example": "1500.50"
+          },
+          "accountType": {
+            "type": "string",
+            "example": "CURRENT"
+          },
+          "accountDetails": {
+            "type": "object"
+          }
+        }
+      },
+      "GetAccountsRequest": {
+        "type": "object",
+        "required": ["userId", "merchantId"],
+        "properties": {
+          "userId": {
+            "type": "string",
+            "example": "user_35100188"
+          },
+          "merchantId": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "GetAccountsResponse": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "example": "user_2abc123def456"
+          },
+          "merchantId": {
+            "type": "integer",
+            "example": 1
+          },
+          "clientId": {
+            "type": "string",
+            "example": "fdae2b5e-0c10-4fc5-8860-4f3e7a00b4bb"
+          },
+          "consentId": {
+            "type": "string",
+            "example": "ta:EjpMqkVifCjyRJ224tB18CVvenReoiKK1YWgb8J7cK85:5zKtXEAq"
+          },
+          "accounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Account"
+            }
+          },
+          "totalAccounts": {
+            "type": "integer",
+            "example": 2
+          }
+        }
+      },
+      "GetBalanceRequest": {
+        "type": "object",
+        "required": ["userId", "merchantId", "accountId"],
+        "properties": {
+          "userId": {
+            "type": "string",
+            "example": "user_35100188"
+          },
+          "merchantId": {
+            "type": "integer",
+            "example": 1
+          },
+          "accountId": {
+            "type": "string",
+            "example": "a:C1hTinv2QaUbNMeTmTqjoXakVgiodpzmwtRKWqsGTbaR:ZhBVAJSGzmfoR"
+          }
+        }
+      },
+      "BalanceResponse": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "example": "user_2abc123def456"
+          },
+          "merchantId": {
+            "type": "integer",
+            "example": 1
+          },
+          "accountId": {
+            "type": "string",
+            "example": "a:6CpoqfjmyhfT9QAbcTZ2gcnb8egGfKLKMpxzuZPoaMLB:BzQQ5nvcb7TM4Qts"
+          },
+          "balance": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string",
+                "example": "1000.50"
+              },
+              "currency": {
+                "type": "string",
+                "example": "DKK"
+              },
+              "lastUpdated": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2024-01-01T12:00:00Z"
+              }
+            }
+          },
+          "accountDetails": {
+            "type": "object",
+            "properties": {
+              "iban": {
+                "type": "string",
+                "example": "DK5000400440116243"
+              },
+              "accountHolderName": {
+                "type": "string",
+                "example": "John Doe"
+              },
+              "bankId": {
+                "type": "string",
+                "example": "bank_123"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/v1/ais/accounts": {
+      "post": {
+        "summary": "Get User Bank Accounts",
+        "description": "Retrieves bank accounts using Token.io's /accounts endpoint.",
+        "operationId": "getUserBankAccounts",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "x-request-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Request ID for tracking"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetAccountsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Accounts retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAccountsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid parameters"
+          },
+          "404": {
+            "description": "No authorized consent"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/v1/ais/accounts/balance": {
+      "post": {
+        "summary": "Get Account Balance",
+        "description": "Retrieves balance using Token.io's /accounts/{accountId}/balance endpoint.",
+        "operationId": "getAccountBalance",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "x-request-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Request ID for tracking"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetBalanceRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Balance retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BalanceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid parameters"
+          },
+          "404": {
+            "description": "No authorized consent"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/v1/ais/consents/{consentId}/accounts": {
+      "get": {
+        "summary": "Get Accounts for Consent",
+        "description": "Retrieves linked accounts for a consent.",
+        "operationId": "getAccountsForConsent",
+        "parameters": [
+          {
+            "name": "consentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token.io consent ID"
+          },
+          {
+            "name": "x-request-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Request ID for tracking"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Accounts list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "accountId": {
+                        "type": "string",
+                        "example": "account_2abc123def456"
+                      },
+                      "iban": {
+                        "type": "string",
+                        "example": "DK1234567890123456"
+                      },
+                      "accountHolderName": {
+                        "type": "string",
+                        "example": "John Doe"
+                      },
+                      "bankId": {
+                        "type": "string",
+                        "example": "ngp-inal"
+                      },
+                      "currency": {
+                        "type": "string",
+                        "example": "DKK"
+                      },
+                      "isActive": {
+                        "type": "boolean",
+                        "example": true
+                      },
+                      "accountDetails": {
+                        "type": "object",
+                        "properties": {
+                          "accountType": {
+                            "type": "string",
+                            "example": "CURRENT_ACCOUNT"
+                          },
+                          "accountFeatures": {
+                            "type": "object",
+                            "properties": {
+                              "supportsReceivePayment": {
+                                "type": "boolean",
+                                "example": true
+                              },
+                              "supportsSendPayment": {
+                                "type": "boolean",
+                                "example": true
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-15T10:30:00Z"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-15T10:30:00Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Consent not authorized"
+          },
+          "404": {
+            "description": "Consent not found"
+          }
+        }
+      }
+    }
+  }
+}

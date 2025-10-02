@@ -96,26 +96,36 @@
           }
         ]
       },
-
       {
         "tab": "API Reference",
         "groups": [
           {
-            "group": "Data API",
+            "group": "Getting Started",
             "pages": [
               "api-reference/index",
               "api-reference/authentication",
-              "api-reference/consents",
-              "api-reference/accounts",
-              "api-reference/transactions",
               "api-reference/errors"
+            ]
+          },
+          {
+            "group": "Accounts",
+            "pages": [
+              "api-reference/get-accounts",
+              "api-reference/get-balance",
+              "api-reference/get-consent-accounts"
+            ]
+          },
+          {
+            "group": "Other Endpoints",
+            "pages": [
+              "api-reference/consents",
+              "api-reference/transactions"
             ]
           }
         ]
       }
     ],
-    "global": {
-    }
+    "global": {}
   },
   "logo": {
     "light": "/logo/light.png",
@@ -136,8 +146,9 @@
   },
   "footer": {
     "socials": {
-      "github": "https://github.com/x",
-      "linkedin": "https://linkedin.com/company/x"
+      "github": "https://github.com/PaywithAcount",
+      "linkedin": "https://www.linkedin.com/company/acountpay"
     }
-  }
+  },
+  "openapi": ["/api-reference/openapi.json"]
 }
