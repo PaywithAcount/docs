@@ -25,6 +25,35 @@
       }
     },
     "schemas": {
+      "ErrorResponseDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "description": "HTTP status code",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Validation failed"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error type",
+            "example": "Bad Request"
+          },
+          "details": {
+            "description": "Additional error details",
+            "example": ["userId is required", "merchantId must be a number"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": ["statusCode", "message"]
+      },
       "Account": {
         "type": "object",
         "properties": {
@@ -175,10 +204,621 @@
             }
           }
         }
+      },
+      "GetAccountTransactionsRequest": {
+        "type": "object",
+        "required": ["userId", "merchantId", "accountId"],
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "User ID (Clerk user ID)",
+            "example": "user_35100188"
+          },
+          "merchantId": {
+            "type": "integer",
+            "description": "Merchant ID (numeric)",
+            "example": 1
+          },
+          "accountId": {
+            "type": "string",
+            "description": "Account ID from Token.io",
+            "example": "a:6CpoqfjmyhfT9QAbcTZ2gcnb8egGfKLKMpxzuZPoaMLB:BzQQ5nvcb7TM4Qts"
+          },
+          "pageLimit": {
+            "type": "number",
+            "description": "Page limit for transactions (default: 200)",
+            "example": 200,
+            "default": 200
+          },
+          "fromDate": {
+            "type": "string",
+            "description": "Start date for transactions (ISO 8601)",
+            "example": "2024-01-01T00:00:00Z"
+          },
+          "toDate": {
+            "type": "string",
+            "description": "End date for transactions (ISO 8601)",
+            "example": "2024-01-31T23:59:59Z"
+          }
+        }
+      },
+      "AccountTransactionsResponse": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "User ID",
+            "example": "user_2abc123def456"
+          },
+          "merchantId": {
+            "type": "integer",
+            "description": "Merchant ID",
+            "example": 1
+          },
+          "accountId": {
+            "type": "string",
+            "description": "Account ID",
+            "example": "a:6CpoqfjmyhfT9QAbcTZ2gcnb8egGfKLKMpxzuZPoaMLB:BzQQ5nvcb7TM4Qts"
+          },
+          "totalTransactions": {
+            "type": "number",
+            "description": "Total number of transactions",
+            "example": 25
+          },
+          "pageLimit": {
+            "type": "number",
+            "description": "Page limit used",
+            "example": 200
+          },
+          "transactions": {
+            "type": "array",
+            "description": "Array of transactions",
+            "items": {
+              "$ref": "#/components/schemas/Transaction"
+            }
+          }
+        }
+      },
+      "Transaction": {
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "string",
+            "description": "Transaction ID",
+            "example": "txn_123456"
+          },
+          "amount": {
+            "type": "string",
+            "description": "Transaction amount",
+            "example": "100.50"
+          },
+          "currency": {
+            "type": "string",
+            "description": "Transaction currency",
+            "example": "DKK"
+          },
+          "description": {
+            "type": "string",
+            "description": "Transaction description",
+            "example": "Payment to merchant"
+          },
+          "bookingDate": {
+            "type": "string",
+            "description": "Transaction booking date",
+            "example": "2024-01-15T10:30:00Z"
+          },
+          "valueDate": {
+            "type": "string",
+            "description": "Transaction value date",
+            "example": "2024-01-15T10:30:00Z"
+          },
+          "counterparty": {
+            "type": "object",
+            "description": "Counterparty information",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "John Doe"
+              },
+              "iban": {
+                "type": "string",
+                "example": "DK5000400440116243"
+              }
+            }
+          },
+          "reference": {
+            "type": "string",
+            "description": "Transaction reference",
+            "example": "REF123456"
+          },
+          "type": {
+            "type": "string",
+            "description": "Transaction type",
+            "example": "DEBIT"
+          },
+          "status": {
+            "type": "string",
+            "description": "Transaction status",
+            "example": "BOOKED"
+          }
+        }
+      },
+      "CreateAisConsentDto": {
+        "type": "object",
+        "properties": {
+          "merchantId": {
+            "type": "number",
+            "description": "Merchant ID",
+            "example": 1
+          },
+          "userId": {
+            "type": "string",
+            "description": "Clerk user ID",
+            "example": "user_2abc123def456"
+          },
+          "permissions": {
+            "type": "array",
+            "description": "Array of consent permissions",
+            "example": ["ReadAccountsDetail", "ReadBalances", "ReadTransactionsDetail"],
+            "items": {
+              "type": "string",
+              "enum": ["ReadAccountsDetail", "ReadBalances", "ReadTransactionsDetail"]
+            }
+          },
+          "expirationDateTime": {
+            "type": "string",
+            "description": "Consent expiration date and time (ISO 8601)",
+            "example": "2025-09-30T00:00:00Z"
+          },
+          "transactionFromDateTime": {
+            "type": "string",
+            "description": "Earliest transaction date accessible (ISO 8601)",
+            "example": "2025-01-01T00:00:00Z"
+          },
+          "callbackUrl": {
+            "type": "string",
+            "description": "Callback URL for consent authorization",
+            "example": "https://your-app.com/ais/callback"
+          }
+        },
+        "required": ["merchantId", "userId", "permissions", "expirationDateTime", "transactionFromDateTime"]
+      },
+      "AisConsentResponseDto": {
+        "type": "object",
+        "properties": {
+          "consentId": {
+            "type": "string",
+            "description": "Consent ID (Token.io tokenId) - populated after callback",
+            "example": "consent_2abc123def456"
+          },
+          "requestId": {
+            "type": "string",
+            "description": "Request ID (Token.io request ID)",
+            "example": "rq:3dWkVGNFae3FaS3h8UQJ4tBs5SrY:5zKtXEAq"
+          },
+          "merchantId": {
+            "type": "number",
+            "description": "Merchant ID",
+            "example": 1
+          },
+          "userId": {
+            "type": "string",
+            "description": "User ID",
+            "example": "user_2abc123def456"
+          },
+          "permissions": {
+            "type": "array",
+            "description": "Array of consent permissions",
+            "example": ["ReadAccountsDetail", "ReadBalances", "ReadTransactionsDetail"],
+            "items": {
+              "type": "string",
+              "enum": ["ReadAccountsDetail", "ReadBalances", "ReadTransactionsDetail"]
+            }
+          },
+          "expirationDateTime": {
+            "type": "string",
+            "description": "Consent expiration date and time",
+            "example": "2025-09-30T00:00:00Z"
+          },
+          "transactionFromDateTime": {
+            "type": "string",
+            "description": "Earliest transaction date accessible",
+            "example": "2025-01-01T00:00:00Z"
+          },
+          "status": {
+            "type": "string",
+            "description": "Current consent status",
+            "enum": ["pending", "authorized", "expired", "revoked", "failed"],
+            "example": "pending"
+          },
+          "authorizationUrl": {
+            "type": "string",
+            "description": "Authorization URL for bank redirect",
+            "example": "https://web-app.token.io/app/consent/consent_2abc123def456"
+          },
+          "errorMessage": {
+            "type": "string",
+            "description": "Error message if consent failed",
+            "example": "User denied consent"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Consent creation timestamp",
+            "example": "2024-01-15T10:30:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Last update timestamp",
+            "example": "2024-01-15T10:30:00Z"
+          }
+        },
+        "required": ["requestId", "merchantId", "userId", "permissions", "expirationDateTime", "transactionFromDateTime", "status", "createdAt", "updatedAt"]
       }
     }
   },
   "paths": {
+    "/v1/ais/consents": {
+      "post": {
+        "summary": "Create AIS Consent",
+        "description": "Creates a new AIS consent for bank account access",
+        "operationId": "createAisConsent",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAisConsentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "AIS consent created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AisConsentResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User or merchant not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["AIS - Consents"]
+      }
+    },
+    "/v1/ais/consents/{consentId}/authorize": {
+      "post": {
+        "summary": "Authorize AIS Consent",
+        "description": "Initiates bank authorization flow for the consent",
+        "operationId": "authorizeAisConsent",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "consentId",
+            "in": "path",
+            "required": true,
+            "description": "Token.io consent ID",
+            "schema": {
+              "type": "string",
+              "example": "consent_2abc123def456"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorization URL generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "authorizationUrl": {
+                      "type": "string",
+                      "example": "https://web-app.token.io/app/consent/consent_2abc123def456"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Consent is not in pending status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Consent not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["AIS - Consents"]
+      }
+    },
+    "/v1/ais/consents/{consentId}": {
+      "get": {
+        "summary": "Get Consent Details",
+        "description": "Retrieves details of a specific consent",
+        "operationId": "getAisConsent",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "consentId",
+            "in": "path",
+            "required": true,
+            "description": "Token.io consent ID",
+            "schema": {
+              "type": "string",
+              "example": "consent_2abc123def456"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Consent details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AisConsentResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Consent not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["AIS - Consents"]
+      }
+    },
+    "/v1/ais/consents/{consentId}/revoke": {
+      "post": {
+        "summary": "Revoke Consent",
+        "description": "Revokes the consent and deactivates linked accounts",
+        "operationId": "revokeAisConsent",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "consentId",
+            "in": "path",
+            "required": true,
+            "description": "Token.io consent ID",
+            "schema": {
+              "type": "string",
+              "example": "consent_2abc123def456"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Consent revoked successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Consent revoked successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Consent not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["AIS - Consents"]
+      }
+    },
+    "/v1/ais/users/{userId}/consents": {
+      "get": {
+        "summary": "Get User Consents",
+        "description": "Retrieves all consents for a specific user and merchant",
+        "operationId": "getUserAisConsents",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "Clerk user ID",
+            "schema": {
+              "type": "string",
+              "example": "user_2abc123def456"
+            }
+          },
+          {
+            "name": "merchantId",
+            "in": "query",
+            "required": true,
+            "description": "Merchant ID",
+            "schema": {
+              "type": "number",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User consents retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AisConsentResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User or merchant not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["AIS - Consents"]
+      }
+    },
     "/v1/ais/accounts": {
       "post": {
         "summary": "Get User Bank Accounts",
@@ -222,13 +862,52 @@
             }
           },
           "400": {
-            "description": "Invalid parameters"
+            "description": "Bad Request - Invalid input parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                },
+                "example": {
+                  "statusCode": 400,
+                  "message": "Validation failed",
+                  "error": "Bad Request",
+                  "details": ["userId is required", "merchantId must be a number"]
+                }
+              }
+            }
           },
           "404": {
-            "description": "No authorized consent"
+            "description": "Not Found - User or merchant not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                },
+                "example": {
+                  "statusCode": 404,
+                  "message": "User not found",
+                  "error": "Not Found",
+                  "details": ["User with ID 'user_35100188' does not exist"]
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                },
+                "example": {
+                  "statusCode": 500,
+                  "message": "Internal server error occurred",
+                  "error": "Internal Server Error",
+                  "details": ["Database connection failed"]
+                }
+              }
+            }
           }
         }
       }
@@ -276,13 +955,52 @@
             }
           },
           "400": {
-            "description": "Invalid parameters"
+            "description": "Bad Request - Invalid input parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                },
+                "example": {
+                  "statusCode": 400,
+                  "message": "Validation failed",
+                  "error": "Bad Request",
+                  "details": ["accountId is required", "userId is required"]
+                }
+              }
+            }
           },
           "404": {
-            "description": "No authorized consent"
+            "description": "Not Found - Account not found or no authorized consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                },
+                "example": {
+                  "statusCode": 404,
+                  "message": "Account not found",
+                  "error": "Not Found",
+                  "details": ["Account with ID 'acc_123' does not exist"]
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                },
+                "example": {
+                  "statusCode": 500,
+                  "message": "Internal server error occurred",
+                  "error": "Internal Server Error",
+                  "details": ["Balance service unavailable"]
+                }
+              }
+            }
           }
         }
       }
@@ -385,10 +1103,272 @@
             }
           },
           "400": {
-            "description": "Consent not authorized"
+            "description": "Bad Request - Consent not authorized or invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                },
+                "example": {
+                  "statusCode": 400,
+                  "message": "Consent not authorized",
+                  "error": "Bad Request",
+                  "details": ["Consent is not authorized for this operation"]
+                }
+              }
+            }
           },
           "404": {
-            "description": "Consent not found"
+            "description": "Not Found - Consent not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                },
+                "example": {
+                  "statusCode": 404,
+                  "message": "Consent not found",
+                  "error": "Not Found",
+                  "details": ["Consent with ID 'ta:EjpMqkVifCjyRJ224tB18CVvenReoiKK1YWgb8J7cK85:5zKtXEAq' does not exist"]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                },
+                "example": {
+                  "statusCode": 500,
+                  "message": "Internal server error occurred",
+                  "error": "Internal Server Error",
+                  "details": ["Consent service unavailable"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/ais/accounts/transactions": {
+      "post": {
+        "summary": "Get Account Transactions",
+        "description": "Retrieves transactions for a specific account using Token.io /accounts/{accountId}/transactions endpoint with on-behalf-of header.",
+        "operationId": "getAccountTransactions",
+        "tags": ["Account Information Service"],
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {
+            "name": "x-request-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Request ID for tracking"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetAccountTransactionsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account transactions retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountTransactionsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                },
+                "example": {
+                  "statusCode": 400,
+                  "message": "Validation failed",
+                  "error": "Bad Request",
+                  "details": ["accountId is required", "Invalid date format"]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Account not found or no authorized consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                },
+                "example": {
+                  "statusCode": 404,
+                  "message": "Account not found",
+                  "error": "Not Found",
+                  "details": ["Account with ID 'a:6CpoqfjmyhfT9QAbcTZ2gcnb8egGfKLKMpxzuZPoaMLB:BzQQ5nvcb7TM4Qts' does not exist"]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                },
+                "example": {
+                  "statusCode": 500,
+                  "message": "Internal server error occurred",
+                  "error": "Internal Server Error",
+                  "details": ["Transaction service unavailable"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/ais/accounts/{accountId}/transactions": {
+      "get": {
+        "summary": "Get Transactions for Account",
+        "description": "Retrieves transactions for a specific account within a date range using Token.io /accounts/{accountId}/transactions endpoint",
+        "operationId": "getAccountTransactionsByAccountId",
+        "tags": ["Account Information Service"],
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "description": "Token.io account ID",
+            "schema": {
+              "type": "string",
+              "example": "account_2abc123def456"
+            }
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "required": true,
+            "description": "Start date for transactions (ISO 8601)",
+            "schema": {
+              "type": "string",
+              "example": "2024-01-01T00:00:00Z"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "required": true,
+            "description": "End date for transactions (ISO 8601)",
+            "schema": {
+              "type": "string",
+              "example": "2024-01-31T23:59:59Z"
+            }
+          },
+          {
+            "name": "x-request-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Optional request ID for tracking"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved account transactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TransactionResponse"
+                  }
+                },
+                "example": [
+                  {
+                    "transactionId": "txn_2abc123def456",
+                    "amount": "100.50",
+                    "currency": "DKK",
+                    "description": "Payment to merchant",
+                    "bookingDate": "2024-01-15T10:30:00Z",
+                    "valueDate": "2024-01-15T10:30:00Z",
+                    "counterparty": {
+                      "name": "John Doe",
+                      "iban": "DK1234567890123456"
+                    },
+                    "reference": "REF123456",
+                    "type": "DEBIT",
+                    "status": "BOOKED"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                },
+                "example": {
+                  "statusCode": 400,
+                  "message": "Invalid date format or date range",
+                  "error": "Bad Request",
+                  "details": ["fromDate must be a valid ISO 8601 date", "toDate cannot be before fromDate"]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Account not found or no authorized consent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                },
+                "example": {
+                  "statusCode": 404,
+                  "message": "Account not found or no authorized consent for this account",
+                  "error": "Not Found",
+                  "details": ["No valid consent found for account"]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                },
+                "example": {
+                  "statusCode": 500,
+                  "message": "Internal server error occurred",
+                  "error": "Internal Server Error",
+                  "details": ["Transaction service unavailable"]
+                }
+              }
+            }
           }
         }
       }

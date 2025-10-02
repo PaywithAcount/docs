@@ -108,6 +108,16 @@
             ]
           },
           {
+            "group": "Consent Management",
+            "pages": [
+              "api-reference/create-consent",
+              "api-reference/authorize-consent",
+              "api-reference/get-consent",
+              "api-reference/revoke-consent",
+              "api-reference/get-user-consents"
+            ]
+          },
+          {
             "group": "Accounts",
             "pages": [
               "api-reference/get-accounts",
@@ -116,10 +126,10 @@
             ]
           },
           {
-            "group": "Other Endpoints",
+            "group": "Transactions",
             "pages": [
-              "api-reference/consents",
-              "api-reference/transactions"
+              "api-reference/get-transactions",
+              "api-reference/get-account-transactions"
             ]
           }
         ]
