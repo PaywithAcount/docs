@@ -113,97 +113,99 @@ acount.initiatePayment({
 
 ## Real Implementation Examples
 
-### Basic E-commerce Integration
+<AccordionGroup>
+  <Accordion title="Basic E-commerce Integration">
+    ```html
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
+    </head>
+    <body>
+      <div class="checkout">
+        <h2>Checkout - $99.99</h2>
+        <button id="pay-button">Pay with AcountPay</button>
+      </div>
 
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
-</head>
-<body>
-  <div class="checkout">
-    <h2>Checkout - $99.99</h2>
-    <button id="pay-button">Pay with AcountPay</button>
-  </div>
+      <script>
+        // Replace with your actual client ID from dashboard
+        const acount = new Acount({
+          clientId: "your-actual-client-id"
+        });
 
-  <script>
-    // Replace with your actual client ID from dashboard
-    const acount = new Acount({
-      clientId: "your-actual-client-id"
-    });
+        document.getElementById('pay-button').onclick = function() {
+          acount.initiatePayment({
+            amount: 99.99, // Use your actual product/cart total
+            referenceNumber: "ORDER-" + Date.now(), // Use your actual order ID
+            onSuccess: function(result) {
+              console.log('Payment successful:', result);
+              // Redirect to success page
+              window.location.href = '/order-confirmation';
+            },
+            onError: function(error) {
+              console.error('Payment failed:', error);
+              alert('Payment failed. Please try again.');
+            }
+          });
+        };
+      </script>
+    </body>
+    </html>
+    ```
+  </Accordion>
 
-    document.getElementById('pay-button').onclick = function() {
-      acount.initiatePayment({
-        amount: 99.99, // Use your actual product/cart total
-        referenceNumber: "ORDER-" + Date.now(), // Use your actual order ID
-        onSuccess: function(result) {
-          console.log('Payment successful:', result);
-          // Redirect to success page
-          window.location.href = '/order-confirmation';
-        },
-        onError: function(error) {
-          console.error('Payment failed:', error);
-          alert('Payment failed. Please try again.');
-        }
-      });
-    };
-  </script>
-</body>
-</html>
-```
+  <Accordion title="React Integration Example">
+    ```typescript
+    // components/PaymentButton.tsx
+    import { useState } from 'react';
 
-### React Integration Example
+    // Add script tag to public/index.html:
+    // <script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
 
-```typescript
-// components/PaymentButton.tsx
-import { useState } from 'react';
-
-// Add script tag to public/index.html:
-// <script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
-
-declare global {
-  interface Window {
-    Acount: any;
-  }
-}
-
-export function PaymentButton({ amount, orderId }: { amount: number; orderId: string }) {
-  const [loading, setLoading] = useState(false);
-
-  const handlePayment = () => {
-    setLoading(true);
-    
-    const acount = new window.Acount({
-      clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID
-    });
-    
-    acount.initiatePayment({
-      amount,
-      referenceNumber: orderId,
-      onSuccess: (result: any) => {
-        console.log('Payment successful:', result);
-        window.location.href = '/payment-success';
-      },
-      onError: (error: any) => {
-        console.error('Payment failed:', error);
-        setLoading(false);
-        alert('Payment failed. Please try again.');
+    declare global {
+      interface Window {
+        Acount: any;
       }
-    });
-  };
+    }
 
-  return (
-    <button 
-      onClick={handlePayment} 
-      disabled={loading}
-      className="bg-blue-600 text-white px-6 py-3 rounded"
-    >
-      {loading ? 'Processing...' : 'Pay with AcountPay'}
-    </button>
-  );
-}
-```
+    export function PaymentButton({ amount, orderId }: { amount: number; orderId: string }) {
+      const [loading, setLoading] = useState(false);
+
+      const handlePayment = () => {
+        setLoading(true);
+        
+        const acount = new window.Acount({
+          clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID
+        });
+        
+        acount.initiatePayment({
+          amount,
+          referenceNumber: orderId,
+          onSuccess: (result: any) => {
+            console.log('Payment successful:', result);
+            window.location.href = '/payment-success';
+          },
+          onError: (error: any) => {
+            console.error('Payment failed:', error);
+            setLoading(false);
+            alert('Payment failed. Please try again.');
+          }
+        });
+      };
+
+      return (
+        <button 
+          onClick={handlePayment} 
+          disabled={loading}
+          className="bg-blue-600 text-white px-6 py-3 rounded"
+        >
+          {loading ? 'Processing...' : 'Pay with AcountPay'}
+        </button>
+      );
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
 
 ## Platform Integration
 
