@@ -85,177 +85,249 @@ const acount = new AcountPay({
 
 ## Platform-Specific Integration
 
-### Shopify
+### E-commerce Platforms
 
-1. Go to **Online Store** → **Themes** → **Edit HTML/CSS**
-2. Add to `theme.liquid` before `</head>`:
+<Tabs>
+  <Tab title="Shopify">
+    1. Go to **Online Store** → **Themes** → **Edit HTML/CSS**
+    2. Add to `theme.liquid` before `</head>`:
 
-```html
-<script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
-```
+    ```html
+    <script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
+    ```
 
-3. Add payment button to checkout or product pages:
+    3. Add payment button to checkout or product pages:
 
-```html
-<button onclick="payWithAcount()">Pay with AcountPay</button>
-<script>
-function payWithAcount() {
-  const acount = new Acount({
-    clientId: "{{ settings.acountpay_client_id }}"
-  });
-  
-  acount.initiatePayment({
-    amount: {{ cart.total_price | divided_by: 100.0 }},
-    referenceNumber: "{{ checkout.order_number }}",
-    onSuccess: function(result) {
-      window.location.href = "/checkout/success";
-    }
-  });
-}
-</script>
-```
-
-### WooCommerce
-
-1. Install "Header and Footer Scripts" plugin
-2. Add to header scripts:
-
-```html
-<script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
-```
-
-3. Add to checkout page:
-
-```php
-<?php
-// Add to functions.php
-function add_acountpay_button() {
-    ?>
-    <button id="acountpay-btn">Pay with AcountPay</button>
+    ```html
+    <button onclick="payWithAcount()">Pay with AcountPay</button>
     <script>
-    document.getElementById('acountpay-btn').onclick = function() {
-        const acount = new Acount({
-            clientId: "<?php echo get_option('acountpay_client_id'); ?>"
-        });
-        
-        acount.initiatePayment({
-            amount: <?php echo WC()->cart->get_total('raw'); ?>,
-            referenceNumber: "ORDER-<?php echo time(); ?>",
-            onSuccess: function(result) {
-                window.location.href = "<?php echo wc_get_checkout_url(); ?>?payment=success";
-            }
-        });
-    };
-    </script>
-    <?php
-}
-add_action('woocommerce_checkout_after_order_review', 'add_acountpay_button');
-?>
-```
-
-### React
-
-```bash
-npm i @acountpay/pis-sdk
-```
-
-```typescript
-// components/PaymentButton.tsx
-import AcountPay from '@acountpay/pis-sdk';
-
-export function PaymentButton() {
-  const handlePayment = async () => {
-    const acount = new AcountPay({
-      clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID!
-    });
-    
-    await acount.initiateUserPaymentByEmail({
-      amount: 99.99,
-      requestId: 'ORDER-123',
-      callbackURL: `${window.location.origin}/payment-callback`
-    });
-  };
-
-  return (
-    <button onClick={handlePayment}>
-      Pay with AcountPay
-    </button>
-  );
-}
-```
-
-### Vue.js
-
-```bash
-npm i @acountpay/pis-sdk
-```
-
-```vue
-<template>
-  <button @click="handlePayment">Pay with AcountPay</button>
-</template>
-
-<script>
-import AcountPay from '@acountpay/pis-sdk';
-
-export default {
-  methods: {
-    async handlePayment() {
-      const acount = new AcountPay({
-        clientId: process.env.VUE_APP_ACOUNTPAY_CLIENT_ID
+    function payWithAcount() {
+      const acount = new Acount({
+        clientId: "{{ settings.acountpay_client_id }}"
       });
       
-      await acount.initiateUserPaymentByEmail({
-        amount: 99.99,
-        requestId: 'ORDER-123',
-        callbackURL: `${window.location.origin}/payment-callback`
+      acount.initiatePayment({
+        amount: {{ cart.total_price | divided_by: 100.0 }},
+        referenceNumber: "{{ checkout.order_number }}",
+        onSuccess: function(result) {
+          window.location.href = "/checkout/success";
+        }
       });
     }
-  }
-};
-</script>
-```
+    </script>
+    ```
+  </Tab>
+  <Tab title="WooCommerce">
+    1. Install "Header and Footer Scripts" plugin
+    2. Add to header scripts:
 
-### Next.js
+    ```html
+    <script src="https://cdn.acountpay.com/sdk/acount.umd.js"></script>
+    ```
 
-```bash
-npm i @acountpay/pis-sdk
-```
+    3. Add to checkout page:
 
-```typescript
-// pages/checkout.tsx
-import { useEffect, useState } from 'react';
-
-export default function Checkout() {
-  const [acount, setAcount] = useState<any>(null);
-
-  useEffect(() => {
-    // Dynamic import for client-side only
-    import('@acountpay/pis-sdk').then((module) => {
-      const AcountPay = module.default;
-      setAcount(new AcountPay({
-        clientId: process.env.NEXT_PUBLIC_ACOUNTPAY_CLIENT_ID!
-      }));
-    });
-  }, []);
-
-  const handlePayment = async () => {
-    if (acount) {
-      await acount.initiateUserPaymentByEmail({
-        amount: 99.99,
-        requestId: 'ORDER-123',
-        callbackURL: `${window.location.origin}/payment-callback`
-      });
+    ```php
+    <?php
+    // Add to functions.php
+    function add_acountpay_button() {
+        ?>
+        <button id="acountpay-btn">Pay with AcountPay</button>
+        <script>
+        document.getElementById('acountpay-btn').onclick = function() {
+            const acount = new Acount({
+                clientId: "<?php echo get_option('acountpay_client_id'); ?>"
+            });
+            
+            acount.initiatePayment({
+                amount: <?php echo WC()->cart->get_total('raw'); ?>,
+                referenceNumber: "ORDER-<?php echo time(); ?>",
+                onSuccess: function(result) {
+                    window.location.href = "<?php echo wc_get_checkout_url(); ?>?payment=success";
+                }
+            });
+        };
+        </script>
+        <?php
     }
-  };
+    add_action('woocommerce_checkout_after_order_review', 'add_acountpay_button');
+    ?>
+    ```
+  </Tab>
+</Tabs>
 
-  return (
-    <button onClick={handlePayment} disabled={!acount}>
-      Pay with AcountPay
-    </button>
-  );
-}
-```
+### Frontend Frameworks
+
+<Tabs>
+  <Tab title="React">
+    **Installation:**
+    ```bash
+    npm i @acountpay/pis-sdk
+    ```
+
+    **Implementation:**
+    ```typescript
+    // components/PaymentButton.tsx
+    import AcountPay from '@acountpay/pis-sdk';
+
+    export function PaymentButton() {
+      const handlePayment = async () => {
+        const acount = new AcountPay({
+          clientId: process.env.REACT_APP_ACOUNTPAY_CLIENT_ID!
+        });
+        
+        await acount.initiateUserPaymentByEmail({
+          amount: 99.99,
+          requestId: 'ORDER-123',
+          callbackURL: `${window.location.origin}/payment-callback`
+        });
+      };
+
+      return (
+        <button onClick={handlePayment}>
+          Pay with AcountPay
+        </button>
+      );
+    }
+    ```
+
+    **Environment Variables:**
+    ```bash
+    # .env
+    REACT_APP_ACOUNTPAY_CLIENT_ID=your-client-id
+    ```
+  </Tab>
+  <Tab title="Vue.js">
+    **Installation:**
+    ```bash
+    npm i @acountpay/pis-sdk
+    ```
+
+    **Implementation:**
+    ```vue
+    <template>
+      <button @click="handlePayment">Pay with AcountPay</button>
+    </template>
+
+    <script>
+    import AcountPay from '@acountpay/pis-sdk';
+
+    export default {
+      methods: {
+        async handlePayment() {
+          const acount = new AcountPay({
+            clientId: process.env.VUE_APP_ACOUNTPAY_CLIENT_ID
+          });
+          
+          await acount.initiateUserPaymentByEmail({
+            amount: 99.99,
+            requestId: 'ORDER-123',
+            callbackURL: `${window.location.origin}/payment-callback`
+          });
+        }
+      }
+    };
+    </script>
+    ```
+
+    **Environment Variables:**
+    ```bash
+    # .env
+    VUE_APP_ACOUNTPAY_CLIENT_ID=your-client-id
+    ```
+  </Tab>
+  <Tab title="Next.js">
+    **Installation:**
+    ```bash
+    npm i @acountpay/pis-sdk
+    ```
+
+    **Implementation:**
+    ```typescript
+    // pages/checkout.tsx
+    import { useEffect, useState } from 'react';
+
+    export default function Checkout() {
+      const [acount, setAcount] = useState<any>(null);
+
+      useEffect(() => {
+        // Dynamic import for client-side only
+        import('@acountpay/pis-sdk').then((module) => {
+          const AcountPay = module.default;
+          setAcount(new AcountPay({
+            clientId: process.env.NEXT_PUBLIC_ACOUNTPAY_CLIENT_ID!
+          }));
+        });
+      }, []);
+
+      const handlePayment = async () => {
+        if (acount) {
+          await acount.initiateUserPaymentByEmail({
+            amount: 99.99,
+            requestId: 'ORDER-123',
+            callbackURL: `${window.location.origin}/payment-callback`
+          });
+        }
+      };
+
+      return (
+        <button onClick={handlePayment} disabled={!acount}>
+          Pay with AcountPay
+        </button>
+      );
+    }
+    ```
+
+    **Environment Variables:**
+    ```bash
+    # .env.local
+    NEXT_PUBLIC_ACOUNTPAY_CLIENT_ID=your-client-id
+    ```
+  </Tab>
+  <Tab title="Angular">
+    **Installation:**
+    ```bash
+    npm i @acountpay/pis-sdk
+    ```
+
+    **Implementation:**
+    ```typescript
+    // payment-button.component.ts
+    import { Component } from '@angular/core';
+    import AcountPay from '@acountpay/pis-sdk';
+
+    @Component({
+      selector: 'app-payment-button',
+      template: `
+        <button (click)="handlePayment()">
+          Pay with AcountPay
+        </button>
+      `
+    })
+    export class PaymentButtonComponent {
+      async handlePayment() {
+        const acount = new AcountPay({
+          clientId: environment.acountpayClientId
+        });
+        
+        await acount.initiateUserPaymentByEmail({
+          amount: 99.99,
+          requestId: 'ORDER-123',
+          callbackURL: `${window.location.origin}/payment-callback`
+        });
+      }
+    }
+    ```
+
+    **Environment Configuration:**
+    ```typescript
+    // environments/environment.ts
+    export const environment = {
+      acountpayClientId: 'your-client-id'
+    };
+    ```
+  </Tab>
+</Tabs>
 
 ## Package Information
 
@@ -278,14 +350,35 @@ export default function Checkout() {
 
 For framework integrations, set up environment variables:
 
-```bash
-# .env file
-REACT_APP_ACOUNTPAY_CLIENT_ID=your-client-id
-# or
-VUE_APP_ACOUNTPAY_CLIENT_ID=your-client-id
-# or
-NEXT_PUBLIC_ACOUNTPAY_CLIENT_ID=your-client-id
-```
+<Tabs>
+  <Tab title="React">
+    ```bash
+    # .env
+    REACT_APP_ACOUNTPAY_CLIENT_ID=your-client-id
+    ```
+  </Tab>
+  <Tab title="Vue.js">
+    ```bash
+    # .env
+    VUE_APP_ACOUNTPAY_CLIENT_ID=your-client-id
+    ```
+  </Tab>
+  <Tab title="Next.js">
+    ```bash
+    # .env.local
+    NEXT_PUBLIC_ACOUNTPAY_CLIENT_ID=your-client-id
+    ```
+  </Tab>
+  <Tab title="Angular">
+    ```typescript
+    // environments/environment.ts
+    export const environment = {
+      production: false,
+      acountpayClientId: 'your-client-id'
+    };
+    ```
+  </Tab>
+</Tabs>
 
 ## Important Notes
 
