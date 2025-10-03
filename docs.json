@@ -157,7 +157,8 @@
   "footer": {
     "socials": {
       "github": "https://github.com/PaywithAcount",
-      "linkedin": "https://www.linkedin.com/company/acountpay"
+      "linkedin": "https://www.linkedin.com/company/acountpay",
+      "website": "https://www.acountpay.com"
     }
   },
   "openapi": ["/api-reference/openapi.json"]
