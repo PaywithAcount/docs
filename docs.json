@@ -163,5 +163,5 @@
   "openapi": [
     "/api-reference/openapi.json"
   ],
-  "favicon": "/Favicon.png"
+  "favicon": "/images/favicon.png"
 }
