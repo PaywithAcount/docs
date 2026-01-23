@@ -160,5 +160,8 @@
       "website": "https://www.acountpay.com"
     }
   },
-  "openapi": ["/api-reference/openapi.json"]
+  "openapi": [
+    "/api-reference/openapi.json"
+  ],
+  "favicon": "/Favicon.png"
 }
