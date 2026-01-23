@@ -7,7 +7,6 @@
     "light": "#6EE7B7",
     "dark": "#0F3D24"
   },
-  "favicon": "/favicon.png",
   "navigation": {
     "tabs": [
       {
@@ -157,7 +156,7 @@
   "footer": {
     "socials": {
       "github": "https://github.com/PaywithAcount",
-      "linkedin": "https://www.linkedin.com/company/acountpay",
+      "linkedin": "https://dk.linkedin.com/company/acountpay",
       "website": "https://www.acountpay.com"
     }
   },
