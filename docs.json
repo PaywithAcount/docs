@@ -138,14 +138,14 @@
     "global": {}
   },
   "logo": {
-    "light": "/logo/light.png",
-    "dark": "/logo/dark.png"
+    "light": "/images/LogoLightMode.png",
+    "dark": "/images/LogoDarkMode.png"
   },
   "navbar": {
     "links": [
       {
         "label": "Support",
-        "href": "mailto:support@acountpay.com"
+        "href": "mailto:team@acountpay.com"
       }
     ],
     "primary": {
