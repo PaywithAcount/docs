@@ -27,7 +27,7 @@ Accept bank payments on your WooCommerce store with the official AcountPay plugi
 </Steps>
 
 <Info>
-  The same Client ID works for both test and live modes. You switch between modes in the plugin settings.
+  The current WooCommerce plugin uses a single live environment. Use a dedicated test store and low-value orders for integration verification.
 </Info>
 
 ## Step 2: Install the plugin
@@ -63,7 +63,6 @@ Accept bank payments on your WooCommerce store with the official AcountPay plugi
     | Setting | Value |
     |---------|-------|
     | **Enable/Disable** | Check to enable |
-    | **Payment Mode** | **Test** for testing, **Live** for real payments |
     | **Client ID** | Paste the Client ID from the Merchant Dashboard |
     | **API Base URL** | Leave as default (`https://api.acountpay.com`) |
     | **Title** | Display name at checkout (e.g. "Pay with AcountPay") |
@@ -81,9 +80,6 @@ AcountPay will now appear as a payment option on your checkout page (both classi
 ## Step 4: Test a payment
 
 <Steps>
-  <Step title="Set mode to Test">
-    In the gateway settings, set **Payment Mode** to **Test**.
-  </Step>
   <Step title="Place a test order">
     Add a product to the cart, go to **Checkout**, and select **AcountPay** as the payment method.
   </Step>
@@ -97,13 +93,7 @@ AcountPay will now appear as a payment option on your checkout page (both classi
 
 ## Step 5: Go live
 
-Once testing is successful:
-
-1. Go to **WooCommerce > Settings > Payments > AcountPay Payment Gateway**.
-2. Change **Payment Mode** to **Live**.
-3. Click **Save changes**.
-
-Your store is now accepting real payments via AcountPay.
+The plugin uses the live AcountPay environment by default. Once your **Client ID** and **API Base URL** are set correctly, your store is ready to accept payments.
 
 ## How it works
 
@@ -161,7 +151,6 @@ sequenceDiagram
 | Setting | Description | Default |
 |---------|-------------|---------|
 | **Enable/Disable** | Enable the AcountPay gateway | Disabled |
-| **Payment Mode** | Test or Live | Test |
 | **Title** | Label shown at checkout | AcountPay Payment Gateway |
 | **Description** | Text shown under the payment method | Pay securely using your bank account via AcountPay Payment Gateway. |
 | **Client ID** | Your Client ID from [merchant.acountpay.com](https://merchant.acountpay.com) | -- |
