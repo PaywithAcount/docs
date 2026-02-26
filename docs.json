@@ -92,7 +92,12 @@
             "pages": [
               "sdk/install_sdk",
               "sdk/setup_sdk",
-              "sdk/initialize_payment",
+              "sdk/initialize_payment"
+            ]
+          },
+          {
+            "group": "WooCommerce Plugin",
+            "pages": [
               "sdk/woocommerce_plugin"
             ]
           },
