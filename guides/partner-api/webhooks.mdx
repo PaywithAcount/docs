@@ -1,0 +1,158 @@
+---
+title: "Webhooks"
+description: "Receive real-time payment notifications"
+---
+
+Webhooks notify your system instantly when a payment status changes.
+
+## Webhook Events
+
+| Event | Description |
+|-------|-------------|
+| `payment.created` | Payment request created |
+| `payment.processing` | Customer is completing payment |
+| `payment.completed` | Payment successful |
+| `payment.failed` | Payment failed or rejected |
+| `payment.expired` | Payment expired (30 min timeout) |
+
+## Webhook Payload
+
+```json
+{
+  "event": "payment.completed",
+  "timestamp": "2026-01-18T14:35:00.000Z",
+  "data": {
+    "paymentId": "pay_abc123def456",
+    "status": "completed",
+    "amount": 149.99,
+    "currency": "DKK",
+    "referenceNumber": "ORDER-12345",
+    "paidAt": "2026-01-18T14:35:00.000Z",
+    "metadata": {
+      "storeId": "STORE-001"
+    }
+  }
+}
+```
+
+## Webhook Headers
+
+| Header | Description |
+|--------|-------------|
+| `X-AcountPay-Timestamp` | Unix timestamp when sent |
+| `X-AcountPay-Signature` | HMAC-SHA256 signature |
+
+## Verifying Signatures
+
+Always verify webhook signatures to ensure requests are from AcountPay.
+
+<Tabs>
+  <Tab title="Node.js">
+```javascript
+const crypto = require('crypto');
+
+function verifyWebhook(req, webhookSecret) {
+  const timestamp = req.headers['x-acountpay-timestamp'];
+  const signature = req.headers['x-acountpay-signature'];
+  const payload = JSON.stringify(req.body);
+
+  // Check timestamp is within 5 minutes
+  const age = Math.floor(Date.now() / 1000) - parseInt(timestamp);
+  if (age > 300) throw new Error('Timestamp too old');
+
+  // Verify signature
+  const expected = crypto
+    .createHmac('sha256', webhookSecret)
+    .update(`${timestamp}.${payload}`)
+    .digest('hex');
+
+  if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
+    throw new Error('Invalid signature');
+  }
+  return true;
+}
+
+// Express.js handler
+app.post('/webhooks/acountpay', express.json(), (req, res) => {
+  try {
+    verifyWebhook(req, process.env.WEBHOOK_SECRET);
+    
+    if (req.body.event === 'payment.completed') {
+      markOrderPaid(req.body.data.referenceNumber);
+    }
+    
+    res.sendStatus(200);
+  } catch (error) {
+    res.sendStatus(401);
+  }
+});
+```
+  </Tab>
+  <Tab title="Python">
+```python
+import hmac
+import hashlib
+import time
+
+def verify_webhook(request, webhook_secret):
+    timestamp = request.headers.get('X-AcountPay-Timestamp')
+    signature = request.headers.get('X-AcountPay-Signature')
+    payload = request.get_data(as_text=True)
+
+    # Check timestamp
+    if int(time.time()) - int(timestamp) > 300:
+        raise ValueError('Timestamp too old')
+
+    # Verify signature
+    expected = hmac.new(
+        webhook_secret.encode(),
+        f"{timestamp}.{payload}".encode(),
+        hashlib.sha256
+    ).hexdigest()
+
+    if not hmac.compare_digest(signature, expected):
+        raise ValueError('Invalid signature')
+    return True
+
+@app.route('/webhooks/acountpay', methods=['POST'])
+def handle_webhook():
+    try:
+        verify_webhook(request, os.environ['WEBHOOK_SECRET'])
+        
+        if request.json['event'] == 'payment.completed':
+            mark_order_paid(request.json['data']['referenceNumber'])
+        
+        return '', 200
+    except ValueError:
+        return '', 401
+```
+  </Tab>
+</Tabs>
+
+## Response Requirements
+
+Your webhook endpoint must respond with HTTP 200 within 10 seconds.
+
+| Response | Result |
+|----------|--------|
+| `200`, `201`, `204` | Success |
+| `5xx` or timeout | Will retry |
+
+## Retry Policy
+
+Failed webhooks retry with exponential backoff:
+
+| Attempt | Delay |
+|---------|-------|
+| 1 | Immediate |
+| 2 | 1 second |
+| 3 | 2 seconds |
+| 4 | 4 seconds |
+| 5 | 8 seconds |
+
+## Best Practices
+
+1. **Always verify signatures** - Prevents spoofing attacks
+2. **Respond quickly** - Process asynchronously, return 200 immediately
+3. **Handle duplicates** - Use paymentId for idempotency
+4. **Use HTTPS** - Required in production

@@ -1,0 +1,78 @@
+---
+title: "Partner API Overview"
+description: "Integrate AcountPay A2A payments into your POS system"
+---
+
+The AcountPay Partner API enables POS providers like Ka-ching to integrate instant account-to-account payments into their checkout experience.
+
+## Quick Start
+
+Integration takes approximately 30 minutes:
+
+1. **Register as a Partner** - Contact partners@acountpay.com
+2. **Get an Access Token** - Exchange credentials for a Bearer token
+3. **Create a Payment** - Get payment URL and QR code
+4. **Display QR Code** - Customer scans and pays
+
+## Minimum Integration Code
+
+```javascript
+// 1. Get access token (cache for 1 hour)
+const tokenRes = await fetch("https://api.acountpay.com/oauth/token", {
+  method: "POST",
+  headers: { "Content-Type": "application/x-www-form-urlencoded" },
+  body: "grant_type=client_credentials&client_id=YOUR_ID&client_secret=YOUR_SECRET"
+});
+const { access_token } = await tokenRes.json();
+
+// 2. Create payment
+const paymentRes = await fetch("https://api.acountpay.com/v1/partner/payments", {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${access_token}`,
+    "X-Merchant-Client-Id": "merchant_abc123",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    amount: 149.99,
+    referenceNumber: "ORDER-12345",
+    webhookUrl: "https://your-pos.com/webhooks"
+  })
+});
+const { qrCodeUrl } = await paymentRes.json();
+
+// 3. Display QR code
+displayQRCode(qrCodeUrl);
+
+// 4. Handle webhook when payment completes
+app.post("/webhooks", (req, res) => {
+  if (req.body.event === "payment.completed") {
+    markOrderPaid(req.body.data.referenceNumber);
+  }
+  res.sendStatus(200);
+});
+```
+
+## Environments
+
+| Environment | Base URL |
+|------------|----------|
+| Sandbox | `https://acount-apis-staging-a8cdb2402163.herokuapp.com` |
+| Production | `https://api.acountpay.com` |
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/oauth/token` | Get access token |
+| POST | `/v1/partner/payments` | Create a payment |
+| GET | `/v1/partner/payments/{id}` | Get payment status |
+| GET | `/v1/partner/payments/{id}/qr` | Get QR code image |
+
+## Webhook Events
+
+| Event | Description |
+|-------|-------------|
+| `payment.completed` | Payment successful |
+| `payment.failed` | Payment failed |
+| `payment.expired` | Payment expired (30 min timeout) |

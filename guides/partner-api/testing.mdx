@@ -1,0 +1,77 @@
+---
+title: "Testing Integration"
+description: "Test your Partner API integration in sandbox"
+---
+
+The sandbox environment allows you to test your integration without processing real payments.
+
+## Sandbox Environment
+
+| Setting | Value |
+|---------|-------|
+| **Base URL** | `https://acount-apis-staging-a8cdb2402163.herokuapp.com` |
+| **Credentials** | Separate sandbox credentials (contact us) |
+
+## Test Merchants
+
+| Merchant | Client ID | Behavior |
+|----------|-----------|----------|
+| Test Success | `test_merchant_success` | Payments succeed |
+| Test Fail | `test_merchant_fail` | Payments fail |
+| Test Slow | `test_merchant_slow` | 30 second delay |
+
+## Mock Payment Mode
+
+For quick testing without the bank flow, use Mock Payment Mode:
+
+```bash
+curl -X POST https://acount-apis-staging-a8cdb2402163.herokuapp.com/v1/partner/payments \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "X-Merchant-Client-Id: test_merchant_success" \
+  -H "X-Mock-Payment: true" \
+  -H "Content-Type: application/json" \
+  -d '{"amount": 100.00, "referenceNumber": "TEST-001"}'
+```
+
+| Header Value | Result |
+|--------------|--------|
+| `X-Mock-Payment: true` | Completes immediately |
+| `X-Mock-Payment: fail` | Fails immediately |
+| `X-Mock-Payment: delay` | Completes after 10s |
+
+## Test Bank
+
+In sandbox, Token.io provides a test bank:
+
+| Setting | Value |
+|---------|-------|
+| Bank ID | `ob-token` |
+| Username | `test-user` |
+| Password | `test-password` |
+| OTP | Any 6 digits |
+
+## Testing Webhooks
+
+Use webhook.site for testing:
+
+1. Get a unique URL from webhook.site
+2. Use it as your `webhookUrl`
+3. Complete a test payment
+4. View the webhook payload
+
+## Checklist Before Going Live
+
+- [ ] OAuth2 flow works and tokens are cached
+- [ ] Payment creation returns valid QR code
+- [ ] QR code displays correctly on POS terminal
+- [ ] Webhook endpoint receives and verifies signatures
+- [ ] POS shows "Payment successful" after webhook
+- [ ] Error handling works for failed payments
+- [ ] Expiration handling works (30 min timeout)
+
+## Going Live
+
+1. Contact us to activate production credentials
+2. Update base URL to `https://api.acountpay.com`
+3. Update credentials to production values
+4. Test one real transaction with small amount

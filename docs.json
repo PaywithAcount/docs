@@ -71,6 +71,16 @@
           {
             "group": "User Experience",
             "pages": []
+          },
+          {
+            "group": "Partner API (POS Providers)",
+            "pages": [
+              "guides/partner-api/overview",
+              "guides/partner-api/authentication",
+              "guides/partner-api/create-payment",
+              "guides/partner-api/webhooks",
+              "guides/partner-api/testing"
+            ]
           }
         ]
       },

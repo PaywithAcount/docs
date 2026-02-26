@@ -1,0 +1,131 @@
+---
+title: "Create Payment"
+description: "Create payments and generate QR codes for POS transactions"
+---
+
+Create a payment request that customers can complete by scanning a QR code.
+
+## Endpoint
+
+```
+POST /v1/partner/payments
+```
+
+## Headers
+
+| Header | Required | Description |
+|--------|----------|-------------|
+| `Authorization` | Yes | Bearer token from OAuth2 |
+| `X-Merchant-Client-Id` | Yes | The merchant's clientId |
+| `Content-Type` | Yes | `application/json` |
+
+## Request Body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `amount` | number | Yes | Payment amount (e.g., `149.99`) |
+| `currency` | string | No | Currency code (default: `DKK`) |
+| `referenceNumber` | string | Yes | Your order/transaction ID |
+| `description` | string | No | Payment description |
+| `customerEmail` | string | No | Customer email for receipt |
+| `customerName` | string | No | Customer name |
+| `bankId` | string | No | Pre-select customer's bank |
+| `callbackUrl` | string | No | URL to redirect after payment |
+| `webhookUrl` | string | No | URL for payment notifications |
+| `metadata` | object | No | Custom data (storeId, terminalId, etc.) |
+
+## Example Request
+
+<Tabs>
+  <Tab title="cURL">
+```bash
+curl -X POST https://api.acountpay.com/v1/partner/payments \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "X-Merchant-Client-Id: merchant_abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 149.99,
+    "currency": "DKK",
+    "referenceNumber": "ORDER-12345",
+    "description": "Store purchase",
+    "webhookUrl": "https://your-pos.com/webhooks/acountpay",
+    "metadata": {
+      "storeId": "STORE-001",
+      "terminalId": "POS-01"
+    }
+  }'
+```
+  </Tab>
+  <Tab title="Node.js">
+```javascript
+const response = await fetch('https://api.acountpay.com/v1/partner/payments', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${accessToken}`,
+    'X-Merchant-Client-Id': 'merchant_abc123',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    amount: 149.99,
+    currency: 'DKK',
+    referenceNumber: 'ORDER-12345',
+    webhookUrl: 'https://your-pos.com/webhooks/acountpay',
+  }),
+});
+
+const payment = await response.json();
+console.log('QR Code URL:', payment.qrCodeUrl);
+```
+  </Tab>
+</Tabs>
+
+## Response
+
+```json
+{
+  "paymentId": "pay_abc123def456",
+  "status": "processing",
+  "amount": 149.99,
+  "currency": "DKK",
+  "referenceNumber": "ORDER-12345",
+  "paymentUrl": "https://app.token.io/session/tok_xyz789",
+  "qrCodeUrl": "https://api.acountpay.com/v1/partner/payments/pay_abc123def456/qr",
+  "expiresAt": "2026-01-18T15:30:00Z",
+  "createdAt": "2026-01-18T14:30:00Z"
+}
+```
+
+## Displaying the QR Code
+
+```html
+<img src="https://api.acountpay.com/v1/partner/payments/pay_abc123/qr" 
+     alt="Scan to pay" width="300" />
+```
+
+### QR Code Options
+
+| Parameter | Description |
+|-----------|-------------|
+| `size` | Image size in pixels (default: 300) |
+| `format` | `png` or `svg` (default: png) |
+
+Example: `/v1/partner/payments/{id}/qr?size=400&format=svg`
+
+## Common Danish Bank IDs
+
+| Bank | ID |
+|------|-----|
+| Nordea | `ngp-ndeadk` |
+| Danske Bank | `ob-danske-dnk` |
+| Jyske Bank | `ngp-jyske` |
+| Sydbank | `ngp-sybk` |
+| Spar Nord | `ngp-spno` |
+| Nykredit | `ngp-nykb` |
+
+## Error Responses
+
+| Status | Error | Description |
+|--------|-------|-------------|
+| 400 | `invalid_amount` | Amount must be > 0 |
+| 401 | `unauthorized` | Invalid token |
+| 404 | `merchant_not_found` | Invalid merchant clientId |
