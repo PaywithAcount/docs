@@ -246,78 +246,9 @@ acount.initiatePayment({
   </Accordion>
 
   <Accordion title="WordPress/WooCommerce Integration">
-    Add this to your theme's `functions.php`:
+    For WooCommerce stores, use the official **AcountPay WooCommerce Plugin** instead of manual SDK integration. The plugin provides a complete payment gateway with admin settings, webhook handling, and support for both classic and block-based checkout.
 
-    ```php
-    // Add SDK script
-    function add_acountpay_scripts() {
-        if (is_checkout()) {
-            wp_enqueue_script('acountpay-sdk', 'https://cdn.acountpay.com/sdk/acount.umd.js', array(), '1.0.4', true);
-        }
-    }
-    add_action('wp_enqueue_scripts', 'add_acountpay_scripts');
-
-    // Add payment button to checkout
-    function add_acountpay_button() {
-        if (is_checkout() && WC()->cart && WC()->cart->get_total('raw') > 0) {
-            ?>
-            <div style="margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
-                <h4>Pay with Bank Account</h4>
-                <button type="button" id="acountpay-btn" style="background: #0066cc; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">
-                    Pay <?php echo WC()->cart->get_total(); ?> with AcountPay
-                </button>
-            </div>
-            
-            <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                document.getElementById('acountpay-btn').onclick = function() {
-                    if (typeof Acount === 'undefined') {
-                        alert('Payment system loading, please wait...');
-                        return;
-                    }
-                    
-                    const acount = new Acount({
-                        clientId: "<?php echo esc_js(get_option('acountpay_client_id', '')); ?>"
-                    });
-                    
-                    acount.initiatePayment({
-                        amount: <?php echo WC()->cart->get_total('raw'); ?>,
-                        referenceNumber: "ORDER-" + Date.now(),
-                        onSuccess: function(result) {
-                            alert('Payment successful! Your order will be processed.');
-                            window.location.reload();
-                        },
-                        onError: function(error) {
-                            alert('Payment failed: ' + error.message);
-                        }
-                    });
-                };
-            });
-            </script>
-            <?php
-        }
-    }
-    add_action('woocommerce_checkout_after_customer_details', 'add_acountpay_button');
-
-    // Add admin setting for client ID
-    function acountpay_admin_setting() {
-        add_settings_field(
-            'acountpay_client_id',
-            'AcountPay Client ID',
-            function() {
-                $value = get_option('acountpay_client_id', '');
-                echo '<input type="text" name="acountpay_client_id" value="' . esc_attr($value) . '" />';
-                echo '<p class="description">Get this from your AcountPay dashboard</p>';
-            },
-            'general',
-            'default'
-        );
-        register_setting('general', 'acountpay_client_id');
-    }
-    add_action('admin_init', 'acountpay_admin_setting');
-    ```
-
-    **Configuration:** Go to WordPress Admin → Settings → General → AcountPay Client ID
+    See the full setup guide: [WooCommerce Plugin Integration](/sdk/woocommerce_plugin)
   </Accordion>
 
   <Accordion title="Shopify Integration">
